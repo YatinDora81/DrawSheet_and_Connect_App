@@ -1,12 +1,5 @@
-netstat -ano | findstr :3001
-taskkill /PID 12864 /F  
-
-
-# Check
-/get-chat/:roomId/:number if we pass large number then it will handle or not
-
-
-
+netstat -ano | findstr :PORT
+taskkill /PID NUmber /F  
 
 # Turborepo starter
 
