@@ -5,6 +5,7 @@ import { prismaClient } from "@repo/db/db"
 import bcrypt from "bcrypt"
 import cookieParser from "cookie-parser"
 import { isAuthenticatedUser } from "./middleware/isAuth.js";
+import generateRoomId from "./utils/generateRoomId.js";
 
 
 
@@ -185,11 +186,11 @@ app.post("/create-room", isAuthenticatedUser, async (req: Request, res: Response
                 data: {
                     roomName: parsedData.data.roomName,
                     createdBy: req.user.user_id,
-                    members : [req.user.user_id]
+                    members: [req.user.user_id]
                 }
             })
 
-        } catch (error : any) {
+        } catch (error: any) {
             if (error.code === "P2002" && error.meta?.target?.includes("roomName")) {
                 res.status(400).json({
                     success: false,
@@ -223,16 +224,16 @@ app.post("/create-room", isAuthenticatedUser, async (req: Request, res: Response
 })
 
 // @ts-ignore
-app.get("/get-room-details/:slug" , isAuthenticatedUser , async(req : Request , res : Response)=>{
+app.get("/get-room-details/:slug", isAuthenticatedUser, async (req: Request, res: Response) => {
     try {
 
         const slug = req.params.slug
         const roomDetails = await prismaClient.room.findFirst({
-            where : {
-                roomName  : slug
+            where: {
+                roomName: slug
             }
         })
-        if(!roomDetails){
+        if (!roomDetails) {
             res.status(400).json({
                 success: false,
                 data: "No Room!!!",
@@ -240,14 +241,14 @@ app.get("/get-room-details/:slug" , isAuthenticatedUser , async(req : Request , 
             })
             return
         }
-        
+
         res.status(200).json({
-            success : true,
-            data : roomDetails,
-            message : "successfully Got "
+            success: true,
+            data: roomDetails,
+            message: "successfully Got "
         })
 
-        
+
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -258,48 +259,48 @@ app.get("/get-room-details/:slug" , isAuthenticatedUser , async(req : Request , 
 })
 
 // @ts-ignore
-app.get("/get-chat/:roomId/:chatMultiplier" , isAuthenticatedUser , async(req  :Request , res : Response)=>{
+app.get("/get-chat/:roomId/:chatMultiplier", isAuthenticatedUser, async (req: Request, res: Response) => {
     try {
 
-        const {roomId  , chatMultiplier } = req.params
+        const { roomId, chatMultiplier } = req.params
         const needChat = 100
         const isRoom = await prismaClient.room.findFirst({
-            where : {
-                id : roomId
+            where: {
+                id: roomId
             },
-            select : {
-                id : true,
-                roomName : true,
-                createdBy : true,
-                createdAt : true,
-                members : true,
-                chats : {
-                    take : needChat,
-                    skip : parseInt(chatMultiplier as string) * (needChat)
+            select: {
+                id: true,
+                roomName: true,
+                createdBy: true,
+                createdAt: true,
+                members: true,
+                chats: {
+                    take: needChat,
+                    skip: parseInt(chatMultiplier as string) * (needChat)
                 }
             }
         })
 
 
-        if(!isRoom){
+        if (!isRoom) {
 
             res.status(400).json({
-                success : false,
-                data : "No Room vailable",
-                message : "No Room vailable"
+                success: false,
+                data: "No Room vailable",
+                message: "No Room vailable"
             })
 
             return
         }
 
         res.status(200).json({
-            success : true,
-            data : isRoom,
-            message : "Successfully Get Chats"
+            success: true,
+            data: isRoom,
+            message: "Successfully Get Chats"
         })
 
         return
-        
+
 
     } catch (error) {
         res.status(500).json({
@@ -309,43 +310,43 @@ app.get("/get-chat/:roomId/:chatMultiplier" , isAuthenticatedUser , async(req  :
         })
         return
     }
-} )
+})
 
 // @ts-ignore
-app.get("/get-all-chats/:roomId" , isAuthenticatedUser , async(req  :Request , res : Response)=>{
+app.get("/get-all-chats/:roomId", isAuthenticatedUser, async (req: Request, res: Response) => {
     try {
 
-        const {roomId } = req.params
+        const { roomId } = req.params
 
         const isRoom = await prismaClient.chat.findFirst({
-            where : {
-                roomId : roomId
+            where: {
+                roomId: roomId
             },
-            orderBy : {
-                id : "asc"
+            orderBy: {
+                id: "asc"
             }
         })
 
 
-        if(!isRoom){
+        if (!isRoom) {
 
             res.status(400).json({
-                success : false,
-                data : "No Room vailable",
-                message : "No Room vailable"
+                success: false,
+                data: "No Room vailable",
+                message: "No Room vailable"
             })
 
             return
         }
 
         res.status(200).json({
-            success : true,
-            data : isRoom,
-            message : "Successfully Get Chats"
+            success: true,
+            data: isRoom,
+            message: "Successfully Get Chats"
         })
 
         return
-        
+
 
     } catch (error) {
         res.status(500).json({
@@ -359,74 +360,124 @@ app.get("/get-all-chats/:roomId" , isAuthenticatedUser , async(req  :Request , r
 
 app.post("/add-chat", isAuthenticatedUser, async (req: Request, res: Response) => {
     try {
-      const { message, roomId } = req.body;
-  
-      // Validate request data
-      if (!message || !roomId) {
-        res.status(400).json({
-          success: false,
-          data: "Message and Room ID are required.",
-          message: "Invalid Input",
+        const { message, roomId } = req.body;
+
+        // Validate request data
+        if (!message || !roomId) {
+            res.status(400).json({
+                success: false,
+                data: "Message and Room ID are required.",
+                message: "Invalid Input",
+            });
+            return;
+        }
+
+        if (!req.user) {
+            res.status(401).json({
+                success: false,
+                data: "Unauthorized",
+                message: "You must be logged in to send a message.",
+            });
+            return;
+        }
+
+        // Ensure the room exists
+        const room = await prismaClient.room.findUnique({
+            where: { id: roomId },
         });
-        return;
-      }
-  
-      if (!req.user) {
-        res.status(401).json({
-          success: false,
-          data: "Unauthorized",
-          message: "You must be logged in to send a message.",
+
+        if (!room) {
+            res.status(404).json({
+                success: false,
+                data: "Room not found.",
+                message: "Invalid Room ID",
+            });
+            return;
+        }
+
+        // Ensure the user is a member of the room
+        if (!room.members.includes(req.user.user_id)) {
+            res.status(403).json({
+                success: false,
+                data: "User is not a member of this room.",
+                message: "Access Denied",
+            });
+            return;
+        }
+
+        // Create the chat message
+        const newChat = await prismaClient.chat.create({
+            data: {
+                message,
+                userId: req.user.user_id,
+                roomId,
+            },
         });
-        return;
-      }
-  
-      // Ensure the room exists
-      const room = await prismaClient.room.findUnique({
-        where: { id: roomId },
-      });
-  
-      if (!room) {
-        res.status(404).json({
-          success: false,
-          data: "Room not found.",
-          message: "Invalid Room ID",
+
+        res.status(201).json({
+            success: true,
+            data: newChat,
+            message: "Message sent successfully!",
         });
-        return;
-      }
-  
-      // Ensure the user is a member of the room
-      if (!room.members.includes(req.user.user_id)) {
-        res.status(403).json({
-          success: false,
-          data: "User is not a member of this room.",
-          message: "Access Denied",
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            data: error.message || "",
+            message: "Internal Server Error",
         });
-        return;
-      }
-  
-      // Create the chat message
-      const newChat = await prismaClient.chat.create({
-        data: {
-          message,
-          userId: req.user.user_id,
-          roomId,
-        },
-      });
-  
-      res.status(201).json({
-        success: true,
-        data: newChat,
-        message: "Message sent successfully!",
-      });
-    } catch (error : any) {
-      res.status(500).json({
-        success: false,
-        data: error.message || "",
-        message: "Internal Server Error",
-      });
     }
-  });
-  
+});
+
+app.get("/create-random-room", isAuthenticatedUser, async (req: Request, res: Response) => {
+    try {
+
+        if (!req.user) {
+            res.status(401).json({
+                success: false,
+                data: "Unauthorized",
+                message: "You must be logged in to send a message.",
+            });
+            return;
+        }
+
+        let newRoom = generateRoomId();
+        
+        while (true) {
+            try {
+                const isRoom = await prismaClient.room.findFirst({
+                    where: {
+                        roomName: newRoom
+                    }
+                })
+                if (!isRoom) break;
+            } catch (error) {
+                newRoom = generateRoomId();
+            }
+        }
+
+        const newRoomDetails = await prismaClient.room.create({
+            data: {
+                roomName: newRoom,
+                createdBy: req.user.user_id,
+                members : [req.user.user_id]
+            }
+        })
+
+        res.status(200).json({
+            success: true,
+            data: newRoomDetails,
+            message: "New Room Created Successfully"
+        })
+
+    } catch (error : any) {
+        res.status(500).json({
+            success: false,
+            data: error.message || "",
+            message: "Internal Server Error",
+        });
+    }
+
+})
 
 
 app.listen(PORT, () => {
