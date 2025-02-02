@@ -23,7 +23,7 @@ export const isAuthenticatedUser = (req : Request,res : Response,next : NextFunc
         }
 
         const decode = jwt.verify(token , JWT_SECRET ) as {user_id : string , email : string , name : string , profilePic : string}
-        req.user = decode
+        req.user = decode        
         next()
 
     } catch (error) {

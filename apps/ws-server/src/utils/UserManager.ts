@@ -49,11 +49,13 @@ export class UserManager{
         this.userMap.set(ws , { rooms : new Set<string>() , user });
     }
 
-    removeUser(ws : WebSocket){
+    removeUserEntry(ws : WebSocket){
         if(!this.userMap.has(ws)){
             return;
         }
         this.userMap.delete(ws);
     }
+
+    
 
 }

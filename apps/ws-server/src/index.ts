@@ -1,37 +1,166 @@
-import { WebSocketServer , WebSocket } from "ws";
-import { sendResponse } from "./utils/sendResponse.js";
-import { verify_Auth_Token } from "./utils/verifyAuthToken.js";
+import { WebSocketServer, WebSocket } from "ws";
+import { sendErrorResponse, sendResponse } from "./utils/sendResponse.js";
+import { isUserVerified } from "./utils/verifyAuthToken.js";
+import { User, UserManager } from "./utils/UserManager.js";
+import { RoomManager } from "./utils/RoomManager.js";
+import { WS_PORT } from "@repo/config/PORTS";
+import { prismaClient } from "@repo/db/db";
 
-const wss = new WebSocketServer({port : 3002} , ()=>{
+const wss = new WebSocketServer({ port: WS_PORT }, () => {
     console.log(`WS Connected Successfully`);
 })
 
 
+const wsMap = new Map<WebSocket, User>();
+const roomManager = new RoomManager();
+const userManager = new UserManager();
 
-wss.on("connection" , (ws : WebSocket , request)=>{
-    const searchParams = new URLSearchParams(request.url?.split("?")[1]);
-    const token = searchParams.get("token");
-    if(!token || token===null){
-        // No Token Present
-        // sendResponse()
-        ws.send("No Token Present");
+
+wss.on("connection", (ws: WebSocket, request) => {
+
+    const user_from_token = isUserVerified(ws, request);
+    if (user_from_token == null) {
         ws.close();
         return;
     }
-    const userInfo = verify_Auth_Token(token);
-    if(!userInfo){
-        // Invalid Token Present
-        // sendResponse()
-        ws.send("Invalid Token Present");
-        ws.close();
-        return;
+    else {
+        // console.log(user_from_token);
+        wsMap.set(ws, user_from_token);
     }
 
+    const userrr = wsMap.get(ws);
+    if(userrr) userManager.createUser(ws, userrr);
 
+    ws.on("message",async (ev) => {
+        let obj: any
+        try {
+            const s = ev.toString();
+            obj = JSON.parse(s);
+        } catch (error) {
+            sendErrorResponse(ws, "Invalid Request Please Send Correct JSON Format", "Invalid Request!!!")
+            return;
+        }
+
+        if (obj.type === "join") {
+            // input looks like
+            // {
+            //     type :  "join",
+            //     payload : {
+            //         roomId : ""
+            //     }
+            // }
+            const user = wsMap.get(ws);
+            if (!user) return;
+            roomManager.addRoom(user, obj.payload.roomId);
+            userManager.addRoom(ws, obj.payload.roomId);
+
+            const data = {
+                name: user.name,
+                user_id: user.user_id,
+                email: user.email,
+                roomId: obj.payload.roomId
+            }
+
+            sendResponse(ws, true, "join", data, "Room Joined Successfully")
+
+            roomManager.notifyUsers(false, ws, obj.payload.roomId, { type: "notification", success: true, data: user.name + " has joined room", message: user.name + " has joined room" })
+
+        }
+        else if (obj.type === "subscribe") {
+            // input looks like
+            // {
+            //     type :  "subscribe",
+            //     payload : {
+            //         roomId : ""
+            //     }
+            // }
+            const user = wsMap.get(ws);
+            if (!user) return;
+            roomManager.subscribeRoom(user, obj.payload.roomId);
+        }
+        else if (obj.type === "unsubscribe") {
+            // input looks like
+            // {
+            //     type :  "unsubscribe",
+            //     payload : {
+            //         roomId : ""
+            //     }
+            // }
+            const user = wsMap.get(ws);
+            if (!user) return;
+            roomManager.unSubscribeRoom(user, obj.payload.roomId);
+        }
+        else if (obj.type === "chat") {
+            // input looks like
+            // {
+            //     type :  "chat",
+            //     payload : {
+            //         roomId : ""
+            //         message : ""
+            //     }
+            // }
+
+            const user = wsMap.get(ws);
+            if (!user) return;
+
+            try {
+                await prismaClient.chat.create({
+                    data : {
+                        message : obj.payload.message,
+                        userId : user.user_id,
+                        roomId : obj.payload.message
+                    }
+                })
+                roomManager.addChat(user, obj.payload.message, obj.payload.roomId)
     
     
-    ws.on("message" , (data)=>{
-        
+                roomManager.notifyUsers(true, ws, obj.payload.roomId, {
+                    type: "chat", success: true, data: {
+                        sender: {
+                            name: user.name,
+                            user_id: user.user_id,
+                            email: user.email,
+                            roomId: obj.payload.roomId
+                        }, message: obj.payload.message
+                    }, message: "New Chat Added"
+                })
+            } catch (error) {
+                sendErrorResponse(ws , "Error Occour At Adding Chat!!!" , "Error Occour At Adding Chat!!!");
+            }
+            
+        }
+        else if (obj.type === "leave") {
+            // input looks like
+            // {
+            //     type :  "leave",
+            //     payload : {
+            //         roomId : ""
+            //     }
+            // }
+
+            const user = wsMap.get(ws);
+            if (!user) return;
+            roomManager.leaveRoom(user, obj.payload.roomId);
+            roomManager.notifyUsers(false, ws, obj.payload.roomId, { type: "notification", success: true, data: user.name + " has left room", message: user.name + " has left room" })
+        }
+        else {
+            sendErrorResponse(ws, "Invalid Request Type", "Invalid Request Type")
+        }
+
+    })
+
+    ws.on("error" , ()=>{
+        sendErrorResponse(ws , "Something Went Wrong!!!" , "Something Went Wrong!!!" );
+        ws.close();
+    })
+
+    ws.on("close", () => {
+        const user = wsMap.get(ws);
+        if (user) {
+            userManager.removeUserEntry(ws);
+            roomManager.removeUserEntry(user);
+        }
+        wsMap.delete(ws);
     })
 
 })

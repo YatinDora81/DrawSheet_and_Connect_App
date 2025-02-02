@@ -11,7 +11,7 @@ export const signInShouldBe = z.object({
     password: z.string().min(6, { message: "Password Should Be Atleast 6 Character" })
 })
 
-export const createRoomShouldBe = z.object({
+export const roomShouldBe = z.object({
     roomName: z.string().min(1)
 })
 
