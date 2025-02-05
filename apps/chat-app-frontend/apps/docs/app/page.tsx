@@ -33,7 +33,7 @@ export default function Home() {
         />
         <ol>
           <li>
-            Get started by editing <code>apps/web/app/page.tsx</code>
+            Get started by editing <code>apps/docs/app/page.tsx</code>
           </li>
           <li>Save and see your changes instantly.</li>
         </ol>
@@ -60,10 +60,10 @@ export default function Home() {
             rel="noopener noreferrer"
             className={styles.secondary}
           >
-            Read our docs Ofcourse
+            Read our docs
           </a>
         </div>
-        <Button appName="web" className={styles.secondary}>
+        <Button appName="docs" className={styles.secondary}>
           Open alert
         </Button>
       </main>

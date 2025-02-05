@@ -122,7 +122,10 @@ export const get_chat_roomId_chatMultiplierController = async (req: Request, res
                 members: true,
                 chats: {
                     take: needChat,
-                    skip: parseInt(chatMultiplier as string) * (needChat)
+                    skip: parseInt(chatMultiplier as string) * (needChat),
+                    orderBy : {
+                        id : "desc"
+                    }
                 }
             }
         })
