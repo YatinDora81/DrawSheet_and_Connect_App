@@ -1,5 +1,11 @@
+"use client"
 import Link from 'next/link'
 import Avatar from './Avatar'
+import Modal from './Modal'
+import CreateNewRoomModal from './CreateNewRoomModal'
+import { useState } from 'react'
+import JoinNewRoomModal from './JoinRoomModal'
+import YesNoModal from './YesNoModal'
 
 const Navbar = () => {
 
@@ -17,6 +23,8 @@ const Navbar = () => {
     //     })()
     // })
 
+    const [showModal ,setShowModal ] = useState<boolean>(true);
+ 
     
 
     const isUser = true
@@ -26,8 +34,10 @@ const Navbar = () => {
 
             <div className=' w-[90%]  flex justify-between items-center h-full' style={{ marginInline: "auto", paddingInline: "1.5rem" }}>
                 <div>
-                    <div className=' text-4xl'>Chat App</div>
+                    <div className=' text-4xl poppins-bold-italic'>Chatify</div>
                 </div>
+
+                {showModal && <Modal showModal={showModal} setShowModal={setShowModal} Component={YesNoModal}></Modal>}
 
                 {!isUser && <div className=' flex justify-center items-center gap-2'>
 

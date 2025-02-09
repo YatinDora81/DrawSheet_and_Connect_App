@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { IoLogOut } from 'react-icons/io5';
 import { MdGroup } from "react-icons/md";
 import { CiSettings } from "react-icons/ci";
-import {motion} from "framer-motion"
 
 const Avatar = ({ img, username }: { img: string | null, username: string }) => {
 
@@ -13,7 +12,7 @@ const Avatar = ({ img, username }: { img: string | null, username: string }) => 
     const menuItems = [
         {
             icon: <MdGroup />,
-            itemName: "New Room"
+            itemName: "Create New Room"
         },
         {
             icon: <CiSettings />,
@@ -51,7 +50,7 @@ const Avatar = ({ img, username }: { img: string | null, username: string }) => 
 
 
             {/* submenu */}
-            { subMenu &&  <motion.div className=' absolute left-[-3rem] top-14 z-10 overflow-x-auto min-w-[10vw] bg-zinc-800 rounded-2xl flex justify-center items-center flex-col p-1 border border-zinc-700'>
+            { subMenu &&  <div className=' absolute left-[-6rem] top-14 z-10 overflow-x-auto min-w-[15vw] bg-zinc-800 rounded-2xl flex justify-center items-center flex-col p-1 border border-zinc-700'>
                 {menuItems.map((item, i) => <div key={i} className={` ${menuItems.length-1!==i &&' border-b'} w-full flex items-center justify-start p-3 gap-2 cursor-pointer hover:opacity-60`}>
                     <div>{item.icon}</div>
                     <div>{item.itemName}</div>
@@ -59,7 +58,7 @@ const Avatar = ({ img, username }: { img: string | null, username: string }) => 
                 )}
 
 
-            </motion.div>
+            </div>
 }
 
         </div>

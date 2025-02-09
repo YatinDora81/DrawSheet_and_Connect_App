@@ -3,10 +3,11 @@ import { GoDotFill } from 'react-icons/go'
 import { HiDotsVertical } from 'react-icons/hi'
 import { IoCloseCircleOutline, IoSend } from 'react-icons/io5'
 import SingleChat from "./SingleChat"
+import ChatMenuItem from './ChatMenuItem'
 
 const ChatSection = () => {
 
-    const flag = true
+    const flag = false
 
 
     return (
@@ -16,12 +17,13 @@ const ChatSection = () => {
 
                 {/** When No Chat Selected */}
                 {flag && <div
-                    className="flex flex-col items-center justify-center h-full text-center bg-zinc-900 text-gray-300 rounded-lg shadow-lg p-8 relative overflow-hidden"
                     style={{
-                        background: "linear-gradient(135deg, rgba(24,24,27,0.8), rgba(39,39,42,0.9))",
+                        // background: "linear-gradient(135deg, rgba(24,24,27,0.8), rgba(39,39,42,0.9))",
                         backdropFilter: "blur(10px)",
                         border: "1px solid rgba(255, 255, 255, 0.1)",
+
                     }}
+                    className="flex flex-col items-center justify-center h-full text-center bg-zinc-900 text-gray-300 rounded-lg shadow-lg p-8 relative overflow-hidden"
                 >
 
                     <div className="text-6xl mb-4 animate-fadeIn">💬</div>
@@ -73,7 +75,8 @@ const ChatSection = () => {
 
                     <div className=' h-full flex items-center justify-center gap-2'>
                         <div className=' flex justify-center items-center'><GoDotFill className=' text-green-500' />9 Online</div>
-                        <HiDotsVertical className=' text-3xl transition-all duration-200 hover:opacity-80' />
+                        <ChatMenuItem />
+                        
                         {/* <IoCloseCircleOutline className=' text-4xl text-red-500 transition-all duration-200 hover:text-red-700' /> */}
                     </div>
 
