@@ -1,11 +1,13 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { FaFacebook, FaGoogle, FaLongArrowAltRight } from "react-icons/fa";
 import { LiaGripLinesVerticalSolid } from "react-icons/lia";
 
 const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
+
+    const [error, setError] = useState("Not Authenticated");
     return (
-        <div className=' min-w-screen min-h-screen bg-zinc-900 text-white flex justify-center items-center'>
+        <div className=' w-full min-h-[90vh] bg-zinc-900 text-white flex justify-center items-center'>
             <div className=' w-[80%] flex flex-col justify-center  gap-10'>
 
                 <div className='upperheader text-4xl w-full '>
@@ -16,11 +18,13 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
 
                     <div className='leftsideinpbox w-[40%] flex flex-col gap-1'>
                         {isSignup && <input style={{ paddingBlock: "22px", paddingInline: "15px" }} className=' w-full bg-zinc-800 h-10 px-16 py-2 rounded-lg' type='name' placeholder='Username'></input>}
-                        <input style={{ paddingBlock: "22px", paddingInline: "15px" }} className=' w-full bg-zinc-800 h-10 px-10' type='email' placeholder='Email'></input>
-                        <input style={{ paddingBlock: "22px", paddingInline: "15px" }} className=' w-full bg-zinc-800 h-10 px-10' type='password' placeholder='Password'></input>
-                        {isSignup && <input style={{ paddingBlock: "22px", paddingInline: "15px" }} className=' w-full bg-zinc-800 h-10 px-10' type='password' placeholder='Confirm Password'></input>}
+                        <input style={{ paddingBlock: "22px", paddingInline: "15px" }} className='rounded-lg w-full bg-zinc-800 h-10 px-10' type='email' placeholder='Email'></input>
+                        <input style={{ paddingBlock: "22px", paddingInline: "15px" }} className='rounded-lg w-full bg-zinc-800 h-10 px-10' type='password' placeholder='Password'></input>
+                        {isSignup && <input style={{ paddingBlock: "22px", paddingInline: "15px" }} className='rounded-lg w-full bg-zinc-800 h-10 px-10' type='password' placeholder='Confirm Password'></input>}
 
-                        <button style={{ paddingInline: "20px", paddingBlock: "10px", marginTop: "2px" }} className=' flex justify-between items-center text-xl  w-full bg-green-400 rounded-sm text-zinc-800 cursor-pointer bg-gradient-to-r from-[#A9A5FD] to-[#EBD75D] '>
+                        {error && error !== "" && <div className=' text-sm  text-red-500 ' style={{ paddingLeft: "5px" }}> * {error}</div>}
+
+                        <button style={{ paddingInline: "20px", paddingBlock: "10px", marginTop: "2px" }} className=' flex justify-between items-center text-xl  w-full bg-green-400 rounded-sm  cursor-pointer  bg-gradient-to-r from-purple-500 to-blue-500 text-white transition-all duration-200 hover:opacity-90'>
                             <div>{isSignup ? "Signup" : "Signin"} to Your Account</div>
                             <FaLongArrowAltRight />
                         </button>
@@ -29,7 +33,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                     </div>
 
                     <div>
-                    <LiaGripLinesVerticalSolid />
+                        <LiaGripLinesVerticalSolid />
                         <LiaGripLinesVerticalSolid />
                         <LiaGripLinesVerticalSolid /><LiaGripLinesVerticalSolid />
                         <LiaGripLinesVerticalSolid />
@@ -54,7 +58,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                                 backgroundOrigin: "border-box",
                                 backgroundClip: "padding-box, border-box"
                             }}
-                            className="flex gap-3 items-center text-xl w-full text-zinc-100 cursor-pointer"
+                            className="flex gap-3 items-center transition-all duration-200 hover:opacity-80 text-xl w-full text-zinc-100 cursor-pointer"
                         >
                             <FaGoogle /> {isSignup ? "Signup" : "Signin"} with Google
                         </button>
@@ -72,7 +76,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                                 backgroundOrigin: "border-box",
                                 backgroundClip: "padding-box, border-box"
                             }}
-                            className="flex gap-3 items-center text-xl w-full text-zinc-100 cursor-pointer"
+                            className="flex gap-3  transition-all duration-200 hover:opacity-80 items-center text-xl w-full text-zinc-100 cursor-pointer"
                         >
                             <FaFacebook /> {isSignup ? "Signup" : "Signin"} with Facebook
                         </button>
