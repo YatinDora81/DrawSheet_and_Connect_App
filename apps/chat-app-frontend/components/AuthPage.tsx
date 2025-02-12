@@ -1,13 +1,85 @@
 "use client"
-import React, { useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import { FaFacebook, FaGoogle, FaLongArrowAltRight } from "react-icons/fa";
 import { LiaGripLinesVerticalSolid } from "react-icons/lia";
+import { SignIn_User_URL, SignUp_User_URL } from "@repo/config/URL"
+import toast from "react-hot-toast"
+import {BeatLoader} from "react-spinners"
+import { useRouter } from 'next/navigation';
 
 const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
 
-    const [error, setError] = useState("Not Authenticated");
+    const router = useRouter()
+
+    const [formData, setFormData] = useState<{
+        name?: string,
+        email: string,
+        password: string,
+        confirmPassword?: string
+    }>({ name: "", email: "", password: "", confirmPassword: "" })
+
+    const [error, setError] = useState("");
+    const [loading , setLoading] = useState(false);
+
+    const submitHandler = async (e: FormEvent) => {
+        e.preventDefault()
+        setError("");
+        if (formData.email === "" || formData.password === "" || (isSignup && formData.name === "") || (isSignup && formData.confirmPassword === "")) {
+            setError("Please Fill All The Details")
+            toast.error("Please Fill All The Details")
+            return
+        }
+        if( isSignup && formData.password!==formData.confirmPassword ){
+            setError("Password Not Matching!!!")
+            toast.error("Password Not Matching!!!")
+            return
+        }
+        setError("");
+        try {
+            setLoading(true)
+            const signupData = { name : formData.name , email : formData.email , password : formData.password };
+            const signinData = { email : formData.email , password : formData.password }
+            const res = await fetch( isSignup ? SignUp_User_URL : SignIn_User_URL , { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(isSignup ? signupData : signinData) })
+            const data = await res.json();
+            if (data.success) {
+                console.log(data);
+                toast.success(data.message)
+                setFormData({ name: "", email: "", password: "", confirmPassword: "" })
+                setError("");
+                router.push("/dashboard")
+            }
+            else {
+                setError( typeof data.data === "string" ? data.data : ( data.message || "SomeThing Went Wrong" ) );
+                toast.error(typeof data.data === "string" ? data.data : ( data.message || "SomeThing Went Wrong" ))
+            }
+        } catch (error: any) {
+            setError(error.message || "Something Went Wrong")
+            toast.error(error.message || "SomeThing Went Wrong")
+        } finally{
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        if (isSignup) {
+            setFormData({
+                name: "",
+                email: "",
+                password: "",
+                confirmPassword: ""
+            })
+        } else {
+            setFormData({
+                email: "",
+                password: "",
+            })
+        }
+    }, [])
+
+
     return (
         <div className=' w-full min-h-[90vh] bg-zinc-900 text-white flex justify-center items-center'>
+            
             <div className=' w-[80%] flex flex-col justify-center  gap-10'>
 
                 <div className='upperheader text-4xl w-full '>
@@ -16,21 +88,27 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
 
                 <div className=' flex  justify-evenly items-center bg-blue-60'>
 
-                    <div className='leftsideinpbox w-[40%] flex flex-col gap-1'>
-                        {isSignup && <input style={{ paddingBlock: "22px", paddingInline: "15px" }} className=' w-full bg-zinc-800 h-10 px-16 py-2 rounded-lg' type='name' placeholder='Username'></input>}
-                        <input style={{ paddingBlock: "22px", paddingInline: "15px" }} className='rounded-lg w-full bg-zinc-800 h-10 px-10' type='email' placeholder='Email'></input>
-                        <input style={{ paddingBlock: "22px", paddingInline: "15px" }} className='rounded-lg w-full bg-zinc-800 h-10 px-10' type='password' placeholder='Password'></input>
-                        {isSignup && <input style={{ paddingBlock: "22px", paddingInline: "15px" }} className='rounded-lg w-full bg-zinc-800 h-10 px-10' type='password' placeholder='Confirm Password'></input>}
+                    <form onSubmit={submitHandler} className='leftsideinpbox w-[40%] flex flex-col gap-1'>
+                        {isSignup && <input value={formData?.name}
+                            onChange={(e) => {
+                                setFormData((prev) => {
+                                    return { ...prev, name: e.target.value }
+                                })
+                            }}
+                            style={{ paddingBlock: "22px", paddingInline: "15px" }} className=' w-full bg-zinc-800 h-10 px-16 py-2 rounded-lg' type='name' placeholder='Username'></input>}
+                        <input value={formData.email} onChange={(e) => setFormData((prev) => { return { ...prev, email: e.target.value } })} style={{ paddingBlock: "22px", paddingInline: "15px" }} className='rounded-lg w-full bg-zinc-800 h-10 px-10' type='email' placeholder='Email'></input>
+                        <input value={formData.password} onChange={(e) => setFormData((prev) => { return { ...prev, password: e.target.value } })} style={{ paddingBlock: "22px", paddingInline: "15px" }} className='rounded-lg w-full bg-zinc-800 h-10 px-10' type='password' placeholder='Password'></input>
+                        {isSignup && <input value={formData.confirmPassword} onChange={(e) => setFormData((prev) => { return { ...prev, confirmPassword: e.target.value } })} style={{ paddingBlock: "22px", paddingInline: "15px" }} className='rounded-lg w-full bg-zinc-800 h-10 px-10' type='password' placeholder='Confirm Password'></input>}
 
                         {error && error !== "" && <div className=' text-sm  text-red-500 ' style={{ paddingLeft: "5px" }}> * {error}</div>}
 
-                        <button style={{ paddingInline: "20px", paddingBlock: "10px", marginTop: "2px" }} className=' flex justify-between items-center text-xl  w-full bg-green-400 rounded-sm  cursor-pointer  bg-gradient-to-r from-purple-500 to-blue-500 text-white transition-all duration-200 hover:opacity-90'>
-                            <div>{isSignup ? "Signup" : "Signin"} to Your Account</div>
-                            <FaLongArrowAltRight />
+                        <button disabled={loading} style={{ paddingInline: "20px", paddingBlock: "10px", marginTop: "2px" }} className=' flex justify-between items-center text-xl  w-full bg-green-400 rounded-sm  cursor-pointer  bg-gradient-to-r from-purple-500 to-blue-500 text-white transition-all duration-200 hover:opacity-90'>
+                            {loading ? <BeatLoader className=' mx-auto ' /> :  <><div>{isSignup ? "Signup" : "Signin"} to Your Account</div>
+                            <FaLongArrowAltRight /></>}
                         </button>
 
 
-                    </div>
+                    </form>
 
                     <div>
                         <LiaGripLinesVerticalSolid />
@@ -92,7 +170,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                 </div>
 
             </div>
-        </div>
+        </div >
     )
 }
 

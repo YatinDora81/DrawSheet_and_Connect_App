@@ -3,7 +3,7 @@ import React from 'react'
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
 const YesNoModal = ({ showModal, setShowModal, heading = "Are You Sure???", subheading, setValue }: { showModal: boolean, setShowModal: (value: boolean) => void, heading: string, setValue: (value: number) => void , subheading : string | null }) => {
-    console.log(showModal);
+    // console.log(showModal);
 
     return (
         <div onClick={(e) => { e.stopPropagation() }} className=' relative text-white w-[45%] min-h-[35%] border border-zinc-700 bg-zinc-900 rounded-2xl py-4 px-6 flex flex-col items-start justify-center gap-7'>

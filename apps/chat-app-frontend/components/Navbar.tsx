@@ -6,6 +6,7 @@ import CreateNewRoomModal from './CreateNewRoomModal'
 import { useState } from 'react'
 import JoinNewRoomModal from './JoinRoomModal'
 import YesNoModal from './YesNoModal'
+import { Toaster } from "react-hot-toast"
 
 const Navbar = () => {
 
@@ -19,25 +20,26 @@ const Navbar = () => {
     //             setIsUser(true)
     //         }
     //         console.log(data);
-            
+
     //     })()
     // })
 
-    const [showModal ,setShowModal ] = useState<boolean>(true);
- 
-    
+    const [showModal, setShowModal] = useState<boolean>(true);
+
+
 
     const isUser = true
 
     return (
         <div className=' text-white w-full border-b border-b-zinc-600 flex items-center justify-between h-[10vh] '>
-
+            <div><Toaster position="bottom-right"
+                reverseOrder={false} /></div>
             <div className=' w-[90%]  flex justify-between items-center h-full' style={{ marginInline: "auto", paddingInline: "1.5rem" }}>
                 <div>
                     <div className=' text-4xl poppins-bold-italic'>Chatify</div>
                 </div>
 
-                {showModal && <Modal showModal={showModal} setShowModal={setShowModal} Component={YesNoModal}></Modal>}
+                {/* {showModal && <Modal showModal={showModal} setShowModal={setShowModal} Component={YesNoModal}></Modal>} */}
 
                 {!isUser && <div className=' flex justify-center items-center gap-2'>
 
