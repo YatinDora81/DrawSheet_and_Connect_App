@@ -34,6 +34,18 @@ export const createRoomController = async (req: Request, res: Response) => {
                 }
             })
 
+            await prismaClient.user.update({
+                where : {
+                    id : req.user.user_id,
+                },
+                data : {
+                    rooms : {
+                        connect : {id : newRoom.id}
+                    }
+                }
+                
+            })
+
         } catch (error: any) {
             if (error.code === "P2002" && error.meta?.target?.includes("roomName")) {
                 res.status(400).json({
@@ -316,6 +328,17 @@ export const create_random_roomController = async (req: Request, res: Response) 
                 members: [req.user.user_id]
             }
         })
+        await prismaClient.user.update({
+            where : {
+                id : req.user.user_id,
+            },
+            data : {
+                rooms : {
+                    connect : {id : newRoomDetails.id}
+                }
+            }
+            
+        })
 
         res.status(200).json({
             success: true,
@@ -441,6 +464,15 @@ export const join_roomController = async (req: Request, res: Response) => {
             return
         }
 
+        const getUserDetail = await prismaClient.user.findFirst({
+            where : {
+                id : req.user.user_id
+            },
+            include : {
+                rooms : true
+            }
+        })
+
         const isUser = isRoom?.members.includes(req.user.user_id);
         if (isUser) {
             res.status(400).json({
@@ -459,11 +491,21 @@ export const join_roomController = async (req: Request, res: Response) => {
                 members: {
                     set: [...isRoom?.members, req.user.user_id]
                 }
-            },
-            select: {
-
             }
         })
+
+        // const updateUser = await prismaClient.user.update({
+        //     where : {
+        //         id : req.user.user_id
+        //     },
+        //     data : {
+        //         rooms : {
+        //             connect : {
+        //                 id : newData.id
+        //             }
+        //         }
+        //     }
+        // })
 
         res.status(200).json({
             success: true,
@@ -473,6 +515,44 @@ export const join_roomController = async (req: Request, res: Response) => {
 
 
     } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            data: error.message || "",
+            message: "Internal Server Error",
+        });
+    }
+}
+
+
+export const get_all_roomsController = async (req : Request , res : Response)=>{
+    try {
+        if (!req.user) {
+            res.status(401).json({
+                success: false,
+                data: "Unauthorized",
+                message: "You must be logged in to send a message.",
+            });
+            return;
+        }
+
+        const allrooms = await prismaClient.user.findFirst({
+            where : {
+                id : req.user.user_id
+            },
+            include : {
+                rooms : true
+            }
+            
+        })
+
+        res.status(200).json({
+            success : true,
+            data : allrooms?.rooms,
+            message : "Successfully Get All Rooms of User"
+        })
+
+        
+    } catch (error : any) {
         res.status(500).json({
             success: false,
             data: error.message || "",

@@ -1,13 +1,18 @@
 "use client"
-import { useState } from "react"
+import {  useState } from "react"
 import "../app/page.module.css"
 import { BiPlus, BiSearch } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
+import {useRoom} from "../hooks/useRoom";
 export function RoomSection() {
 
-    const [rooms, setRooms] = useState([1]);
+   
     const [searchText, setSearchText] = useState("")
+    const {rooms , loadingRooms , setCurrRoom , currRoom} = useRoom()
 
+    console.log("Room",  currRoom);
+    
+    
     return <div style={{ paddingInline: "15px", paddingBlock: "" }} className=" min-h-[90vh] max-h-[90vh]  w-[35%]  bg-zinc-800 flex flex-col items-start justify-start gap-4 overflow-y-auto custom-scrollbar relative">
 
         {
@@ -45,14 +50,33 @@ export function RoomSection() {
             </div>
         </div>
 
-        <div className=" cursor-pointer relative bg-zinc-900 flex  justify-between w-full items-center border min-h-16 rounded-xl" style={{ paddingInline: "15px" }}>
+        {/* Hardcoded Data */}
+        {/* <div className=" cursor-pointer relative bg-zinc-900 flex  justify-between w-full items-center border min-h-16 rounded-xl" style={{ paddingInline: "15px" }}>
             <div className=" text-2xl">Room !</div>
             <div className=" absolute bottom-1 right-3 text-zinc-300">{new Date().getTime()}</div>
             <div className=" flex justify-center items-center gap-1 uppercase text-sm absolute top-2 right-3">
                 <div>new</div>
                 <div className=" border  h-5 flex justify-center items-center text-sm  bg-green-500 text-black w-5  rounded-full" style={{ padding: "2px" }}>1</div>
             </div>
-        </div>
+        </div> */}
+
+        {
+            // d.roomName.replace(" ","___")
+            rooms.length>0 && rooms.map((d: any, i) => <div onClick={()=>{
+                if(currRoom !== d.id ) setCurrRoom(()=>d.id)
+            }} key={i} className=" cursor-pointer relative bg-zinc-900 flex  justify-between w-full items-center border min-h-16 rounded-xl" style={{ paddingInline: "15px" }}>
+                <div className=" text-2xl">{d?.roomName || ""}</div>
+                <div className=" absolute bottom-1 right-3 text-zinc-300">
+                    {new Date(d.createdAt).getDate() + "-" +
+                        (new Date(d.createdAt).getMonth() + 1) + "-" +
+                        new Date(d.createdAt).getFullYear()}
+                </div>
+                <div className=" flex justify-center items-center gap-1 uppercase text-sm absolute top-2 right-3">
+                    <div>new</div>
+                    <div className=" border  h-5 flex justify-center items-center text-sm  bg-green-500 text-black w-5  rounded-full" style={{ padding: "2px" }}>1</div>
+                </div>
+            </div>)
+        }
 
 
 

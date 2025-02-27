@@ -167,3 +167,31 @@ export const signoutController = (req : Request , res : Response)=>{
         });
     }
 }
+
+export const userDetailController = (req : Request ,res : Response)=>{
+    try {
+
+        if(!req.user){
+            res.json(400).json({
+                success : false,
+                data : "User Not Authenicated!!!",
+                message : "User Not Authenicated!!!"
+            })
+            return 
+        }
+
+        res.status(200).json({
+            success : true,
+            data : req.user,
+            message : "Successfully Get User Details"
+        })
+        
+    } catch (error : any) {
+        res.status(500).json({
+            success: false,
+            data: error.message || "",
+            message: "Internal Server Error",
+        });
+    }
+}
+

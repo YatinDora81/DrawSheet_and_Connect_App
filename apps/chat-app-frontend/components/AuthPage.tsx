@@ -7,6 +7,7 @@ import toast from "react-hot-toast"
 import {BeatLoader} from "react-spinners"
 import { useRouter } from 'next/navigation';
 
+
 const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
 
     const router = useRouter()
@@ -42,11 +43,13 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
             const res = await fetch( isSignup ? SignUp_User_URL : SignIn_User_URL , { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(isSignup ? signupData : signinData) })
             const data = await res.json();
             if (data.success) {
-                console.log(data);
+                // console.log(data);
                 toast.success(data.message)
                 setFormData({ name: "", email: "", password: "", confirmPassword: "" })
                 setError("");
+            
                 router.push("/dashboard")
+                
             }
             else {
                 setError( typeof data.data === "string" ? data.data : ( data.message || "SomeThing Went Wrong" ) );

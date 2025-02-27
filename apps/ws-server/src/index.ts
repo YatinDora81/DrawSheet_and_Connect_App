@@ -108,7 +108,7 @@ wss.on("connection", (ws: WebSocket, request) => {
                     data : {
                         message : obj.payload.message,
                         userId : user.user_id,
-                        roomId : obj.payload.message
+                        roomId : obj.payload.roomId
                     }
                 })
                 roomManager.addChat(user, obj.payload.message, obj.payload.roomId)
@@ -125,6 +125,7 @@ wss.on("connection", (ws: WebSocket, request) => {
                     }, message: "New Chat Added"
                 })
             } catch (error) {
+                console.log(error);
                 sendErrorResponse(ws , "Error Occour At Adding Chat!!!" , "Error Occour At Adding Chat!!!");
             }
             
@@ -151,7 +152,7 @@ wss.on("connection", (ws: WebSocket, request) => {
 
     ws.on("error" , ()=>{
         sendErrorResponse(ws , "Something Went Wrong!!!" , "Something Went Wrong!!!" );
-        ws.close();
+        // ws.close();
     })
 
     ws.on("close", () => {
