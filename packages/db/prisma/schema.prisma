@@ -13,19 +13,34 @@ model User{
   email String @unique
   password String
   profilePic String?
-  rooms Room[]
+  rooms UserRoom[]
   chats Chat[]
+  createdRoom Room[]
+
+  @@index([email])
+
 }
 
 model Room{
   id String @id @default(uuid())
-  roomName String @unique
-  createdBy String 
+  roomName String
+  roomPic String?
+  createdById String
   chats Chat[] 
   createdAt DateTime @default(now()) 
-  members String[]
+  members UserRoom[]
 
-  user User @relation(fields: [createdBy] , references: [id])
+  createdBy User @relation( fields: [createdById] , references: [id] , onDelete: Cascade ) 
+}
+
+model UserRoom{
+  userId  String
+  roomId  String
+
+  user User @relation( fields: [userId] , references: [id] , onDelete: Cascade )
+  room Room @relation( fields: [roomId] , references: [id] , onDelete: Cascade )
+
+  @@id( [userId , roomId] )  // composite key
 }
 
 model Chat{

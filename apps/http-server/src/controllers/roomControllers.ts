@@ -26,24 +26,19 @@ export const createRoomController = async (req: Request, res: Response) => {
 
         let newRoom;
         try {
+
+
             newRoom = await prismaClient.room.create({
                 data: {
                     roomName: parsedData.data.roomName,
-                    createdBy: req.user.user_id,
-                    members: [req.user.user_id]
+                    createdById: req.user.user_id
                 }
             })
-
-            await prismaClient.user.update({
-                where : {
-                    id : req.user.user_id,
-                },
-                data : {
-                    rooms : {
-                        connect : {id : newRoom.id}
-                    }
+            await prismaClient.userRoom.create({
+                data: {
+                    userId: req.user.user_id,
+                    roomId: newRoom.id
                 }
-                
             })
 
         } catch (error: any) {
@@ -135,8 +130,8 @@ export const get_chat_roomId_chatMultiplierController = async (req: Request, res
                 chats: {
                     take: needChat,
                     skip: parseInt(chatMultiplier as string) * (needChat),
-                    orderBy : {
-                        id : "desc"
+                    orderBy: {
+                        id: "desc"
                     }
                 }
             }
@@ -238,7 +233,7 @@ export const add_chatController = async (req: Request, res: Response) => {
             return;
         }
 
-        if (!req.user) {
+        if (!req.user || !req.user.user_id) {
             res.status(401).json({
                 success: false,
                 data: "Unauthorized",
@@ -250,6 +245,13 @@ export const add_chatController = async (req: Request, res: Response) => {
         // Ensure the room exists
         const room = await prismaClient.room.findUnique({
             where: { id: roomId },
+            select: {
+                members: {
+                    select: {
+                        userId: true
+                    }
+                }
+            }
         });
 
         if (!room) {
@@ -262,7 +264,7 @@ export const add_chatController = async (req: Request, res: Response) => {
         }
 
         // Ensure the user is a member of the room
-        if (!room.members.includes(req.user.user_id)) {
+        if (!room.members.some(member => member.userId === req.user!.user_id)) {
             res.status(403).json({
                 success: false,
                 data: "User is not a member of this room.",
@@ -324,20 +326,14 @@ export const create_random_roomController = async (req: Request, res: Response) 
         const newRoomDetails = await prismaClient.room.create({
             data: {
                 roomName: newRoom,
-                createdBy: req.user.user_id,
-                members: [req.user.user_id]
+                createdById: req.user.user_id
             }
         })
-        await prismaClient.user.update({
-            where : {
-                id : req.user.user_id,
-            },
-            data : {
-                rooms : {
-                    connect : {id : newRoomDetails.id}
-                }
+        await prismaClient.userRoom.create({
+            data: {
+                userId: req.user.user_id,
+                roomId: newRoomDetails.id
             }
-            
         })
 
         res.status(200).json({
@@ -392,23 +388,28 @@ export const leave_roomController = async (req: Request, res: Response) => {
             return
         }
 
-        const isUser = isRoom?.members.includes(req.user.user_id);
+        const isUser = await prismaClient.userRoom.findFirst({
+            where: {
+                roomId: isRoom.id,
+                userId: req.user.user_id
+            }
+        })
+
         if (!isUser) {
             res.status(400).json({
                 success: false,
-                data: "User Has Not Joined The Room",
-                message: "User Has Not Joined The Room"
+                data: "You are not present in room!!!",
+                message: "You are not present in room!!!"
             })
             return
         }
 
-        const newData = await prismaClient.room.update({
+        await prismaClient.userRoom.delete({
             where: {
-                roomName: parsedData.data.roomName
-            },
-            data: {
-                members: {
-                    set: isRoom?.members.filter((id) => id !== req.user?.user_id)
+                // composite key format
+                userId_roomId: {
+                    roomId: isRoom.id,
+                    userId: req.user.user_id
                 }
             }
         })
@@ -464,48 +465,28 @@ export const join_roomController = async (req: Request, res: Response) => {
             return
         }
 
-        const getUserDetail = await prismaClient.user.findFirst({
+        const isUserExists = await prismaClient.userRoom.findFirst({
             where : {
-                id : req.user.user_id
-            },
-            include : {
-                rooms : true
+                userId : req.user.user_id,
+                roomId : isRoom.id
             }
         })
 
-        const isUser = isRoom?.members.includes(req.user.user_id);
-        if (isUser) {
+        if(isUserExists){
             res.status(400).json({
                 success: false,
-                data: "User Has Already Joined The Room",
-                message: "User Has Already Joined The Room"
+                data: "User Already Exists in Room!!!",
+                message: "User Already Exists in Room!!!"
             })
             return
         }
 
-        const newData = await prismaClient.room.update({
-            where: {
-                roomName: parsedData.data.roomName
-            },
-            data: {
-                members: {
-                    set: [...isRoom?.members, req.user.user_id]
-                }
+        await prismaClient.userRoom.create({
+            data : {
+                userId : req.user.user_id,
+                roomId : isRoom.id
             }
         })
-
-        // const updateUser = await prismaClient.user.update({
-        //     where : {
-        //         id : req.user.user_id
-        //     },
-        //     data : {
-        //         rooms : {
-        //             connect : {
-        //                 id : newData.id
-        //             }
-        //         }
-        //     }
-        // })
 
         res.status(200).json({
             success: true,
@@ -524,7 +505,7 @@ export const join_roomController = async (req: Request, res: Response) => {
 }
 
 
-export const get_all_roomsController = async (req : Request , res : Response)=>{
+export const get_all_roomsController = async (req: Request, res: Response) => {
     try {
         if (!req.user) {
             res.status(401).json({
@@ -536,23 +517,23 @@ export const get_all_roomsController = async (req : Request , res : Response)=>{
         }
 
         const allrooms = await prismaClient.user.findFirst({
-            where : {
-                id : req.user.user_id
+            where: {
+                id: req.user.user_id
             },
-            include : {
-                rooms : true
+            include: {
+                rooms: true
             }
-            
+
         })
 
         res.status(200).json({
-            success : true,
-            data : allrooms?.rooms,
-            message : "Successfully Get All Rooms of User"
+            success: true,
+            data: allrooms?.rooms,
+            message: "Successfully Get All Rooms of User"
         })
 
-        
-    } catch (error : any) {
+
+    } catch (error: any) {
         res.status(500).json({
             success: false,
             data: error.message || "",
