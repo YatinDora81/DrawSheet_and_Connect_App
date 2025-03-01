@@ -34,7 +34,7 @@ export function RoomSection() {
         }
 
 
-        <div className=" w-full flex  flex-col gap-2 items-start sticky top-0 z-8 bg-zinc-800 pt-4 pb-1">
+        {rooms.length>0  && <div className=" w-full flex  flex-col gap-2 items-start sticky top-0 z-8 bg-zinc-800 pt-4 pb-1">
             <div className=" bg-zinc-900 w-full flex justify-start items-center gap-2  text-xl p-2 rounded-full px-4 ">
                 <label htmlFor="sea" className=" text-xl cursor-pointer"><BiSearch></BiSearch></label>
                 <input type="text" value={searchText} onChange={(e) => setSearchText(e.target.value)} placeholder="Search" id="sea" className="p-1 w-full bg-lue-600 text-white outline-none text-lg"></input>
@@ -48,7 +48,7 @@ export function RoomSection() {
                     Join New Room
                 </button>
             </div>
-        </div>
+        </div>}
 
         {/* Hardcoded Data */}
         {/* <div className=" cursor-pointer relative bg-zinc-900 flex  justify-between w-full items-center border min-h-16 rounded-xl" style={{ paddingInline: "15px" }}>
@@ -63,13 +63,13 @@ export function RoomSection() {
         {
             // d.roomName.replace(" ","___")
             rooms.length>0 && rooms.map((d: any, i) => <div onClick={()=>{
-                if(currRoom !== d.id ) setCurrRoom(()=>d.id)
+                if(currRoom !== d["room"].id ) setCurrRoom(()=>d["room"].id)
             }} key={i} className=" cursor-pointer relative bg-zinc-900 flex  justify-between w-full items-center border min-h-16 rounded-xl" style={{ paddingInline: "15px" }}>
-                <div className=" text-2xl">{d?.roomName || ""}</div>
+                <div className=" text-2xl">{d["room"]?.roomName || ""}</div>
                 <div className=" absolute bottom-1 right-3 text-zinc-300">
-                    {new Date(d.createdAt).getDate() + "-" +
-                        (new Date(d.createdAt).getMonth() + 1) + "-" +
-                        new Date(d.createdAt).getFullYear()}
+                    {new Date(d["room"].createdAt).getDate() + "-" +
+                        (new Date(d["room"].createdAt).getMonth() + 1) + "-" +
+                        new Date(d["room"].createdAt).getFullYear()}
                 </div>
                 <div className=" flex justify-center items-center gap-1 uppercase text-sm absolute top-2 right-3">
                     <div>new</div>

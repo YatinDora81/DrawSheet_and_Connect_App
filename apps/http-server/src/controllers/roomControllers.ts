@@ -516,19 +516,20 @@ export const get_all_roomsController = async (req: Request, res: Response) => {
             return;
         }
 
-        const allrooms = await prismaClient.user.findFirst({
-            where: {
-                id: req.user.user_id
+        // const allrooms = 
+        
+        const allrooms = await prismaClient.userRoom.findMany({
+            where : {
+                userId : req.user.user_id
             },
-            include: {
-                rooms: true
+            select : {
+                room : true
             }
-
         })
 
         res.status(200).json({
             success: true,
-            data: allrooms?.rooms,
+            data: allrooms,
             message: "Successfully Get All Rooms of User"
         })
 
