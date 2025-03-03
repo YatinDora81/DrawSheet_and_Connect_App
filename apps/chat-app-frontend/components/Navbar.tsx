@@ -24,7 +24,7 @@ const Navbar = () => {
     //     })()
     // })
 
-    const [showModal, setShowModal] = useState<boolean>(true);
+    
 
 
 
@@ -39,8 +39,7 @@ const Navbar = () => {
                     <div className=' text-4xl poppins-bold-italic'>Chatify</div>
                 </div>
 
-                {/* {showModal && <Modal showModal={showModal} setShowModal={setShowModal} Component={YesNoModal}></Modal>} */}
-
+                
                 {!isUser && <div className=' flex justify-center items-center gap-2'>
 
                     <Link className='  border text-lg' style={{

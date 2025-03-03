@@ -10,6 +10,8 @@ import { useSocket } from '../hooks/useSocket'
 import { useRoom } from '../hooks/useRoom'
 import toast from 'react-hot-toast'
 import jwt from "jsonwebtoken"
+import { GET_ALL_CHATS, GET_CHATS_PAGINATION } from '@repo/config/URL'
+import { PulseLoader } from 'react-spinners'
 
 const ChatSection = () => {
 
@@ -19,20 +21,22 @@ const ChatSection = () => {
     const [message, setMessage] = useState("")
     const [userInfo, setUserInfo] = useState<any>(null)
     const bottomRef = useRef<HTMLDivElement>(null);
-    const [scroll,setScroll] = useState(0);
+    const [scroll, setScroll] = useState(0);
+    const [chatsPagination, setChatPagination] = useState(0);
+    const [loadingChats, setLoadingChats] = useState(false);
 
     const JoinAndSubscribeToRoom = () => {
         if (socket?.OPEN) {
-            socket.send(JSON.stringify({
-                type: "join",
-                payload: {
-                    roomId: currRoom
-                }
-            }))
+            // socket.send(JSON.stringify({
+            //     type: "join",
+            //     payload: {
+            //         roomId: currRoom.id
+            //     }
+            // }))
             socket.send(JSON.stringify({
                 type: "subscribe",
                 payload: {
-                    roomId: currRoom
+                    roomId: currRoom.id
                 }
             }))
         }
@@ -43,10 +47,57 @@ const ChatSection = () => {
             socket.send(JSON.stringify({
                 type: "unsubscribe",
                 payload: {
-                    roomId: currRoom
+                    roomId: currRoom.id
                 }
             }))
         }
+    }
+
+    const loadPreviousChat = async (scroll: boolean) => {
+        try {
+            setLoadingChats(true)
+            // const res = await fetch(GET_CHATS_PAGINATION + `/${currRoom}/${chatsPagination}`, { method: "GET", credentials: "include" })
+            const res = await fetch(GET_ALL_CHATS + `/${currRoom.id}` , {method : "GET" , credentials : "include"})
+            const d = await res.json()
+            if (d.success) {
+                console.log("c", [d.data][0].reverse().map((c: any) => {
+                    return {
+                        message: c.message,
+                        sender: {
+                            name: c.user.name,
+                            user_id: c.user.id,
+                            email: c.user.email,
+                            roomId: c.roomId
+                        }
+                    }
+                }));
+                const prevChat = [d.data][0].reverse().map((c: any) => {
+                    return {
+                        message: c.message,
+                        sender: {
+                            name: c.user.name,
+                            user_id: c.user.id,
+                            email: c.user.email,
+                            roomId: c.roomId
+                        }
+                    }
+                })
+                setChats((prev) => [...prevChat, ...prev])
+                if (scroll) setScroll((prev) => (prev + 1) % 10)
+
+            }
+            else {
+                toast.error(d.message);
+            }
+        } catch (error) {
+            console.log("Error", error);
+            toast.error("Something Went Wrong!!!")
+
+        }
+        finally {
+            setLoadingChats(false)
+        }
+
     }
 
     const addChat = () => {
@@ -59,21 +110,21 @@ const ChatSection = () => {
                 "name": userInfo.name,
                 "user_id": userInfo.user_id,
                 "email": userInfo.email,
-                "roomId": currRoom
+                "roomId": currRoom.id
             }
         }
-        setChats((prev)=>[...prev , myMessage])
-        setScroll((prev)=>(prev+1)%10)
+        setChats((prev) => [...prev, myMessage])
+        setScroll((prev) => (prev + 1) % 10)
         setMessage("")
         socket.send(JSON.stringify({
             type: "chat",
             payload: {
-                roomId: currRoom,
+                roomId: currRoom.id,
                 message: message
             }
         }))
 
-      
+
     }
 
     const incommingMessages = () => {
@@ -100,19 +151,20 @@ const ChatSection = () => {
     }
 
 
-
-    console.log(chats);
-    console.log(userInfo);
-
-
-
     useEffect(() => {
         decodeToken()
+
+        
+
     }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
+        if (currRoom) loadPreviousChat(true)
+    }, [currRoom])
+
+    useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    } , [scroll])
+    }, [scroll])
 
     useEffect(() => {
 
@@ -123,9 +175,13 @@ const ChatSection = () => {
 
         return () => {
             if (socket && currRoom) unSubscribeToRoom()
+            setChats([])
         }
 
     }, [currRoom, socket])
+
+
+
 
     return (
         <div style={{ paddingInline: "15px", paddingBlock: "10px" }} className=" min-h-[90vh] max-h-[90vh]  w-[65%]  bg-zinc-800 flex flex-col items-start justify-start gap-4 overflow-y-auto custom-scrollbar">
@@ -185,7 +241,7 @@ const ChatSection = () => {
                             </svg>
                         </div>
 
-                        <div className=' text-xl font-semibold'>Room Name</div>
+                        <div className=' text-xl font-semibold'>{currRoom.roomName}</div>
 
                     </div>
 
@@ -201,30 +257,20 @@ const ChatSection = () => {
 
                 {/* Chat Section */}
                 {currRoom && <div className=' max-h-[67vh] custom-scrollbar scroll-smooth overflow-y-auto min-h-[67vh] w-full bg-ink-600 px-4 py-4 flex flex-col '>
-
+                    {loadingChats && <PulseLoader color='white' className='  mx-auto ' />}
                     {
-                        chats.map((c, i) => <SingleChat key={i} left={userInfo.user_id !== c.sender.user_id} sender={c.sender.name} message={c.message} />)
+                        chats.map((c, i) => <SingleChat key={i} left={userInfo?.user_id !== c.sender.user_id} sender={c.sender.name} message={c.message} />)
                     }
                     <div ref={bottomRef}></div>
+
+
 
                     {/* <SingleChat left={false} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat>
 
                     <SingleChat left={true} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat>
 
                     <SingleChat left={false} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat>
-                    <SingleChat left={false} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat>
-
-                    <SingleChat left={true} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat>
-                    <SingleChat left={false} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat>
-
-                    <SingleChat left={true} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat>
-                    <SingleChat left={false} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat>
-
-                    <SingleChat left={true} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat>
-
-                    <SingleChat left={false} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat>
-                    <SingleChat left={false} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat>
-                    <SingleChat left={false} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat> */}
+                    <SingleChat left={false} sender='yatin dora' message='vrefhbkj ferhvik'></SingleChat>    */}
 
                 </div>}
 

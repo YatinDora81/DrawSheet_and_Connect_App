@@ -60,7 +60,7 @@ export const createRoomController = async (req: Request, res: Response) => {
         }
 
         res.status(200).json({
-            success: false,
+            success: true,
             data: newRoom,
             message: "Room Created Sucessfully",
         });
@@ -116,27 +116,12 @@ export const get_chat_roomId_chatMultiplierController = async (req: Request, res
     try {
 
         const { roomId, chatMultiplier } = req.params
-        const needChat = 100
+        
         const isRoom = await prismaClient.room.findFirst({
-            where: {
-                id: roomId
-            },
-            select: {
-                id: true,
-                roomName: true,
-                createdBy: true,
-                createdAt: true,
-                members: true,
-                chats: {
-                    take: needChat,
-                    skip: parseInt(chatMultiplier as string) * (needChat),
-                    orderBy: {
-                        id: "desc"
-                    }
-                }
+            where : {
+                id : roomId
             }
         })
-
 
         if (!isRoom) {
 
@@ -149,9 +134,36 @@ export const get_chat_roomId_chatMultiplierController = async (req: Request, res
             return
         }
 
+        const needChat = 100
+        const chats = await prismaClient.chat.findMany({
+            where : {
+                roomId : roomId
+            },
+            select : {
+                id : true,
+                message : true,
+                userId : true,
+                user : {
+                    select : {
+                        id : true,
+                        name : true,
+                        email : true
+                    }
+                },
+                roomId : true,
+                createdAt : true
+            },
+            take : needChat,
+            skip : parseInt(chatMultiplier as string) * (needChat),
+            orderBy : {
+                id : "desc"
+            }
+        })
+
+
         res.status(200).json({
             success: true,
-            data: isRoom,
+            data: chats,
             message: "Successfully Get Chats"
         })
 
@@ -176,15 +188,11 @@ export const get_all_chats_roomIdController = async (req: Request, res: Response
 
         const { roomId } = req.params
 
-        const isRoom = await prismaClient.chat.findFirst({
-            where: {
-                roomId: roomId
-            },
-            orderBy: {
-                id: "asc"
+        const isRoom = await prismaClient.room.findFirst({
+            where : {
+                id : roomId
             }
         })
-
 
         if (!isRoom) {
 
@@ -197,9 +205,34 @@ export const get_all_chats_roomIdController = async (req: Request, res: Response
             return
         }
 
+        
+        const chats = await prismaClient.chat.findMany({
+            where : {
+                roomId : roomId
+            },
+            select : {
+                id : true,
+                message : true,
+                userId : true,
+                user : {
+                    select : {
+                        id : true,
+                        name : true,
+                        email : true
+                    }
+                },
+                roomId : true,
+                createdAt : true
+            },
+            orderBy : {
+                id : "desc"
+            }
+        })
+
+
         res.status(200).json({
             success: true,
-            data: isRoom,
+            data: chats,
             message: "Successfully Get Chats"
         })
 

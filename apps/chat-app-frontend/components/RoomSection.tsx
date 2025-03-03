@@ -4,6 +4,8 @@ import "../app/page.module.css"
 import { BiPlus, BiSearch } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import {useRoom} from "../hooks/useRoom";
+import CreateNewRoomModal from "./CreateNewRoomModal";
+import Modal from "./Modal";
 export function RoomSection() {
 
    
@@ -14,6 +16,8 @@ export function RoomSection() {
     
     
     return <div style={{ paddingInline: "15px", paddingBlock: "" }} className=" min-h-[90vh] max-h-[90vh]  w-[35%]  bg-zinc-800 flex flex-col items-start justify-start gap-4 overflow-y-auto custom-scrollbar relative">
+
+        
 
         {
             rooms.length === 0 && <div className=" w-full ">
@@ -63,8 +67,8 @@ export function RoomSection() {
         {
             // d.roomName.replace(" ","___")
             rooms.length>0 && rooms.map((d: any, i) => <div onClick={()=>{
-                if(currRoom !== d["room"].id ) setCurrRoom(()=>d["room"].id)
-            }} key={i} className=" cursor-pointer relative bg-zinc-900 flex  justify-between w-full items-center border min-h-16 rounded-xl" style={{ paddingInline: "15px" }}>
+                if( !currRoom || d["room"].id!==currRoom.id) setCurrRoom(()=>d["room"])
+            }} key={i} className={` cursor-pointer relative bg-zinc-900 flex  justify-between w-full items-center border min-h-16 rounded-xl ${currRoom===d["room"] ? ' border-green-500 ' : ''} `} style={{ paddingInline: "15px" }}>
                 <div className=" text-2xl">{d["room"]?.roomName || ""}</div>
                 <div className=" absolute bottom-1 right-3 text-zinc-300">
                     {new Date(d["room"].createdAt).getDate() + "-" +

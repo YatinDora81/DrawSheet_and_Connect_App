@@ -12,4 +12,10 @@ export const GET_ROOM_ID_URL = BASE_HTTP_URL + "/api/rooms/get-room-details"
 
 export const GET_ALL_ROOMS_URL = BASE_HTTP_URL + "/api/rooms/get-all-rooms"
 
+export const GET_CHATS_PAGINATION = BASE_HTTP_URL + "/api/rooms/get-chat"
+
+export const GET_ALL_CHATS = BASE_HTTP_URL + "/api/rooms/get-all-chats"
+
+export const CREATE_NEW_ROOM_URL = BASE_HTTP_URL + "/api/rooms/create-room"
+
 export const BASE_WS_URL = `ws://localhost:${WS_PORT}`

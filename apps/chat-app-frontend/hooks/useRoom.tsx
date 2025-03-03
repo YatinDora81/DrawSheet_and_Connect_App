@@ -3,11 +3,12 @@
 import { GET_ALL_ROOMS_URL } from '@repo/config/URL';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
+import { useSocket } from './useSocket';
 
 export interface RoomContextType  {
     rooms : any[],
     setRooms : React.Dispatch<React.SetStateAction<any[]>>,
-    currRoom : null | string
+    currRoom : null | any
     setCurrRoom : React.Dispatch<React.SetStateAction<null | string>>,
     loadingRooms : boolean,
     setLoadingRooms : React.Dispatch<React.SetStateAction<boolean>>,
@@ -19,10 +20,11 @@ const RoomContext = createContext<RoomContextType | null>(null)
 export const RoomProvider = ({children} : {children : ReactNode})=>{
 
     const [rooms,setRooms] = useState<any[]>([]);
-    const [currRoom, setCurrRoom]  = useState<string | null>(null)
+    const [currRoom, setCurrRoom]  = useState<any | null>(null)
     const [loadingRooms,setLoadingRooms] = useState(false)
+    const {socket} = useSocket()
 
-    // console.log(currRoom);
+    // console.log(rooms);
     
 
     const fetchRooms = async ()=>{
@@ -50,6 +52,19 @@ export const RoomProvider = ({children} : {children : ReactNode})=>{
     useEffect(()=>{
         fetchRooms()
     } , [])
+
+    useEffect(()=>{
+        if(socket?.OPEN===1 && rooms.length>0){
+            rooms.forEach((room : any) => {
+                socket.send(JSON.stringify({
+                    type: "join",
+                    payload: {
+                        roomId: room.id
+                    }
+                }))
+            });
+        }
+    } , [rooms])
 
     
 
