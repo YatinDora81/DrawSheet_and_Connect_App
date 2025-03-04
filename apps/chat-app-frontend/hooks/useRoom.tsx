@@ -24,7 +24,7 @@ export const RoomProvider = ({children} : {children : ReactNode})=>{
     const [loadingRooms,setLoadingRooms] = useState(false)
     const {socket} = useSocket()
 
-    // console.log(rooms);
+    console.log("room provider " , rooms);
     
 
     const fetchRooms = async ()=>{

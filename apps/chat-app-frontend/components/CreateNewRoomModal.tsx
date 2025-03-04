@@ -15,7 +15,7 @@ const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: boolean, s
     const { setRooms  , fetchRooms } = useRoom()
 
     const handleSubmit = async () => {
-        console.log("Btn click");
+        
         
         try {
 
@@ -30,13 +30,15 @@ const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: boolean, s
             const res = await fetch(CREATE_NEW_ROOM_URL, { method: "POST", body: JSON.stringify({ "roomName": inputRef.current.value }), credentials: "include", headers: { "Content-Type": "application/json" } });
             const d = await res.json();
 
-            console.log(d);
+            // console.log(d);
             if(d.success){
                 inputRef.current.value = ""
                 setError("");
                 toast.success(d.message)
-                // setShowModal(false)
-                // setRooms((prev)=>[ d.data , ...prev ])
+                // console.log("new room " , d.data);
+                
+                setShowModal(false)
+                setRooms((prev)=>[ { "room" : d.data} , ...prev ])
                 // fetchRooms()
             }
             else{
