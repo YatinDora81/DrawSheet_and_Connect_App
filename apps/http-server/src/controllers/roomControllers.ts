@@ -1,7 +1,9 @@
-import { roomShouldBe } from "@repo/backend-common/backend-common"
+import { joinRoomShouldBe, roomShouldBe } from "@repo/backend-common/backend-common"
 import { prismaClient } from "@repo/db/db"
 import { Request, Response } from "express"
 import generateRoomId from "../utils/generateRoomId.js"
+import { createId } from "@paralleldrive/cuid2"
+
 
 export const createRoomController = async (req: Request, res: Response) => {
     try {
@@ -31,7 +33,8 @@ export const createRoomController = async (req: Request, res: Response) => {
             newRoom = await prismaClient.room.create({
                 data: {
                     roomName: parsedData.data.roomName,
-                    createdById: req.user.user_id
+                    createdById: req.user.user_id,
+                    join_code : createId()
                 }
             })
             await prismaClient.userRoom.create({
@@ -42,19 +45,19 @@ export const createRoomController = async (req: Request, res: Response) => {
             })
 
         } catch (error: any) {
-            if (error.code === "P2002" && error.meta?.target?.includes("roomName")) {
+            if (error.code === "P2002" && error.meta?.target?.includes("join_code")) {
                 res.status(400).json({
                     success: false,
-                    data: "Room name already exists!",
-                    message: "Duplicate Room Name Error",
+                    data: "Room Code already exists!",
+                    message: "Duplicate Room Code Error",
                 });
                 return;
             }
 
             res.status(400).json({
                 success: false,
-                data: "Room name already exists!",
-                message: "Duplicate Room Name Error",
+                data: "Room Code already exists!",
+                message: "Duplicate Room Code Error",
             });
             return;
         }
@@ -341,25 +344,26 @@ export const create_random_roomController = async (req: Request, res: Response) 
             return;
         }
 
-        let newRoom = generateRoomId();
+        let newcode = createId();
 
         while (true) {
             try {
                 const isRoom = await prismaClient.room.findFirst({
                     where: {
-                        roomName: newRoom
+                        join_code: newcode
                     }
                 })
                 if (!isRoom) break;
             } catch (error) {
-                newRoom = generateRoomId();
+                newcode = createId();
             }
         }
 
         const newRoomDetails = await prismaClient.room.create({
             data: {
-                roomName: newRoom,
-                createdById: req.user.user_id
+                roomName: generateRoomId(),
+                createdById: req.user.user_id,
+                join_code : newcode
             }
         })
         await prismaClient.userRoom.create({
@@ -465,7 +469,7 @@ export const leave_roomController = async (req: Request, res: Response) => {
 export const join_roomController = async (req: Request, res: Response) => {
     try {
 
-        const parsedData = roomShouldBe.safeParse(req.body)
+        const parsedData = joinRoomShouldBe.safeParse(req.body)
         if (!parsedData.success) {
             res.status(400).json({
                 success: false,
@@ -485,7 +489,7 @@ export const join_roomController = async (req: Request, res: Response) => {
 
         const isRoom = await prismaClient.room.findFirst({
             where: {
-                roomName: parsedData.data.roomName
+                join_code: parsedData.data.roomJoinCode
             }
         })
 
@@ -523,7 +527,7 @@ export const join_roomController = async (req: Request, res: Response) => {
 
         res.status(200).json({
             success: true,
-            data: "Room Joined Successfully",
+            data: isRoom,
             message: "Room Joined Successfully"
         })
 

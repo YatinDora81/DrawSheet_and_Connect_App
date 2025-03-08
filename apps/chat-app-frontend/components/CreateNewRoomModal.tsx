@@ -6,13 +6,13 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import { PulseLoader } from 'react-spinners';
 import { useRoom } from '../hooks/useRoom';
 
-const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: boolean, setShowModal: (value: boolean) => void }) => {
+const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setShowModal: (value: number) => void }) => {
     // console.log(showModal); 
 
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false)
-    const { setRooms  , fetchRooms } = useRoom()
+    const { setRooms  } = useRoom()
 
     const handleSubmit = async () => {
         
@@ -37,7 +37,7 @@ const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: boolean, s
                 toast.success(d.message)
                 // console.log("new room " , d.data);
                 
-                setShowModal(false)
+                setShowModal(-1)
                 setRooms((prev)=>[ { "room" : d.data} , ...prev ])
                 // fetchRooms()
             }
@@ -61,7 +61,7 @@ const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: boolean, s
 
     return (
         <div onClick={(e) => { e.stopPropagation() }} className=' relative text-white w-[45%] min-h-[35%] border border-zinc-500 bg-zinc-900 rounded-2xl py-4 px-6 flex flex-col items-start justify-evenly'>
-            <IoIosCloseCircleOutline className=' text-red-600 text-3xl absolute right-2 top-2 cursor-pointer' onClick={() => setShowModal(false)} />
+            <IoIosCloseCircleOutline className=' text-red-600 text-3xl absolute right-2 top-2 cursor-pointer' onClick={() => setShowModal(-1)} />
             <h1 className=' text-3xl w-full text-center'> Create New Room</h1>
             <div className=' w-full flex flex-col gap-2'>
                 <input ref={inputRef} onKeyDown={(e) => {
