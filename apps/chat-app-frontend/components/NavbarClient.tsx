@@ -1,46 +1,28 @@
 "use client"
+import React from 'react'
 import Link from 'next/link'
 import Avatar from './Avatar'
-import Modal from './Modal'
-import CreateNewRoomModal from './CreateNewRoomModal'
-import { useState } from 'react'
-import JoinNewRoomModal from './JoinRoomModal'
-import YesNoModal from './YesNoModal'
 import { Toaster } from "react-hot-toast"
+import { useAuth } from '../hooks/useAuth'
 
-const Navbar = () => {
+const NavbarClient = () => {
 
-    // const [isUser , setIsUser] = useState(false);
-
-    // useEffect(()=>{
-    //     (async()=>{
-    //         const res = await fetch(Get_User_Details_URL , {method : "GET" , credentials : "include"});
-    //         const data = await res.json()
-    //         if(data.success){
-    //             setIsUser(true)
-    //         }
-    //         console.log(data);
-
-    //     })()
-    // })
-
+    const {user , userLoading,  setUser , logoutUser , fetchUser} = useAuth()
+    
+    console.log("UUUser" , user);
     
 
-
-
-    const isUser = true
-
-    return (
-        <div className=' text-white w-full border-b border-b-zinc-600 flex items-center justify-between h-[10vh] '>
+  return (
+    <div className=' text-white w-full border-b border-b-zinc-600 flex items-center justify-between h-[10vh] '>
             <div><Toaster position="bottom-right"
                 reverseOrder={false} /></div>
             <div className=' w-[90%]  flex justify-between items-center h-full' style={{ marginInline: "auto", paddingInline: "1.5rem" }}>
                 <div>
-                    <div className=' text-4xl poppins-bold-italic'>Chatify</div>
+                    <div className=' text-4xl poppins-bold-italic'>Connect...</div>
                 </div>
 
                 
-                {!isUser && <div className=' flex justify-center items-center gap-2'>
+                {!user && <div className=' flex justify-center items-center gap-2'>
 
                     <Link className='  border text-lg' style={{
                         paddingInline: "15px",
@@ -69,7 +51,7 @@ const Navbar = () => {
 
                 </div>}
 
-                {isUser && <div className=' flex justify-center items-center gap-2'>
+                {user && <div className=' flex justify-center items-center gap-2'>
 
                     {/* <Link className='  border text-lg' style={{
                         paddingInline: "15px",
@@ -85,13 +67,13 @@ const Navbar = () => {
                     }}
                         href="/signin">LogOut</Link> */}
 
-                    <Avatar img={null} username={"yatin dora"} ></Avatar>
+                    {user &&  <Avatar img={user.profilePic && user.profilePic.trim()!=="" ? user.profilePic : null} username={user.name} ></Avatar>}
 
                 </div>}
             </div>
 
         </div>
-    )
+  )
 }
 
-export default Navbar
+export default NavbarClient

@@ -1,25 +1,88 @@
-// "use client"
-// import { Get_User_Details_URL } from "@repo/config/URL";
-// import axios from "axios";
-// import { createContext, ReactNode, useContext, useEffect, useState } from "react"
+"use client"
 
-// const AuthConext = createContext();
+import { Get_User_Details_URL, SignOut_User_URL } from "@repo/config/URL"
+import { useRouter } from "next/navigation"
+import { createContext, ReactNode, useContext, useEffect, useState } from "react"
+import toast from "react-hot-toast"
 
-// const AuthProvider = ({ children }: { children: ReactNode }) => {
+type AuthConextType = {
+    user : any,
+    setUser : (value : any)=> void,
+    userLoading : boolean,
+    setUserLoading : (val:boolean)=> void,
+    fetchUser : ()=>void,
+    logoutUser : ()=>void,
+    
+}
 
-//     const [user, setUser] = useState(null);
-//     const [loading, setLoading] = useState(null);
+const AuthContext = createContext<AuthConextType | null>(null)
 
-//     useEffect(() => {
+export const AuthProvider = ({children} : {children : ReactNode})=>{
 
-//         const fetchUSer = async () => {
-//             const res = await axios.get(Get_User_Details_URL)
-//             console.log(res);
-//         }
+    const [user ,setUser  ] = useState<any>(null);
+    const [userLoading , setUserLoading] = useState(false);
+    const router = useRouter()
 
-//     }, [])
+    const fetchUser = async ()=>{
+        try {
+            setUserLoading(true)
+            const res = await fetch(Get_User_Details_URL , { method: "GET", credentials: "include" })
+            const d = await res.json()
+            if (d.success) {
+                setUser(d.data);
+            }
+            else {
+                toast.error(d.message);
+            }
+        } catch (error) {
+            console.log("Error", error);
+            toast.error("Something Went Wrong!!!")
 
-//     return <AuthConext.Provider value={{user, loading}}>{children}</AuthConext.Provider>
-// }
+        }
+        finally {
+            setUserLoading(false)
+        }
+    }
 
-// export const useAuth = () => useContext(AuthConext);
+    const logoutUser =async  ()=>{
+        try {
+            setUserLoading(true)
+            const res = await fetch(SignOut_User_URL , { method: "GET", credentials: "include" })
+            const d = await res.json()
+            if (d.success) {
+                setUser(d.data);
+                toast.success(d.message || "User LogOut Succeccfully")
+                router.push("/signin")
+            }
+            else {
+                toast.error(d.message);
+            }
+        } catch (error) {
+            console.log("Error", error);
+            toast.error("Something Went Wrong!!!")
+
+        }
+        finally {
+            setUserLoading(false)
+        }
+    }
+
+    useEffect(()=>{
+        fetchUser()
+    } , [])
+
+    
+
+    return <AuthContext.Provider value={{user,setUser,userLoading,setUserLoading,fetchUser,logoutUser}}>{children}</AuthContext.Provider>
+}
+
+
+export const useAuth = ()=>{
+    const authContext = useContext(AuthContext);
+
+    if(!authContext) throw new Error("Please Wrap Component With AuthProvider");
+
+    return authContext
+}
+
+

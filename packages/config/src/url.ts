@@ -8,6 +8,8 @@ export const SignUp_User_URL = BASE_HTTP_URL + `/api/auth/signup`
 
 export const SignIn_User_URL = BASE_HTTP_URL + `/api/auth/signin`
 
+export const SignOut_User_URL = BASE_HTTP_URL + `/api/auth/signout`
+
 export const GET_ROOM_ID_URL = BASE_HTTP_URL + "/api/rooms/get-room-details"
 
 export const GET_ALL_ROOMS_URL = BASE_HTTP_URL + "/api/rooms/get-all-rooms"

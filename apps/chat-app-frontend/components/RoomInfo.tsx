@@ -2,11 +2,21 @@
 import React, { useState } from 'react'
 import { useRoom } from '../hooks/useRoom'
 import { MdClose } from 'react-icons/md'
-import { IoIosCamera } from 'react-icons/io'
+import { IoIosCamera, IoIosSearch, IoMdCheckmark, IoMdClose } from 'react-icons/io'
+import { BiCross, BiPencil } from 'react-icons/bi'
+import { FaCheck } from 'react-icons/fa'
+import Avatar from './Avatar'
+import { useAuth } from '../hooks/useAuth'
 
 const RoomInfo = () => {
     const { currRoom } = useRoom()
+    const { user, userLoading } = useAuth()
     const [showEditPhoto, setShowEditPhoto] = useState(false);
+    console.log("curr", currRoom);
+
+    console.log("Userrr", user);
+
+
     if (!currRoom) return <></>
     return (
         <div className=' w-[55%] h-full bg-zinc-900 rounded-xl'>
@@ -16,10 +26,10 @@ const RoomInfo = () => {
                 <div className=''>Room Info</div>
             </div>
 
-            <div className=' flex flex-col items-center py-2 pt-4'>
+            <div className=' flex flex-col items-center py-2 pt-4 gap-2'>
 
                 {/* Group Photo */}
-                <div className=' bg- red-500 '>
+                <div className=' bg- red-500 mb-2 '>
                     <div onMouseEnter={() => { setShowEditPhoto(true) }}
                         onMouseLeave={() => { setShowEditPhoto(false) }}
                         className={` ${showEditPhoto && " cursor-pointer"} h-[150px] w-[150px] rounded-full bg-gray-400 relative`}>
@@ -54,6 +64,64 @@ const RoomInfo = () => {
                     </div>
                 </div>
 
+                <div className=' flex  items-center text-2xl justify-center gap-4'>
+                    <div className=' text-3xl'>{currRoom.roomName}</div>
+                    <BiPencil className=' hover:cursor-pointer' />
+                    {/* <div className=' border-b border-b-green-500 w-full flex justify-center items-center'>
+                        <input type='text' className=' bg-inherit w-[90%] text-white outline-none' value={currRoom.roomName}></input>
+                        <IoMdClose className=' text-2xl cursor-pointer hover:text-zinc-300 transition-all duration-100' />
+                        <IoMdCheckmark className=' text-2xl cursor-pointer hover:text-zinc-300 transition-all duration-100' />
+                    </div> */}
+                </div>
+
+                <div className=' text-gray-200'>Room Member - {currRoom.members.length}</div>
+                <div className=' bg-zinc-950 h-1 my-2 w-full'></div>
+
+                {/* Serach Member */}
+                <div className=' w-[90%] my-1'>
+                    <div className=' w-full flex justify-between items-center '>
+                        <div className=' text-zinc-300 cursor-pointer hover:text-zinc-400 transition-all duration-200'>
+                            {currRoom.members.length} Members
+                        </div>
+                        <div className=' text-lg cursor-pointer hover:text-zinc-400 transition-all duration-200'>
+                            <IoIosSearch />
+                        </div>
+                    </div>
+                    {/* <div className=' border-b border-b-green-300 w-full flex justify-center items-center'>
+                        <input type='text' placeholder='Search Members' className=' bg-inherit w-[90%] text-white outline-none'></input>
+                        <IoMdClose className=' text-2xl cursor-pointer hover:text-zinc-300 transition-all duration-100' />
+                    </div> */}
+                </div>
+                <div className=' w-[90%] flex flex-col justify-start items-center gap-3  max-h-[30vh] min-h-[30vh]  custom-scrollbar scroll-smooth overflow-y-auto pr-3'>
+                    {/* <div className=' w-[100%] flex items-center justify-start gap-2 '>
+                        <Avatar height='h-11' width='w-11'  img={null} username={"yatin dora"}></Avatar>
+                        <div className=' flex flex-col'>
+                            <div >Yatin Dora</div>
+                            <div className=' text-sm'>yatin.dora81@gmail.com</div>
+                        </div>
+                    </div> */}
+
+
+
+
+                    {
+                        currRoom.members.map((member: any, i: number) => <div key={member.user.id} className=' w-[100%] flex items-center justify-between  py-1 border-b border-b-zinc-700'>
+                            <div className=' flex gap-2'>
+                                <Avatar height='h-11' width='w-11' img={member.user.profilePic} username={member.user.name}></Avatar>
+                                <div className=' flex flex-col'>
+                                    <div >{member.user.name}</div>
+                                    <div className=' text-sm'>{member.user.email}</div>
+                                </div>
+                            </div>
+                            <div className=' flex  justify-center items-center gap-2'>
+                                {user.user_id === member.user.id && <div className=' text-gray-200 px-2 border p-1 rounded-2xl lowercase'>you</div>}
+                                {currRoom.createdById === member.user.id && <div className=' text-green-500 border p-1 rounded-2xl capitalize'>Admin</div>}
+                            </div>
+
+                        </div>)
+                    }
+
+                </div>
 
             </div>
 

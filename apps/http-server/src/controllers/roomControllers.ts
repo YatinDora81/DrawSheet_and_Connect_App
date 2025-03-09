@@ -34,7 +34,7 @@ export const createRoomController = async (req: Request, res: Response) => {
                 data: {
                     roomName: parsedData.data.roomName,
                     createdById: req.user.user_id,
-                    join_code : createId()
+                    join_code: createId()
                 }
             })
             await prismaClient.userRoom.create({
@@ -119,10 +119,10 @@ export const get_chat_roomId_chatMultiplierController = async (req: Request, res
     try {
 
         const { roomId, chatMultiplier } = req.params
-        
+
         const isRoom = await prismaClient.room.findFirst({
-            where : {
-                id : roomId
+            where: {
+                id: roomId
             }
         })
 
@@ -139,27 +139,27 @@ export const get_chat_roomId_chatMultiplierController = async (req: Request, res
 
         const needChat = 100
         const chats = await prismaClient.chat.findMany({
-            where : {
-                roomId : roomId
+            where: {
+                roomId: roomId
             },
-            select : {
-                id : true,
-                message : true,
-                userId : true,
-                user : {
-                    select : {
-                        id : true,
-                        name : true,
-                        email : true
+            select: {
+                id: true,
+                message: true,
+                userId: true,
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true
                     }
                 },
-                roomId : true,
-                createdAt : true
+                roomId: true,
+                createdAt: true
             },
-            take : needChat,
-            skip : parseInt(chatMultiplier as string) * (needChat),
-            orderBy : {
-                id : "desc"
+            take: needChat,
+            skip: parseInt(chatMultiplier as string) * (needChat),
+            orderBy: {
+                id: "desc"
             }
         })
 
@@ -192,8 +192,8 @@ export const get_all_chats_roomIdController = async (req: Request, res: Response
         const { roomId } = req.params
 
         const isRoom = await prismaClient.room.findFirst({
-            where : {
-                id : roomId
+            where: {
+                id: roomId
             }
         })
 
@@ -208,27 +208,27 @@ export const get_all_chats_roomIdController = async (req: Request, res: Response
             return
         }
 
-        
+
         const chats = await prismaClient.chat.findMany({
-            where : {
-                roomId : roomId
+            where: {
+                roomId: roomId
             },
-            select : {
-                id : true,
-                message : true,
-                userId : true,
-                user : {
-                    select : {
-                        id : true,
-                        name : true,
-                        email : true
+            select: {
+                id: true,
+                message: true,
+                userId: true,
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true
                     }
                 },
-                roomId : true,
-                createdAt : true
+                roomId: true,
+                createdAt: true
             },
-            orderBy : {
-                id : "desc"
+            orderBy: {
+                id: "desc"
             }
         })
 
@@ -363,7 +363,7 @@ export const create_random_roomController = async (req: Request, res: Response) 
             data: {
                 roomName: generateRoomId(),
                 createdById: req.user.user_id,
-                join_code : newcode
+                join_code: newcode
             }
         })
         await prismaClient.userRoom.create({
@@ -503,13 +503,13 @@ export const join_roomController = async (req: Request, res: Response) => {
         }
 
         const isUserExists = await prismaClient.userRoom.findFirst({
-            where : {
-                userId : req.user.user_id,
-                roomId : isRoom.id
+            where: {
+                userId: req.user.user_id,
+                roomId: isRoom.id
             }
         })
 
-        if(isUserExists){
+        if (isUserExists) {
             res.status(400).json({
                 success: false,
                 data: "User Already Exists in Room!!!",
@@ -519,9 +519,9 @@ export const join_roomController = async (req: Request, res: Response) => {
         }
 
         await prismaClient.userRoom.create({
-            data : {
-                userId : req.user.user_id,
-                roomId : isRoom.id
+            data: {
+                userId: req.user.user_id,
+                roomId: isRoom.id
             }
         })
 
@@ -554,15 +554,31 @@ export const get_all_roomsController = async (req: Request, res: Response) => {
         }
 
         // const allrooms = 
-        
+
         const allrooms = await prismaClient.userRoom.findMany({
-            where : {
-                userId : req.user.user_id
+            where: {
+                userId: req.user.user_id
             },
-            select : {
-                room : true
+            select: {
+                room: {
+                    select: {
+                        id: true,
+                        roomName: true,
+                        roomPic: true,
+                        createdById: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        join_code: true,
+                        members : {
+                            select : {
+                                user : true
+                                }
+                            }
+                        }
+                    }
+                }
             }
-        })
+        )
 
         res.status(200).json({
             success: true,
