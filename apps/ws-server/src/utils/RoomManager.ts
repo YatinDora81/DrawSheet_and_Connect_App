@@ -55,7 +55,7 @@ export class RoomManager{
         
         this.roomMap.get(roomId)?.users.forEach((u)=>{
             if(u.socket!==ws && this.roomMap.get(roomId)?.subscribe.has(u)) u.socket.send(JSON.stringify(data));
-            if(sendAll && u.socket!==ws && !this.roomMap.get(roomId)?.subscribe.has(u)) u.socket.send(JSON.stringify({ type: "notification", success: true, data: "New", message: "New Chat Available" })) // add new notification
+            if(sendAll && u.socket!==ws && !this.roomMap.get(roomId)?.subscribe.has(u)) u.socket.send(JSON.stringify({ type: "notification", notificationType : "chat" ,success: true, data: { roomId : roomId } , message: "New Chat Available" })) // add new notification
         })
     }
 
