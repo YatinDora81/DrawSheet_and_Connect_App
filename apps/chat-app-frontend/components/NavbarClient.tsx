@@ -9,7 +9,6 @@ const NavbarClient = () => {
 
     const {user , userLoading,  setUser , logoutUser , fetchUser} = useAuth()
     
-    console.log("UUUser" , user);
     
 
   return (

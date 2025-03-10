@@ -4,60 +4,6 @@ import { createContext, ReactNode, useContext, useEffect, useRef, useState } fro
 import { BASE_WS_URL } from "@repo/config/URL"
 import toast from "react-hot-toast"
 
-// export function useSocket(){
-
-//     const [socket , setSocket] = useState<WebSocket | null>(null)
-//     const [socketLoading , setSocketLoading] = useState<boolean>(false)
-
-//     const getCookie = (cookieName : string)=>{
-//         return document.cookie.split("; ").find((s)=>s.startsWith(cookieName))?.split("=")[1] || ""
-//     }
-
-
-//     const connectWs =async ()=>{
-//         try {
-//             setSocketLoading(true)
-//             const token = getCookie("authToken")
-//             const ws = new WebSocket(BASE_WS_URL + `?token=${token}`)
-//             ws.onopen = ()=>{
-//                 setSocketLoading(false);
-//                 setSocket(ws)
-//                 toast.success("WS Connected Successfully")
-//             }
-//             ws.onmessage = (ev)=>{
-//                 const obj = JSON.parse(ev.data);
-//                 if(obj.type==="error"){
-//                     console.log("WS " , obj);
-//                     toast.error(obj.message)
-//                 }
-//                 else if(obj.type==="notification"){
-//                     toast(obj.message)
-//                 }
-//             }
-//         } catch (error) {
-//             setSocketLoading(false)
-//         }
-//     } 
-
-//     const disconnectWs = ()=>{
-//         if( socket ) {
-//             socket.close()
-//             setSocket(null)
-//             setSocketLoading(false)
-//             console.log("Ws Disconnected!!!");
-//         }
-//     }
-
-//     useEffect(()=>{
-//         connectWs()
-//         return ()=>{
-//             disconnectWs()
-//         }
-//     } , [])
-//     return {socket , socketLoading , connectWs , disconnectWs}
-// }
-
-
 
 interface SocketInterface {
     socket: WebSocket | null
@@ -96,7 +42,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
                     toast.error(obj.message)
                 }
                 else if (obj.type === "notification") {
-                    toast(obj.message)
+                    // toast(obj.message)
                 }
             }
         } catch (error) {

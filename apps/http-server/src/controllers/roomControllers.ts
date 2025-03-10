@@ -27,6 +27,7 @@ export const createRoomController = async (req: Request, res: Response) => {
         }
 
         let newRoom;
+        let newpair;
         try {
 
 
@@ -37,10 +38,28 @@ export const createRoomController = async (req: Request, res: Response) => {
                     join_code: createId()
                 }
             })
-            await prismaClient.userRoom.create({
+            newpair =  await prismaClient.userRoom.create({
                 data: {
                     userId: req.user.user_id,
                     roomId: newRoom.id
+                },
+                select : {
+                    room : {
+                        select: {
+                            id: true,
+                            roomName: true,
+                            roomPic: true,
+                            createdById: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            join_code: true,
+                            members: {
+                                select: {
+                                    user: true
+                                }
+                            }
+                        }
+                    }
                 }
             })
 
@@ -64,7 +83,7 @@ export const createRoomController = async (req: Request, res: Response) => {
 
         res.status(200).json({
             success: true,
-            data: newRoom,
+            data: newpair.room,
             message: "Room Created Sucessfully",
         });
 
@@ -364,18 +383,50 @@ export const create_random_roomController = async (req: Request, res: Response) 
                 roomName: generateRoomId(),
                 createdById: req.user.user_id,
                 join_code: newcode
-            }
+            },
+            select: {
+                id: true,
+                roomName: true,
+                roomPic: true,
+                createdById: true,
+                createdAt: true,
+                updatedAt: true,
+                join_code: true,
+                members : {
+                    select : {
+                        user : true
+                        }
+                    }
+                }
         })
-        await prismaClient.userRoom.create({
+        const newpair = await prismaClient.userRoom.create({
             data: {
                 userId: req.user.user_id,
                 roomId: newRoomDetails.id
+            },
+            select : {
+                room : {
+                    select: {
+                        id: true,
+                        roomName: true,
+                        roomPic: true,
+                        createdById: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        join_code: true,
+                        members: {
+                            select: {
+                                user: true
+                            }
+                        }
+                    }
+                }
             }
         })
 
         res.status(200).json({
             success: true,
-            data: newRoomDetails,
+            data: newpair.room,
             message: "New Room Created Successfully"
         })
 
@@ -490,7 +541,21 @@ export const join_roomController = async (req: Request, res: Response) => {
         const isRoom = await prismaClient.room.findFirst({
             where: {
                 join_code: parsedData.data.roomJoinCode
-            }
+            },
+            select: {
+                id: true,
+                roomName: true,
+                roomPic: true,
+                createdById: true,
+                createdAt: true,
+                updatedAt: true,
+                join_code: true,
+                members : {
+                    select : {
+                        user : true
+                        }
+                    }
+                }
         })
 
         if (!isRoom) {
@@ -569,15 +634,15 @@ export const get_all_roomsController = async (req: Request, res: Response) => {
                         createdAt: true,
                         updatedAt: true,
                         join_code: true,
-                        members : {
-                            select : {
-                                user : true
-                                }
+                        members: {
+                            select: {
+                                user: true
                             }
                         }
                     }
                 }
             }
+        }
         )
 
         res.status(200).json({

@@ -12,9 +12,7 @@ const RoomInfo = () => {
     const { currRoom } = useRoom()
     const { user, userLoading } = useAuth()
     const [showEditPhoto, setShowEditPhoto] = useState(false);
-    console.log("curr", currRoom);
-
-    console.log("Userrr", user);
+    
 
 
     if (!currRoom) return <></>
@@ -74,7 +72,7 @@ const RoomInfo = () => {
                     </div> */}
                 </div>
 
-                <div className=' text-gray-200'>Room Member - {currRoom.members.length}</div>
+                <div className=' text-gray-200'>Room Member - {currRoom.members?.length}</div>
                 <div className=' bg-zinc-950 h-1 my-2 w-full'></div>
 
                 {/* Serach Member */}

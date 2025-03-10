@@ -1,17 +1,45 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import "../app/page.module.css"
 import { BiPlus, BiSearch } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import { useRoom } from "../hooks/useRoom";
 import { ClipLoader } from "react-spinners";
+import { useSocket } from "../hooks/useSocket";
 export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
 
 
     const [searchText, setSearchText] = useState("")
-    const { rooms, loadingRooms, setCurrRoom, currRoom } = useRoom()
+    const { rooms, loadingRooms, setCurrRoom, currRoom, newMessagesMap , setNewMessagesMap } = useRoom()
+    const {socket} = useSocket()
 
-    console.log("Room", rooms);
+
+
+        const newNotification = ()=>{
+    
+            if(socket && socket.OPEN===1){
+                socket.onmessage = (ev)=>{
+                    const obj = JSON.parse(ev.data);
+                    
+                    if (obj.type === "notification" && obj.notificationType && obj.notificationType==="chat" ) {
+                        // @ts-ignore
+                        setNewMessagesMap((prevMap) => {
+                            const newMap = new Map(prevMap); // Clone the previous state
+                            // @ts-ignore
+                            newMap.set(obj.data.roomId, (newMap.get(obj.data.roomId) || 0) + 1); 
+                            return newMap;
+                        });
+                        
+                    }
+                }
+            }
+         
+        }
+
+        useEffect(()=>{
+            if(socket) newNotification()
+        } , [socket?.OPEN])
+
 
 
     return <div style={{ paddingInline: "15px", paddingBlock: "" }} className=" min-h-[90vh] max-h-[90vh] min-w-[28%]  max-w-[35%]  bg-zinc-800 flex flex-col items-start justify-start gap-4 overflow-y-auto custom-scrollbar relative">
@@ -105,10 +133,13 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
                         (new Date(d["room"].createdAt).getMonth() + 1) + "-" +
                         new Date(d["room"].createdAt).getFullYear()}
                 </div> */}
-                <div className=" flex justify-center items-center gap-1 uppercase text-sm a3">
-                    <div>new</div>
-                    <div className=" border  h-5 flex justify-center items-center text-sm  bg-green-500 text-black w-5  rounded-full" style={{ padding: "2px" }}>1</div>
-                </div>
+
+                {
+                    // @ts-ignore
+                    newMessagesMap && d["room"].id && newMessagesMap.has(d["room"].id) && newMessagesMap.get(d["room"].id) > 0 && <div className=" flex justify-center items-center gap-1 uppercase text-sm a3">
+                        <div className=" italic text-green-500">new</div>
+                        <div className=" border  h-5 flex justify-center items-center text-sm  bg-green-500 text-black w-5  rounded-full" style={{ padding: "2px" }}>{newMessagesMap.get(d["room"].id)}</div>
+                    </div>}
             </div>)
         }
 

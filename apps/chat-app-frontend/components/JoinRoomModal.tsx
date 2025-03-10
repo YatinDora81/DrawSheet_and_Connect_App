@@ -10,7 +10,7 @@ const JoinNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setS
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false)
-    const { setRooms  } = useRoom()
+    const { setRooms , newMessagesMap , setNewMessagesMap  } = useRoom()
 
     const handleSubmit = async () => {
         
@@ -36,6 +36,13 @@ const JoinNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setS
                 
                 setShowModal(-1)
                 setRooms((prev)=>[ { "room" : d.data} , ...prev ])
+                // @ts-ignore
+                setNewMessagesMap((prev)=>{
+                    const map = new Map<string,number>(prev)
+                    map.set(d.data.id,0);
+                    return map
+                })
+
                 // fetchRooms()
             }
             else{

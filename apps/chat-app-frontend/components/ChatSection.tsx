@@ -61,17 +61,6 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
             const res = await fetch(GET_ALL_CHATS + `/${currRoom.id}`, { method: "GET", credentials: "include" })
             const d = await res.json()
             if (d.success) {
-                console.log("c", [d.data][0].reverse().map((c: any) => {
-                    return {
-                        message: c.message,
-                        sender: {
-                            name: c.user.name,
-                            user_id: c.user.id,
-                            email: c.user.email,
-                            roomId: c.roomId
-                        }
-                    }
-                }));
                 const prevChat = [d.data][0].reverse().map((c: any) => {
                     return {
                         message: c.message,
@@ -155,8 +144,6 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
     useEffect(() => {
         decodeToken()
 
-
-
     }, [])
 
     useEffect(() => {
@@ -180,12 +167,6 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
         }
 
     }, [currRoom, socket])
-
-
-    console.log(currRoom);
-
-
-
 
 
     return (
@@ -283,7 +264,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
 
 
                     {/* Input Section */}
-                    {currRoom && <div className=' h-16 bg-blue 700 w-full flex justify-evenly items-center'>
+                    {currRoom && <div className=' h-16 bg-blue 700 w-full flex justify-evenly items-center px-1'>
                         <input value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { addChat() } }} type='text' className=' bg-zinc-800 w-[90%] p-3 rounded-2xl' placeholder='Enter Message Here!!!!'></input>
                         <button onClick={addChat} className=' text-2xl border-green-800 rounded-xl bg-green-700  p-[11px]'><IoSend className=' text-white' /></button>
                     </div>}

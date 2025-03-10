@@ -5,29 +5,33 @@ import React, { createContext, ReactNode, useContext, useEffect, useState } from
 import toast from 'react-hot-toast';
 import { useSocket } from './useSocket';
 
-export interface RoomContextType  {
-    rooms : any[],
-    setRooms : React.Dispatch<React.SetStateAction<any[]>>,
-    currRoom : null | any
-    setCurrRoom : React.Dispatch<React.SetStateAction<null | string>>,
-    loadingRooms : boolean,
-    setLoadingRooms : React.Dispatch<React.SetStateAction<boolean>>,
-    fetchRooms : ()=> void
+export interface RoomContextType {
+    rooms: any[],
+    setRooms: React.Dispatch<React.SetStateAction<any[]>>,
+    currRoom: null | any
+    setCurrRoom: React.Dispatch<React.SetStateAction<null | string>>,
+    loadingRooms: boolean,
+    setLoadingRooms: React.Dispatch<React.SetStateAction<boolean>>,
+    fetchRooms: () => void,
+    newMessagesMap: Map<string, number>,
+    setNewMessagesMap: (val: Map<string, number>) => void
 }
 
 const RoomContext = createContext<RoomContextType | null>(null)
 
-export const RoomProvider = ({children} : {children : ReactNode})=>{
+export const RoomProvider = ({ children }: { children: ReactNode }) => {
 
-    const [rooms,setRooms] = useState<any[]>([]);
-    const [currRoom, setCurrRoom]  = useState<any | null>(null)
-    const [loadingRooms,setLoadingRooms] = useState(false)
-    const {socket} = useSocket()
+    const [rooms, setRooms] = useState<any[]>([]);
+    const [currRoom, setCurrRoom] = useState<any | null>(null)
+    const [loadingRooms, setLoadingRooms] = useState(false)
+    const [newMessagesMap, setNewMessagesMap] = useState<Map<string, number>>(new Map<string, number>());
+    const { socket } = useSocket()
 
-    console.log("room provider " , rooms);
-    
+    console.log("map", newMessagesMap);
 
-    const fetchRooms = async ()=>{
+
+
+    const fetchRooms = async () => {
         try {
             setLoadingRooms(true);
             const res = await fetch(GET_ALL_ROOMS_URL, { method: "GET", credentials: "include" })
@@ -44,37 +48,59 @@ export const RoomProvider = ({children} : {children : ReactNode})=>{
         } catch (error) {
             console.log("error", error);
         }
-        finally{
+        finally {
             setLoadingRooms(false);
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchRooms()
-    } , [])
+        setNewMessagesMap(new Map<string, number>())
+    }, [])
 
-    useEffect(()=>{
-        if(socket?.OPEN===1 && rooms.length>0){
-            rooms.forEach((room : any) => {
+
+
+    useEffect(() => {
+        if (socket?.OPEN === 1 && rooms.length > 0) {
+            rooms.forEach((room: any) => {
+                
+                setNewMessagesMap((prev)=>{
+                    const map = new Map<string, number>(prev);
+                    if (!map.has(room.room.id)) map.set(room.room.id, 0);
+                    return map
+                })
                 socket.send(JSON.stringify({
                     type: "join",
                     payload: {
-                        roomId: room.id
+                        roomId: room.room.id
                     }
                 }))
             });
         }
-    } , [rooms])
+    }, [rooms])
 
-    
+    useEffect(() => {
+        // if(currRoom===null || currRoom.id===null) return;
+        // @ts-ignore
+        if (currRoom && newMessagesMap.get(currRoom.id) > 0) {
 
-    return <RoomContext.Provider value={{rooms , setRooms , currRoom,setCurrRoom , loadingRooms ,setLoadingRooms, fetchRooms}}>{children}</RoomContext.Provider>
+            setNewMessagesMap((prev) => {
+                const map = new Map<string, number>(prev);
+                map.set(currRoom.id, 0);
+                return map
+            });
+        }
+    }, [currRoom])
+
+
+
+    return <RoomContext.Provider value={{ rooms, setRooms, currRoom, setCurrRoom, loadingRooms, setLoadingRooms, fetchRooms, setNewMessagesMap, newMessagesMap }}>{children}</RoomContext.Provider>
 }
 
 
-export const useRoom = ()=>{
+export const useRoom = () => {
     const context = useContext(RoomContext)
-    if(!context){
+    if (!context) {
         console.log("Room Context must be used with provider");
         throw new Error("useRoom must be used within a RoomProvider");
     }
