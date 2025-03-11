@@ -1,18 +1,40 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useRoom } from '../hooks/useRoom'
 import { MdClose } from 'react-icons/md'
 import { IoIosCamera, IoIosSearch, IoMdCheckmark, IoMdClose } from 'react-icons/io'
-import { BiCross, BiPencil } from 'react-icons/bi'
+import { BiCopy, BiCross, BiPencil } from 'react-icons/bi'
 import { FaCheck } from 'react-icons/fa'
 import Avatar from './Avatar'
 import { useAuth } from '../hooks/useAuth'
+import { IoCopy } from 'react-icons/io5'
+import toast from 'react-hot-toast'
 
 const RoomInfo = () => {
     const { currRoom } = useRoom()
     const { user, userLoading } = useAuth()
     const [showEditPhoto, setShowEditPhoto] = useState(false);
-    
+    const [showRoomNameInput, setShowRoomNameInput] = useState<boolean>(false);
+    const [roomNameInpValue, setRoomNameInpValue] = useState<string>(currRoom ? currRoom.roomName : "");
+    const roomNameInputRef = useRef<HTMLInputElement | null>(null)
+
+    const copyRoomIdHandler = () => {
+        if (!currRoom.join_code) {
+            toast.error("No Room Code!!!")
+            return
+        }
+        navigator.clipboard.writeText(currRoom.join_code);
+        toast.success("Room Code Copied Successfully")
+    }
+
+    useEffect(() => {
+        if (currRoom) setRoomNameInpValue(currRoom.roomName)
+        setShowRoomNameInput(false)
+    }, [currRoom])
+
+    useEffect(() => {
+        if (showRoomNameInput === true) if (roomNameInputRef.current) { roomNameInputRef.current.focus() }
+    }, [showRoomNameInput])
 
 
     if (!currRoom) return <></>
@@ -24,7 +46,7 @@ const RoomInfo = () => {
                 <div className=''>Room Info</div>
             </div>
 
-            <div className=' flex flex-col items-center py-2 pt-4 gap-2'>
+            <div className=' flex flex-col items-center py-2 pt-4 gap-2 custom-scrollbar scroll-smooth overflow-y-auto max-h-[85%] '>
 
                 {/* Group Photo */}
                 <div className=' bg- red-500 mb-2 '>
@@ -62,17 +84,35 @@ const RoomInfo = () => {
                     </div>
                 </div>
 
-                <div className=' flex  items-center text-2xl justify-center gap-4'>
-                    <div className=' text-3xl'>{currRoom.roomName}</div>
-                    <BiPencil className=' hover:cursor-pointer' />
-                    {/* <div className=' border-b border-b-green-500 w-full flex justify-center items-center'>
-                        <input type='text' className=' bg-inherit w-[90%] text-white outline-none' value={currRoom.roomName}></input>
-                        <IoMdClose className=' text-2xl cursor-pointer hover:text-zinc-300 transition-all duration-100' />
-                        <IoMdCheckmark className=' text-2xl cursor-pointer hover:text-zinc-300 transition-all duration-100' />
-                    </div> */}
+                <div className=' flex  items-center text-2xl justify-center gap-4 w-full' >
+                    {!showRoomNameInput ? <>
+                        <div className=' text-3xl'>{currRoom.roomName}</div>
+                        <BiPencil onClick={() => { setShowRoomNameInput(true); }} className=' hover:cursor-pointer' /></>
+                        :
+                        <div className={` relative w-full flex justify-center items-center`}>
+                            <input ref={roomNameInputRef} value={roomNameInpValue} onChange={(e) => setRoomNameInpValue(e.target.value)} type='text' className={`border-b focus:border-b-green-500  w-[90%]  bg-inherit text-white outline-none p-2 pr-[50px]`} ></input>
+                            <div className=' absolute flex justify-center items-center right-5'>
+                                <IoMdClose onClick={() => {
+                                    setShowRoomNameInput(false)
+                                    setRoomNameInpValue(currRoom.roomName)
+                                }} className=' text-2xl text-red-500 cursor-pointer hover:text-red-300 transition-all duration-100' />
+                                <IoMdCheckmark className=' text-2xl text-green-500 cursor-pointer hover:text-green-300 transition-all duration-100' />
+                            </div>
+                        </div>}
                 </div>
 
                 <div className=' text-gray-200'>Room Member - {currRoom.members?.length}</div>
+
+                <div className=' bg-zinc-950 h-1 my-2 w-full'></div>
+
+                <div className=' flex flex-co gap-3 items-center justify-between w-[90%] mx-auto'>
+                    <div className=' text-xl'>Room Code</div>
+                    <div className=' flex justify-center items-center gap-2 text-sm italic'>
+                        <div onClick={copyRoomIdHandler} className=' cursor-pointer hover:underline hover:text-zinc-200' >{currRoom.join_code}</div>
+                        <div onClick={copyRoomIdHandler} className=' text-lg'><BiCopy className=' hover:text-zinc-400 transition-all duration-200 cursor-pointer' /></div>
+                    </div>
+                </div>
+
                 <div className=' bg-zinc-950 h-1 my-2 w-full'></div>
 
                 {/* Serach Member */}
@@ -90,7 +130,7 @@ const RoomInfo = () => {
                         <IoMdClose className=' text-2xl cursor-pointer hover:text-zinc-300 transition-all duration-100' />
                     </div> */}
                 </div>
-                <div className=' w-[90%] flex flex-col justify-start items-center gap-3  max-h-[30vh] min-h-[30vh]  custom-scrollbar scroll-smooth overflow-y-auto pr-3'>
+                <div className=' w-[90%] flex flex-col justify-start items-center gap-3  min-h-[10vh]  pr-3'>
                     {/* <div className=' w-[100%] flex items-center justify-start gap-2 '>
                         <Avatar height='h-11' width='w-11'  img={null} username={"yatin dora"}></Avatar>
                         <div className=' flex flex-col'>
@@ -118,6 +158,7 @@ const RoomInfo = () => {
 
                         </div>)
                     }
+
 
                 </div>
 
