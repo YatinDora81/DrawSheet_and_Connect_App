@@ -25,6 +25,11 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
     const [scroll, setScroll] = useState(0);
     const [chatsPagination, setChatPagination] = useState(0);
     const [loadingChats, setLoadingChats] = useState(false);
+    const [updatedRoomDetails, setUpdatedRoomDetails] = useState<{ roomPic: null | string, roomName: null | string, join_code: null | string }>({
+            roomPic: null,
+            roomName: null,
+            join_code: null
+        })
 
     const JoinAndSubscribeToRoom = () => {
         if (socket?.OPEN) {
@@ -93,7 +98,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
     const addChat = () => {
         if (!socket || socket.OPEN !== 1) { toast.error("Socket is Not Connected!!! Please Try Again Later"); return }
         if (!currRoom) { toast.error("Please Select Any Room To Send Chat"); return }
-        if (message.trim().length === 0) { toast.error("Please Enter Any Message!!!"); return }
+        if (message.trim()?.length === 0) { toast.error("Please Enter Any Message!!!"); return }
         const myMessage = {
             message,
             sender: {
@@ -226,7 +231,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
                                         className="x1d6ck0k"
                                     />
                                 </svg> :
-                                    <img className=' w-full h-full rounded-full object-cover object-center' src={currRoom.roomPic} alt='Room Pic' loading='lazy' />}
+                                    <img className=' w-full h-full rounded-full object-cover object-center' src={updatedRoomDetails.roomPic && updatedRoomDetails.roomPic.trim() !== "" ? updatedRoomDetails.roomPic : currRoom.roomPic} alt='Room Pic' loading='lazy' />}
                             </div>
 
                             <div className=' text-xl font-semibold'>{currRoom.roomName}</div>
@@ -272,7 +277,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
 
                 </div>
 
-                <RoomInfo />
+                <RoomInfo updatedRoomDetails={updatedRoomDetails} setUpdatedRoomDetails={setUpdatedRoomDetails} />
             </div>
     )
 }

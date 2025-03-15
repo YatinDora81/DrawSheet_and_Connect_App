@@ -1,4 +1,5 @@
 "use client"
+
 import React, { useEffect, useRef, useState } from 'react'
 import { useRoom } from '../hooks/useRoom'
 import { MdClose } from 'react-icons/md'
@@ -9,14 +10,22 @@ import Avatar from './Avatar'
 import { useAuth } from '../hooks/useAuth'
 import { IoCopy } from 'react-icons/io5'
 import toast from 'react-hot-toast'
+import { ClipLoader } from 'react-spinners'
+import { CLOUD_NAME, UPLOAD_PRESET } from '../utils/cloudinary'
+import { UPDATE_ROOM_DETAILS } from '@repo/config/URL'
 
-const RoomInfo = () => {
-    const { currRoom } = useRoom()
+const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDetails: { roomPic: null | string, roomName: null | string, join_code: null | string }, setUpdatedRoomDetails: any } ) => {
+    const { currRoom, setCurrRoom, setRooms } = useRoom()
     const { user, userLoading } = useAuth()
     const [showEditPhoto, setShowEditPhoto] = useState(false);
     const [showRoomNameInput, setShowRoomNameInput] = useState<boolean>(false);
     const [roomNameInpValue, setRoomNameInpValue] = useState<string>(currRoom ? currRoom.roomName : "");
     const roomNameInputRef = useRef<HTMLInputElement | null>(null)
+    const [file, setFile] = useState<File | null>();
+    const [fileLoading, setFileLoading] = useState(false)
+
+    // console.log(currRoom);
+
 
     const copyRoomIdHandler = () => {
         if (!currRoom.join_code) {
@@ -36,6 +45,88 @@ const RoomInfo = () => {
         if (showRoomNameInput === true) if (roomNameInputRef.current) { roomNameInputRef.current.focus() }
     }, [showRoomNameInput])
 
+    const uploadImage = async () => {
+        if (!file) {
+            toast.error("Please select File!!!")
+            return
+        }
+
+        setFileLoading(true);
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", UPLOAD_PRESET);
+
+
+        try {
+            const response = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+                {
+                    method: "POST",
+                    body: formData,
+                }
+            );
+
+            if (!response.ok) {
+                toast.error("Upload Failed!!!")
+                return
+            }
+
+            const data = await response.json();
+
+            const obj = { "roomName": "", "join_code": false, "roomId": currRoom.id, "roomPic": data.secure_url };
+
+            console.log("obj", obj);
+
+
+            const res = await fetch(UPDATE_ROOM_DETAILS, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...obj }) })
+
+            const d = await res.json();
+
+            if (d.success) {
+                setRooms((prev: any) => {
+                    // console.log("prev" , prev.map((ele : any)=>{
+                    //     if(ele.room.id === currRoom.id){
+                    //         const e = ele.room
+                    //         return { room : { ...e,roomPic : data.secure_url } }
+                    //     }
+                    //     else return ele
+                    // }));
+                    const newRoomData = prev.map((ele: any) => {
+                        if (ele.room.id === currRoom.id) {
+                            const e = ele.room
+                            return { room: { ...e, roomPic: data.secure_url } }
+                        }
+                        else return ele
+                    })
+                    return newRoomData
+
+
+                })
+                // setCurrRoom((prev : any)=>{return { ...prev , "roomPic" : data.secure_url}})
+                setUpdatedRoomDetails(() => { return { roomPic: data.secure_url , roomName: null, join_code: null } })
+            }
+            else {
+                toast.error(d.message || "Something Went Wrong!!!");
+            }
+
+
+
+        } catch (error) {
+            console.error("Upload error:", error);
+            toast.error("Upload Failed!!!");
+        } finally {
+            setFileLoading(false)
+        }
+    };
+
+
+
+    useEffect(() => {
+        if (file) {
+            uploadImage()
+        }
+    }, [file])
+
 
     if (!currRoom) return <></>
     return (
@@ -49,14 +140,19 @@ const RoomInfo = () => {
             <div className=' flex flex-col items-center py-2 pt-4 gap-2 custom-scrollbar scroll-smooth overflow-y-auto max-h-[85%] '>
 
                 {/* Group Photo */}
-                <div className=' bg- red-500 mb-2 '>
+                <div className=' bg- red-500 mb-2  relative'>
+                    {fileLoading && <div className='absolute h-full w-full  rounded-full bg-black/30 backdrop-blur-[1px] backdrop-brightness-75 flex flex-col justify-center items-center z-10 '> <ClipLoader color='white' /> </div>}
                     <div onMouseEnter={() => { setShowEditPhoto(true) }}
                         onMouseLeave={() => { setShowEditPhoto(false) }}
                         className={` ${showEditPhoto && " cursor-pointer"} h-[150px] w-[150px] rounded-full bg-gray-400 relative`}>
-                        {showEditPhoto && <div onClick={() => console.log("Click photo")} className={` ${currRoom.roomPic ? " text-white" : "text-white"} absolute h-full w-full  rounded-full  bg-black/30 backdrop-blur-[1px] backdrop-brightness-75 flex flex-col justify-center items-center`}>
+                        {showEditPhoto && <label htmlFor='groupphotoid' className={` ${currRoom.roomPic ? " text-white" : "text-white"} absolute h-full w-full  rounded-full cursor-pointer bg-black/30 backdrop-blur-[1px] backdrop-brightness-75 flex flex-col justify-center items-center`}>
+                            <input id='groupphotoid' accept="image/*" className=' hidden' type="file" onChange={(e) => {
+                                const f = e.target.files?.[0];
+                                if (f) setFile(f);
+                            }}></input>
                             <div className=' text-3xl'><IoIosCamera /></div>
                             <div className=' text-sm'>{currRoom.roomPic ? "Change" : "+ Add"} Room Pic</div>
-                        </div>}
+                        </label>}
                         {!currRoom.roomPic ? <svg
                             viewBox="0 0 212 212"
                             height="150"
@@ -80,7 +176,7 @@ const RoomInfo = () => {
                             />
                         </svg> :
                             <img
-                                className=' w-full h-full rounded-full  object-cover object-center' src={currRoom.roomPic} alt='Room Pic' loading='lazy' />}
+                                className=' w-full h-full rounded-full  object-cover object-center' src={updatedRoomDetails.roomPic && updatedRoomDetails.roomPic.trim() !== "" ? updatedRoomDetails.roomPic : currRoom.roomPic} alt='Room Pic' loading='lazy' />}
                     </div>
                 </div>
 
@@ -119,7 +215,7 @@ const RoomInfo = () => {
                 <div className=' w-[90%] my-1'>
                     <div className=' w-full flex justify-between items-center '>
                         <div className=' text-zinc-300 cursor-pointer hover:text-zinc-400 transition-all duration-200'>
-                            {currRoom.members.length} Members
+                            {currRoom.members?.length} Members
                         </div>
                         <div className=' text-lg cursor-pointer hover:text-zinc-400 transition-all duration-200'>
                             <IoIosSearch />

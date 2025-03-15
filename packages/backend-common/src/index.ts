@@ -19,6 +19,12 @@ export const joinRoomShouldBe = z.object({
     roomJoinCode : z.string().min(1)
 })
 
+export const updateRoomDetailsShouldBe = z.object({
+    roomId : z.string(),
+    roomName : z.string(),
+    join_code : z.boolean(),
+    roomPic : z.string()
+})
 export type authTokenType = { user_id: string, email: string, name: string }
 
 export const JWT_SECRET = process.env.JWT_SECRET ||"_+"

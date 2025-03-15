@@ -1,4 +1,4 @@
-import { joinRoomShouldBe, roomShouldBe } from "@repo/backend-common/backend-common"
+import { joinRoomShouldBe, roomShouldBe, updateRoomDetailsShouldBe } from "@repo/backend-common/backend-common"
 import { prismaClient } from "@repo/db/db"
 import { Request, Response } from "express"
 import generateRoomId from "../utils/generateRoomId.js"
@@ -38,13 +38,13 @@ export const createRoomController = async (req: Request, res: Response) => {
                     join_code: createId()
                 }
             })
-            newpair =  await prismaClient.userRoom.create({
+            newpair = await prismaClient.userRoom.create({
                 data: {
                     userId: req.user.user_id,
                     roomId: newRoom.id
                 },
-                select : {
-                    room : {
+                select: {
+                    room: {
                         select: {
                             id: true,
                             roomName: true,
@@ -392,20 +392,20 @@ export const create_random_roomController = async (req: Request, res: Response) 
                 createdAt: true,
                 updatedAt: true,
                 join_code: true,
-                members : {
-                    select : {
-                        user : true
-                        }
+                members: {
+                    select: {
+                        user: true
                     }
                 }
+            }
         })
         const newpair = await prismaClient.userRoom.create({
             data: {
                 userId: req.user.user_id,
                 roomId: newRoomDetails.id
             },
-            select : {
-                room : {
+            select: {
+                room: {
                     select: {
                         id: true,
                         roomName: true,
@@ -550,12 +550,12 @@ export const join_roomController = async (req: Request, res: Response) => {
                 createdAt: true,
                 updatedAt: true,
                 join_code: true,
-                members : {
-                    select : {
-                        user : true
-                        }
+                members: {
+                    select: {
+                        user: true
                     }
                 }
+            }
         })
 
         if (!isRoom) {
@@ -651,6 +651,82 @@ export const get_all_roomsController = async (req: Request, res: Response) => {
             message: "Successfully Get All Rooms of User"
         })
 
+
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            data: error.message || "",
+            message: "Internal Server Error",
+        });
+    }
+}
+
+
+export const update_details_controller = async (req: Request, res: Response) => {
+    try {
+        const parsedData = updateRoomDetailsShouldBe.safeParse(req.body)
+
+        if (!parsedData.success) {
+            res.status(400).json({
+                success: false,
+                data: parsedData?.error?.issues[0]?.message || "",
+                message: "Invalid Format!!!"
+            })
+            console.log(parsedData.error);
+            
+            return
+        }
+        if (!req.user) {
+            res.status(400).json({
+                success: false,
+                data: "UnAuthorized",
+                message: "UnAuthorized"
+            })
+            return
+        }
+        if (parsedData.data.roomId.trim() === "") {
+            res.status(400).json({
+                success: false,
+                data: "Room Id is not present!!!",
+                message: "Room Id is not present!!!"
+            })
+            return
+        }
+
+        let obj = {};
+        if (parsedData.data.roomName !== "") obj = { ...obj, "roomName": parsedData.data.roomName }
+        if (parsedData.data.join_code) obj = { ...obj, "join_code": createId() }
+        if (parsedData.data.roomPic) obj = { ...obj, "roomPic": parsedData.data.roomPic };
+
+        const updatedRoom = await prismaClient.room.update({
+            where: {
+                id: parsedData.data.roomId
+            },
+            data: {
+                ...obj,
+                updatedAt : new Date()
+            },
+            select: {
+                id: true,
+                roomName: true,
+                roomPic: true,
+                createdById: true,
+                createdAt: true,
+                updatedAt: true,
+                join_code: true,
+                members: {
+                    select: {
+                        user: true
+                    }
+                }
+            }
+        })
+
+        res.status(200).json({
+            success: true,
+            data: updatedRoom,
+            message : "Details Updated Successfully"
+        })
 
     } catch (error: any) {
         res.status(500).json({

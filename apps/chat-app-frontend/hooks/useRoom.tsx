@@ -27,7 +27,7 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
     const [newMessagesMap, setNewMessagesMap] = useState<Map<string, number>>(new Map<string, number>());
     const { socket } = useSocket()
 
-    console.log("map", newMessagesMap);
+    console.log("rooommsm", rooms);
 
 
 
@@ -61,7 +61,7 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
 
 
     useEffect(() => {
-        if (socket?.OPEN === 1 && rooms.length > 0) {
+        if (socket?.OPEN === 1 && rooms?.length > 0) {
             rooms.forEach((room: any) => {
                 
                 setNewMessagesMap((prev)=>{

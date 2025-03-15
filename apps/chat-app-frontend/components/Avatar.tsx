@@ -58,7 +58,7 @@ const Avatar = ({ img, username  , height , width } : { img: string | null, user
 
             {/* submenu */}
             { subMenu &&  <div className=' absolute left-[-6rem] top-14 z-10 overflow-x-auto min-w-[15vw] bg-zinc-800 rounded-2xl flex justify-center items-center flex-col p-1 border border-zinc-700'>
-                {menuItems.map((item, i) => <div key={i} onClick={item.clickHandler} className={` ${menuItems.length-1!==i &&' border-b'} w-full flex items-center justify-start p-3 gap-2 cursor-pointer hover:opacity-60`}>
+                {menuItems.map((item, i) => <div key={i} onClick={item.clickHandler} className={` ${menuItems?.length-1!==i &&' border-b'} w-full flex items-center justify-start p-3 gap-2 cursor-pointer hover:opacity-60`}>
                     <div>{item.icon}</div>
                     <div>{item.itemName}</div>
                 </div>
