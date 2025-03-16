@@ -153,7 +153,7 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDe
                             <div className=' text-3xl'><IoIosCamera /></div>
                             <div className=' text-sm'>{currRoom.roomPic ? "Change" : "+ Add"} Room Pic</div>
                         </label>}
-                        {!currRoom.roomPic ? <svg
+                        {!currRoom.roomPic && !updatedRoomDetails.roomPic ? <svg
                             viewBox="0 0 212 212"
                             height="150"
                             width="150"
