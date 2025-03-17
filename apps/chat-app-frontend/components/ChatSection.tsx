@@ -239,7 +239,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
                                 <img className=' w-full h-full rounded-full object-cover object-center' src={updatedRoomDetails.roomPic && updatedRoomDetails.roomPic.trim() !== "" ? updatedRoomDetails.roomPic : currRoom.roomPic} alt='Room Pic' loading='lazy' />}
                         </div>
 
-                        <div className=' text-xl font-semibold'>{currRoom.roomName}</div>
+                        <div className=' text-xl font-semibold'>{updatedRoomDetails.roomName ? updatedRoomDetails.roomName : currRoom.roomName}</div>
 
                     </div>
 

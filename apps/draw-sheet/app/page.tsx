@@ -20,6 +20,8 @@ const ThemeImage = (props: Props) => {
 
 export default function Home() {
   return (
-    <div className=" text-9xl text-red-900">Chat app</div>
+    <div className="">
+
+    </div>
   );
 }

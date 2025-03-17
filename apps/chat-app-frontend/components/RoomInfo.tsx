@@ -10,16 +10,17 @@ import Avatar from './Avatar'
 import { useAuth } from '../hooks/useAuth'
 import { IoCopy } from 'react-icons/io5'
 import toast from 'react-hot-toast'
-import { ClipLoader } from 'react-spinners'
+import { BeatLoader, ClipLoader } from 'react-spinners'
 import { CLOUD_NAME, UPLOAD_PRESET } from '../utils/cloudinary'
 import { UPDATE_ROOM_DETAILS } from '@repo/config/URL'
 
-const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDetails: { roomPic: null | string, roomName: null | string, join_code: null | string }, setUpdatedRoomDetails: any } ) => {
+const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDetails: { roomPic: null | string, roomName: null | string, join_code: null | string }, setUpdatedRoomDetails: any }) => {
     const { currRoom, setCurrRoom, setRooms } = useRoom()
     const { user, userLoading } = useAuth()
     const [showEditPhoto, setShowEditPhoto] = useState(false);
     const [showRoomNameInput, setShowRoomNameInput] = useState<boolean>(false);
-    const [roomNameInpValue, setRoomNameInpValue] = useState<string>(currRoom ? currRoom.roomName : "");
+    const [roomNameInpValue, setRoomNameInpValue] = useState<string>(updatedRoomDetails.roomName ? updatedRoomDetails.roomName : (currRoom ? currRoom.roomName : ""));
+    const [nameInpLoading, setNameInpLoading] = useState(false)
     const roomNameInputRef = useRef<HTMLInputElement | null>(null)
     const [file, setFile] = useState<File | null>();
     const [fileLoading, setFileLoading] = useState(false)
@@ -40,6 +41,7 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDe
         if (currRoom) setRoomNameInpValue(currRoom.roomName)
         setShowRoomNameInput(false)
     }, [currRoom])
+
 
     useEffect(() => {
         if (showRoomNameInput === true) if (roomNameInputRef.current) { roomNameInputRef.current.focus() }
@@ -84,13 +86,6 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDe
 
             if (d.success) {
                 setRooms((prev: any) => {
-                    // console.log("prev" , prev.map((ele : any)=>{
-                    //     if(ele.room.id === currRoom.id){
-                    //         const e = ele.room
-                    //         return { room : { ...e,roomPic : data.secure_url } }
-                    //     }
-                    //     else return ele
-                    // }));
                     const newRoomData = prev.map((ele: any) => {
                         if (ele.room.id === currRoom.id) {
                             const e = ele.room
@@ -99,11 +94,9 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDe
                         else return ele
                     })
                     return newRoomData
-
-
                 })
                 // setCurrRoom((prev : any)=>{return { ...prev , "roomPic" : data.secure_url}})
-                setUpdatedRoomDetails(() => { return { roomPic: data.secure_url , roomName: null, join_code: null } })
+                setUpdatedRoomDetails((prev: any) => { return { ...prev, roomPic: data.secure_url } })
             }
             else {
                 toast.error(d.message || "Something Went Wrong!!!");
@@ -118,6 +111,53 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDe
             setFileLoading(false)
         }
     };
+
+    const changeRoomNameHandler = async () => {
+        setNameInpLoading(true)
+        try {
+            if ( (updatedRoomDetails.roomName && updatedRoomDetails.roomName===roomNameInpValue) || ( !updatedRoomDetails.roomName && currRoom.roomName === roomNameInpValue)) {
+                setShowRoomNameInput(false)
+                return
+            }
+            const obj = {
+                "roomName": roomNameInpValue,
+                "join_code": false,
+                "roomId": currRoom.id,
+                "roomPic": ""
+            }
+            const res = await fetch(UPDATE_ROOM_DETAILS, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(obj) })
+            const data = await res.json()
+            if (data.success) {
+                // update all 3 place
+                setRooms((prev: any) => {
+                    const newRoomData = prev.map((ele: any) => {
+                        if (ele.room.id === currRoom.id) {
+                            const e = ele.room
+                            return { room: { ...e, roomName: roomNameInpValue } }
+                        }
+                        else return ele
+                    })
+                    return newRoomData
+                })
+                // setCurrRoom((prev : any)=>{return { ...prev , "roomPic" : data.secure_url}})
+                setUpdatedRoomDetails((prev: any) => { return { ...prev, roomName: roomNameInpValue } })
+                setShowRoomNameInput(false);
+            }
+            else {
+                toast.error(data.message || "Something Went Wrong!!!")
+                roomNameInputRef.current?.focus()
+            }
+        } catch (error: any) {
+            console.log("Error", error);
+            toast.error(error.message || "Something Went Wrong!!!")
+        }
+        finally {
+            setNameInpLoading(false)
+        }
+        setTimeout(() => {
+            setNameInpLoading(false);
+        }, 1000)
+    }
 
 
 
@@ -182,17 +222,28 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDe
 
                 <div className=' flex  items-center text-2xl justify-center gap-4 w-full' >
                     {!showRoomNameInput ? <>
-                        <div className=' text-3xl'>{currRoom.roomName}</div>
+                        <div className=' text-3xl'>{updatedRoomDetails.roomName ? updatedRoomDetails.roomName : currRoom.roomName}</div>
                         <BiPencil onClick={() => { setShowRoomNameInput(true); }} className=' hover:cursor-pointer' /></>
                         :
                         <div className={` relative w-full flex justify-center items-center`}>
-                            <input ref={roomNameInputRef} value={roomNameInpValue} onChange={(e) => setRoomNameInpValue(e.target.value)} type='text' className={`border-b focus:border-b-green-500  w-[90%]  bg-inherit text-white outline-none p-2 pr-[50px]`} ></input>
+                            <input
+                                onKeyDown={(e) => { if (e.key === "Enter") changeRoomNameHandler() }}
+                                ref={roomNameInputRef}
+                                value={roomNameInpValue}
+                                onChange={(e) => setRoomNameInpValue(e.target.value)}
+                                type='text'
+                                placeholder='Room Name'
+                                disabled={nameInpLoading}
+                                className={`border-b focus:border-b-green-500  w-[90%]  bg-inherit text-white outline-none p-2 pr-[50px]`} >
+                            </input>
                             <div className=' absolute flex justify-center items-center right-5'>
-                                <IoMdClose onClick={() => {
-                                    setShowRoomNameInput(false)
-                                    setRoomNameInpValue(currRoom.roomName)
-                                }} className=' text-2xl text-red-500 cursor-pointer hover:text-red-300 transition-all duration-100' />
-                                <IoMdCheckmark className=' text-2xl text-green-500 cursor-pointer hover:text-green-300 transition-all duration-100' />
+                                {nameInpLoading ? <BeatLoader color='green' size={11} /> : <>
+                                    <IoMdClose onClick={() => {
+                                        setShowRoomNameInput(false)
+                                        setRoomNameInpValue(updatedRoomDetails.roomName ? updatedRoomDetails.roomName : currRoom.roomName)
+                                    }} className=' text-2xl text-red-500 cursor-pointer hover:text-red-300 transition-all duration-100' />
+                                    <IoMdCheckmark onClick={changeRoomNameHandler} className=' text-2xl text-green-500 cursor-pointer hover:text-green-300 transition-all duration-100' />
+                                </>}
                             </div>
                         </div>}
                 </div>
