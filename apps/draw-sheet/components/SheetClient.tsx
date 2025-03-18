@@ -1,56 +1,83 @@
 "use client"
+
 import React, { useEffect, useRef, useState } from 'react'
+import { Game } from '../utils/Game'
 
 const SheetClient = () => {
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
-    const [shapes ,setShapes] = useState([])
- 
+    const [game , setGame] = useState<Game | null>();
+
+    console.log(game);
     
 
-    useEffect(() => {
-        const canvas = canvasRef.current
-        if (canvas) {
-            const ctx = canvas.getContext("2d")
-            if (!ctx) return
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            ctx.fillStyle = "rgba(0,0,0)"
+    useEffect(()=>{
+        if(canvasRef.current){
+            const g = new Game(canvasRef.current);
+            setGame(g)
             
-            
-            ctx.fillRect(0, 0, canvas.width, canvas.height)
-            let startX = 0;
-            let startY = 0;
-            
-
-            const mouseDownHandler = (e: MouseEvent) => {
-                startX = e.clientX
-                startY = e.clientY
-                console.log(startX , startY);
+            return ()=>{
+                console.log("Hello");
                 
             }
-
-            const mouseUpHandler = (e : MouseEvent)=>{
-                console.log("end" , e.clientX );
-                
-                ctx.clearRect(0,0,canvas.width,canvas.height)
-                ctx.beginPath()
-                ctx.strokeStyle = "rgba(255,255,255)"
-                ctx.rect(startX , startY ,100 , 200)
-                ctx.stroke()
-                
-                ctx.fillRect(0,0,canvas.width , canvas.height)
-            }
-
-            canvas.addEventListener("mousedown", mouseDownHandler)
-            canvas.addEventListener("mouseup",mouseUpHandler)
-
-
-
         }
-    }, [])
+    } , [canvasRef])
+
+
+
+    // useEffect(() => {
+    //     const canvas = canvasRef.current
+    //     if (!canvas) return
+    //     const ctx = canvas.getContext("2d")
+    //     if (!ctx) return
+
+    //     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
+    //     ctx.fillStyle = "rgba(0,0,0)"
+    //     ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+    //     let startX = 0
+    //     let startY = 0
+    //     let isClicked = false
+
+    //     const mouseDownHandler = (e: MouseEvent) => {
+    //         startX = e.clientX
+    //         startY = e.clientY
+    //         isClicked = true
+    //     }
+
+    //     const mouseUpHandler = (e: MouseEvent) => {
+    //         ctx.clearRect(0, 0, 1500, 700)
+    //         ctx.fillStyle = "rgba(0,0,0)"
+    //         ctx.fillRect(0, 0, 1500, 700);
+
+    //         ctx.strokeStyle = "rgba(255,255,255)"
+    //         ctx.lineWidth = 10
+    //         ctx.strokeRect(startX, startY, e.clientX - startX, e.clientY - startY)
+
+    //         // isClicked = false
+
+    //         // ctx.rect( startX , startY , e.clientX - startX , e.clientY - startY )
+    //         // ctx.stroke()
+    //         // ctx.fillRect(0,0,window.innerWidth , window.innerHeight);
+
+    //     }
+
+    //     canvas.addEventListener("mousedown", mouseDownHandler)
+    //     canvas.addEventListener("mouseup", mouseUpHandler)
+    //     // canvas.addEventListener("mousemove", (e) => {
+    //     //     if (isClicked) {
+    //     //         ctx.clearRect(0, 0, 1500, 700)
+    //     //         ctx.fillStyle = "rgba(0,0,0)"
+    //     //         ctx.fillRect(0, 0, 1500, 700);
+
+    //     //         ctx.strokeStyle = "rgba(255,255,255)"
+    //     //         ctx.strokeRect(startX, startY, e.clientX - startX, e.clientY - startY)
+    //     //     }
+    //     // })
+
+    // }, [canvasRef])
 
     return (
-        <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight} style={{ height: "100vh", overflow: "hidden" }}>
+        <canvas ref={canvasRef} width={1500} height={700} style={{ overflow: "hidden" }}>
 
         </canvas>
     )
