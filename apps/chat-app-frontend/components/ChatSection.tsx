@@ -30,6 +30,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
         roomName: null,
         join_code: null
     })
+    const [showRoomInfoPage, setShowRoomInfoPage] = useState(false)
 
     const JoinAndSubscribeToRoom = () => {
         if (socket?.OPEN) {
@@ -174,6 +175,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
                 roomName: null,
                 join_code: null
             })
+            setShowRoomInfoPage(false)
         }
 
     }, [currRoom, socket])
@@ -211,9 +213,9 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
                 {/* Chat Section NavBar */}
                 {currRoom !== null && <div className='  border-b-2 border-zinc-600 flex items-center justify-between h-20 w-full ' style={{ paddingInline: "18px" }}>
 
-                    <div className=' flex items-center h-full gap-1'>
+                    <div className=' flex items-center h-full gap-1 '>
                         {/* Group Icon */}
-                        <div className=' h-[40px] w-[40px] rounded-full bg-gray-400'>
+                        <div onClick={()=>setShowRoomInfoPage(true)} className=' cursor-pointer h-[40px] w-[40px] rounded-full bg-gray-400'>
                             {!currRoom.roomPic && !updatedRoomDetails.roomPic ? <svg
                                 viewBox="0 0 212 212"
                                 height="40"
@@ -239,14 +241,14 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
                                 <img className=' w-full h-full rounded-full object-cover object-center' src={updatedRoomDetails.roomPic && updatedRoomDetails.roomPic.trim() !== "" ? updatedRoomDetails.roomPic : currRoom.roomPic} alt='Room Pic' loading='lazy' />}
                         </div>
 
-                        <div className=' text-xl font-semibold'>{updatedRoomDetails.roomName ? updatedRoomDetails.roomName : currRoom.roomName}</div>
+                        <div onClick={()=>setShowRoomInfoPage(true)} className=' cursor-pointer text-xl font-semibold'>{updatedRoomDetails.roomName ? updatedRoomDetails.roomName : currRoom.roomName}</div>
 
                     </div>
 
 
                     <div className=' h-full flex items-center justify-center gap-2'>
                         <div className=' flex justify-center items-center'><GoDotFill className=' text-green-500' />9 Online</div>
-                        <ChatMenuItem />
+                        <ChatMenuItem setShowRoomInfoPage={setShowRoomInfoPage} />
 
                         {/* <IoCloseCircleOutline className=' text-4xl text-red-500 transition-all duration-200 hover:text-red-700' /> */}
                     </div>
@@ -275,14 +277,14 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
 
                 {/* Input Section */}
                 {currRoom && <div className=' h-16 bg-blue 700 w-full flex justify-evenly items-center px-1'>
-                    <input value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { addChat() } }} type='text' className=' bg-zinc-800 w-[90%] p-3 rounded-2xl' placeholder='Enter Message Here!!!!'></input>
+                    <input value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { addChat() } }} type='text' className=' bg-zinc-800 w-[92%] p-3 rounded-2xl' placeholder='Enter Message Here!!!!'></input>
                     <button onClick={addChat} className=' text-2xl border-green-800 rounded-xl bg-green-700  p-[11px]'><IoSend className=' text-white' /></button>
                 </div>}
 
 
             </div>
 
-            <RoomInfo updatedRoomDetails={updatedRoomDetails} setUpdatedRoomDetails={setUpdatedRoomDetails} />
+            {showRoomInfoPage && <RoomInfo setShowRoomInfoPage={setShowRoomInfoPage} updatedRoomDetails={updatedRoomDetails} setUpdatedRoomDetails={setUpdatedRoomDetails} />}
         </div>
     )
 }

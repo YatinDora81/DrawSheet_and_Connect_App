@@ -10,35 +10,39 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
 
 
     const [searchText, setSearchText] = useState("")
-    const { rooms, loadingRooms, setCurrRoom, currRoom, newMessagesMap , setNewMessagesMap } = useRoom()
-    const {socket} = useSocket()
+    const { rooms, loadingRooms, setCurrRoom, currRoom, newMessagesMap, setNewMessagesMap } = useRoom()
+    const { socket } = useSocket()
 
+    const [searchRooms, setSearchRooms] = useState(rooms || [])
 
+    useEffect(()=>{
+        if(rooms) setSearchRooms(rooms);
+    } , [rooms])
 
-        const newNotification = ()=>{
-    
-            if(socket && socket.OPEN===1){
-                socket.onmessage = (ev)=>{
-                    const obj = JSON.parse(ev.data);
-                    
-                    if (obj.type === "notification" && obj.notificationType && obj.notificationType==="chat" ) {
+    const newNotification = () => {
+
+        if (socket && socket.OPEN === 1) {
+            socket.onmessage = (ev) => {
+                const obj = JSON.parse(ev.data);
+
+                if (obj.type === "notification" && obj.notificationType && obj.notificationType === "chat") {
+                    // @ts-ignore
+                    setNewMessagesMap((prevMap) => {
+                        const newMap = new Map(prevMap); // Clone the previous state
                         // @ts-ignore
-                        setNewMessagesMap((prevMap) => {
-                            const newMap = new Map(prevMap); // Clone the previous state
-                            // @ts-ignore
-                            newMap.set(obj.data.roomId, (newMap.get(obj.data.roomId) || 0) + 1); 
-                            return newMap;
-                        });
-                        
-                    }
+                        newMap.set(obj.data.roomId, (newMap.get(obj.data.roomId) || 0) + 1);
+                        return newMap;
+                    });
+
                 }
             }
-         
         }
 
-        useEffect(()=>{
-            if(socket) newNotification()
-        } , [socket?.OPEN])
+    }
+
+    useEffect(() => {
+        if (socket) newNotification()
+    }, [socket?.OPEN])
 
 
 
@@ -65,11 +69,15 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
         }
 
 
-        <div className=" w-full flex  flex-col gap-2 items-start sticky top-0 z-8 bg-zinc-800 pt-4 pb-1">
+        {!loadingRooms && <div className=" w-full flex  flex-col gap-2 items-start sticky top-0 z-8 bg-zinc-800 pt-4 pb-1">
             <div className=" bg-zinc-900 w-full flex justify-start items-center gap-2  text-xl p-2 rounded-full px-4 ">
                 <label htmlFor="sea" className=" text-xl cursor-pointer"><BiSearch></BiSearch></label>
-                <input type="text" value={searchText} onChange={(e) => setSearchText(e.target.value)} placeholder="Search" id="sea" className="p-1 w-full bg-lue-600 text-white outline-none text-lg"></input>
-                {searchText?.length > 0 && <IoClose onClick={() => setSearchText("")} className=" transition-all duration-100 hover:text-red-500 cursor-pointer border rounded-full p-[2px] text-2xl" />}
+                <input type="text" value={searchText} onChange={(e) => {setSearchText(e.target.value); setSearchRooms(()=>{
+                    const r = rooms.filter( (d)=>d["room"]?.roomName?.toLowerCase().includes(e.target.value.toLowerCase()) )
+                    console.log("r" , r);
+                    return r
+                }) }} placeholder="Search" id="sea" className="p-1 w-full bg-lue-600 text-white outline-none text-lg"></input>
+                {searchText?.length > 0 && <IoClose onClick={() => {setSearchText("");setSearchRooms(rooms)}} className=" transition-all duration-100 hover:text-red-500 cursor-pointer border rounded-full p-[2px] text-2xl" />}
             </div>
             <div className=" flex justify-center items-center gap-2 my-1">
                 <button onClick={() => setModal(0)} className=" px-5 py-2 bg-green-600 text-black font-semibold rounded-lg hover:bg-green-700 cursor-pointer transition-all flex items-center justify-center">
@@ -79,7 +87,7 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
                     Join New Room
                 </button>
             </div>
-        </div>
+        </div>}
 
         {loadingRooms && <div className=" w-full h-full flex justify-center items-center"><ClipLoader color="white" size={50} /></div>}
 
@@ -97,7 +105,7 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
 
         {
             // d.roomName.replace(" ","___")
-            rooms?.length > 0 && rooms.map((d: any, i) => <div onClick={() => {
+            searchRooms?.length > 0 && searchRooms.map((d: any, i) => <div onClick={() => {
                 if (!currRoom || d["room"].id !== currRoom.id) setCurrRoom(() => d["room"])
             }} key={i} className={` cursor-pointer relative bg-zinc-900 flex  justify-between w-full items-center border min-h-16 rounded-xl ${currRoom === d["room"] ? ' border-green-500 ' : ''} `} style={{ paddingInline: "10px" }}>
                 <div className=" flex justify-center items-center gap-2">
@@ -141,6 +149,13 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
                         <div className=" border  h-5 flex justify-center items-center text-sm  bg-green-500 text-black w-5  rounded-full" style={{ padding: "2px" }}>{newMessagesMap.get(d["room"].id)}</div>
                     </div>}
             </div>)
+        }
+
+        {
+            searchRooms.length===0 && searchText.trim()!=="" && <div className="w-full flex flex-col justify-center items-center mt-4 text-center p-4 bg-zinc-900 text-gray-400 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold">No Room Found</h2>
+            <p className="text-sm mt-1">Try searching with a different name or create a new room.</p>
+        </div>
         }
 
 

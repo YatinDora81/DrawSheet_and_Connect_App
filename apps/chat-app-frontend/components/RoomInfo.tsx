@@ -4,17 +4,16 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useRoom } from '../hooks/useRoom'
 import { MdClose } from 'react-icons/md'
 import { IoIosCamera, IoIosSearch, IoMdCheckmark, IoMdClose } from 'react-icons/io'
-import { BiCopy, BiCross, BiPencil } from 'react-icons/bi'
-import { FaCheck } from 'react-icons/fa'
+import { BiCopy, BiPencil } from 'react-icons/bi'
 import Avatar from './Avatar'
 import { useAuth } from '../hooks/useAuth'
-import { IoCopy } from 'react-icons/io5'
 import toast from 'react-hot-toast'
 import { BeatLoader, ClipLoader } from 'react-spinners'
 import { CLOUD_NAME, UPLOAD_PRESET } from '../utils/cloudinary'
 import { UPDATE_ROOM_DETAILS } from '@repo/config/URL'
 
-const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDetails: { roomPic: null | string, roomName: null | string, join_code: null | string }, setUpdatedRoomDetails: any }) => {
+const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails , setShowRoomInfoPage }: {setShowRoomInfoPage : any, updatedRoomDetails: { roomPic: null | string, roomName: null | string, join_code: null | string }, setUpdatedRoomDetails: any }) => {
+
     const { currRoom, setCurrRoom, setRooms } = useRoom()
     const { user, userLoading } = useAuth()
     const [showEditPhoto, setShowEditPhoto] = useState(false);
@@ -24,9 +23,13 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDe
     const roomNameInputRef = useRef<HTMLInputElement | null>(null)
     const [file, setFile] = useState<File | null>();
     const [fileLoading, setFileLoading] = useState(false)
-
-    // console.log(currRoom);
-
+    const [searchMembers, setSearchMembers] = useState<any[]>([])
+    const [searchMemberText, setSearchMemberText] = useState("")
+    const [showSearchMemberInput, setShowSearchMemberInput] = useState(false)
+    const memberInputRef = useRef<HTMLInputElement | null>(null)
+    useEffect(()=>{
+        if(showSearchMemberInput && memberInputRef.current) memberInputRef.current.focus()
+    } , [showSearchMemberInput])
 
     const copyRoomIdHandler = () => {
         if (!currRoom.join_code) {
@@ -38,10 +41,12 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDe
     }
 
     useEffect(() => {
-        if (currRoom) setRoomNameInpValue(currRoom.roomName)
+        if (currRoom) {
+            setRoomNameInpValue(currRoom.roomName)
+            setSearchMembers(currRoom.members)
+        }
         setShowRoomNameInput(false)
     }, [currRoom])
-
 
     useEffect(() => {
         if (showRoomNameInput === true) if (roomNameInputRef.current) { roomNameInputRef.current.focus() }
@@ -115,7 +120,7 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDe
     const changeRoomNameHandler = async () => {
         setNameInpLoading(true)
         try {
-            if ( (updatedRoomDetails.roomName && updatedRoomDetails.roomName===roomNameInpValue) || ( !updatedRoomDetails.roomName && currRoom.roomName === roomNameInpValue)) {
+            if ((updatedRoomDetails.roomName && updatedRoomDetails.roomName === roomNameInpValue) || (!updatedRoomDetails.roomName && currRoom.roomName === roomNameInpValue)) {
                 setShowRoomNameInput(false)
                 return
             }
@@ -159,21 +164,19 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDe
         }, 1000)
     }
 
-
-
     useEffect(() => {
         if (file) {
             uploadImage()
         }
     }, [file])
 
-
     if (!currRoom) return <></>
+
     return (
         <div className=' w-[55%] h-full bg-zinc-900 rounded-xl'>
 
             <div className=' flex items-center justify-start py-3 text-2xl gap-3 px-4 h-20 border-b border-b-gray-700'>
-                <MdClose className=' text-2xl hover:text-gray-400 transition-all duration-100' />
+                <MdClose onClick={()=>setShowRoomInfoPage(false)} className=' cursor-pointer text-red-400 text-2xl hover:text-red-300 transition-all duration-100' />
                 <div className=''>Room Info</div>
             </div>
 
@@ -264,18 +267,24 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDe
 
                 {/* Serach Member */}
                 <div className=' w-[90%] my-1'>
-                    <div className=' w-full flex justify-between items-center '>
-                        <div className=' text-zinc-300 cursor-pointer hover:text-zinc-400 transition-all duration-200'>
+                    {!showSearchMemberInput ? <div className=' w-full flex justify-between items-center '>
+                        <div onClick={()=>{setShowSearchMemberInput(true);}} className=' text-zinc-300 cursor-pointer hover:text-zinc-400 transition-all duration-200'>
                             {currRoom.members?.length} Members
                         </div>
-                        <div className=' text-lg cursor-pointer hover:text-zinc-400 transition-all duration-200'>
+                        <div onClick={()=>{setShowSearchMemberInput(true);}} className=' text-lg cursor-pointer hover:text-zinc-400 transition-all duration-200'>
                             <IoIosSearch />
                         </div>
-                    </div>
-                    {/* <div className=' border-b border-b-green-300 w-full flex justify-center items-center'>
-                        <input type='text' placeholder='Search Members' className=' bg-inherit w-[90%] text-white outline-none'></input>
-                        <IoMdClose className=' text-2xl cursor-pointer hover:text-zinc-300 transition-all duration-100' />
-                    </div> */}
+                    </div> :
+                        <div className=' border-b border-b-green-300 w-full flex justify-center items-center'>
+                            <input ref={memberInputRef} type='text' value={searchMemberText} onChange={(e) => {
+                                setSearchMemberText(e.target.value)
+                                setSearchMembers(() => {
+                                    const mem = currRoom.members.filter((m: any) => m.user.name?.includes(e.target.value) || m.user?.email.includes(e.target.value))
+                                    return mem
+                                })
+                            }} placeholder='Search Members' className=' bg-inherit w-[90%] text-white outline-none'></input>
+                            <IoMdClose onClick={() => { setSearchMemberText(""); setSearchMembers(currRoom.members); setShowSearchMemberInput(false) }} className=' text-2xl cursor-pointer hover:text-zinc-300 transition-all duration-100' />
+                        </div>}
                 </div>
                 <div className=' w-[90%] flex flex-col justify-start items-center gap-3  min-h-[10vh]  pr-3'>
                     {/* <div className=' w-[100%] flex items-center justify-start gap-2 '>
@@ -290,20 +299,23 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails }: { updatedRoomDe
 
 
                     {
-                        currRoom.members.map((member: any, i: number) => <div key={member.user.id} className=' w-[100%] flex items-center justify-between  py-1 border-b border-b-zinc-700'>
-                            <div className=' flex gap-2'>
-                                <Avatar height='h-11' width='w-11' img={member.user.profilePic} username={member.user.name}></Avatar>
-                                <div className=' flex flex-col'>
-                                    <div >{member.user.name}</div>
-                                    <div className=' text-sm'>{member.user.email}</div>
+                        searchMembers.length > 0 ?
+                            searchMembers.map((member: any, i: number) => <div key={member.user.id} className=' w-[100%] flex items-center justify-between  py-1 border-b border-b-zinc-700'>
+                                <div className=' flex gap-2'>
+                                    <Avatar height='h-11' width='w-11' img={member.user.profilePic} username={member.user.name}></Avatar>
+                                    <div className=' flex flex-col'>
+                                        <div >{member.user.name}</div>
+                                        <div className=' text-sm'>{member.user.email}</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className=' flex  justify-center items-center gap-2'>
-                                {user.user_id === member.user.id && <div className=' text-gray-200 px-2 border p-1 rounded-2xl lowercase'>you</div>}
-                                {currRoom.createdById === member.user.id && <div className=' text-green-500 border p-1 rounded-2xl capitalize'>Admin</div>}
-                            </div>
+                                <div className=' flex  justify-center items-center gap-2'>
+                                    {user.user_id === member.user.id && <div className=' text-gray-200 px-2 border p-1 rounded-2xl lowercase'>you</div>}
+                                    {currRoom.createdById === member.user.id && <div className=' text-green-500 border p-1 rounded-2xl capitalize'>Admin</div>}
+                                </div>
 
-                        </div>)
+                            </div>)
+
+                            : <div className=' w-[100%] text-center flex items-center justify-center  py-1 border-b border-b-zinc-700'> No Member Found!!! </div>
                     }
 
 

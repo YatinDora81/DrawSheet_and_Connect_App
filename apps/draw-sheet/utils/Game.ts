@@ -43,7 +43,7 @@ export class Game {
         this.startX = 0
         this.startY = 0
         this.existingShapes = [] // get from backend
-        this.selectedTool = "textbox"
+        this.selectedTool = "pencil"
         this.canvas = canvas
         this.isClicked = false
         this.ctx = canvas.getContext("2d")
