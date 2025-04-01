@@ -183,7 +183,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
 
     return (
 
-        <div style={{ paddingInline: "15px", paddingBlock: "10px" }} className=" min-h-[90vh] max-h-[90vh]  w-full  bg-zinc-800 flex  items-start justify-start gap-4 overflow-y-auto custom-scrollbar">
+        <div style={{ paddingInline: "15px", paddingBlock: "10px" }} className=" min-h-[90vh] max-h-[90vh]  w-full  bg-zinc-950 flex  items-start justify-start gap-4 overflow-y-auto custom-scrollbar">
 
             <div className=' w-full h-full bg-zinc-900 rounded-xl'>
 

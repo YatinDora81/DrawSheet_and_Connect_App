@@ -46,12 +46,12 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
 
 
 
-    return <div style={{ paddingInline: "15px", paddingBlock: "" }} className=" min-h-[90vh] max-h-[90vh] min-w-[28%]  max-w-[35%]  bg-zinc-800 flex flex-col items-start justify-start gap-4 overflow-y-auto custom-scrollbar relative">
+    return <div style={{ paddingInline: "15px", paddingBlock: "" }} className=" min-h-[90vh] max-h-[90vh] min-w-[28%]  max-w-[35%]  bg-[#09090B] flex flex-col items-start justify-start gap-4 overflow-y-auto custom-scrollbar relative">
 
 
 
         {
-            rooms?.length === 0 && !loadingRooms && <div className=" w-full ">
+            rooms.length === 0 && !loadingRooms && <div className=" w-full flex justify-center items-center h-full">
                 <div className="flex flex-col items-center justify-center h-[87vh] text-center p-6 bg-zinc-900 rounded-lg shadow-lg">
                     <h2 className="text-2xl font-semibold text-gray-300">Oh no! You have no rooms 😢</h2>
                     <p className="text-gray-400 mt-2">Please create a new room to get started.</p>
@@ -69,7 +69,7 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
         }
 
 
-        {!loadingRooms && <div className=" w-full flex  flex-col gap-2 items-start sticky top-0 z-8 bg-zinc-800 pt-4 pb-1">
+        {!loadingRooms && rooms.length>0 && <div className=" w-full flex  flex-col gap-2 items-start sticky top-0 z-8 bg-[#09090B] pt-4 pb-1">
             <div className=" bg-zinc-900 w-full flex justify-start items-center gap-2  text-xl p-2 rounded-full px-4 ">
                 <label htmlFor="sea" className=" text-xl cursor-pointer"><BiSearch></BiSearch></label>
                 <input type="text" value={searchText} onChange={(e) => {setSearchText(e.target.value); setSearchRooms(()=>{
@@ -107,7 +107,7 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
             // d.roomName.replace(" ","___")
             searchRooms?.length > 0 && searchRooms.map((d: any, i) => <div onClick={() => {
                 if (!currRoom || d["room"].id !== currRoom.id) setCurrRoom(() => d["room"])
-            }} key={i} className={` cursor-pointer relative bg-zinc-900 flex  justify-between w-full items-center border min-h-16 rounded-xl ${currRoom === d["room"] ? ' border-green-500 ' : ''} `} style={{ paddingInline: "10px" }}>
+            }} key={i} className={` cursor-pointer relative bg-[#1a1a2199] flex  justify-between w-full items-center border min-h-16 rounded-xl ${currRoom === d["room"] ? ' border-green-500 ' : ''} `} style={{ paddingInline: "10px" }}>
                 <div className=" flex justify-center items-center gap-2">
                     <div className=' h-[40px] w-[40px] rounded-full bg-gray-400'>
                         {!d["room"].roomPic ? <svg

@@ -128,3 +128,7 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #d4d4d8; /* Lighter zinc on hover */
 }
+
+.ff{
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}

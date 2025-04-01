@@ -20,11 +20,11 @@ type Shape = {
     startPoints: { x: number, y: number }
     cords: { x: number, y: number }[],
 } | {
-    type : "textbox",
-    startX : number,
-    startY : number,
-    text : string,
-    font : string
+    type: "textbox",
+    startX: number,
+    startY: number,
+    text: string,
+    font: string
 }
 
 export class Game {
@@ -35,7 +35,7 @@ export class Game {
     private ctx: CanvasRenderingContext2D | null
     private isClicked: boolean = false
     private localCords: { x: number, y: number }[];
-    private localText : string
+    private localText: string
     selectedTool: Tool
 
 
@@ -43,7 +43,7 @@ export class Game {
         this.startX = 0
         this.startY = 0
         this.existingShapes = [] // get from backend
-        this.selectedTool = "pencil"
+        this.selectedTool = "rect"
         this.canvas = canvas
         this.isClicked = false
         this.ctx = canvas.getContext("2d")
@@ -61,6 +61,9 @@ export class Game {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
         this.ctx.fillStyle = "rgba(0,0,0)"
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
+
+
+        this.drawRect(200, 100, 400, 500)
     }
 
 
@@ -68,6 +71,7 @@ export class Game {
         this.canvas.addEventListener("mousedown", this.mouseDownEventHandler)
         this.canvas.addEventListener("mouseup", this.mouseUpEventHandler)
         this.canvas.addEventListener("mousemove", this.mouseMoveEventHandler)
+        this.canvas.addEventListener("wheel", this.wheelEventHandler)
     }
 
     mouseDownEventHandler = (e: MouseEvent) => {
@@ -107,7 +111,7 @@ export class Game {
             }
             this.localCords = []
         }
-        else if(this.selectedTool==="textbox"){
+        else if (this.selectedTool === "textbox") {
             // shape = {
             //     type : "textbox",
             //     startX : this.startX,
@@ -183,6 +187,12 @@ export class Game {
 
 
         }
+    }
+
+    wheelEventHandler = (e: WheelEvent) => {
+        console.log("deltaY" , e.deltaY);
+
+        
     }
 
     drawRect = (startX: number, startY: number, width: number, height: number) => {
