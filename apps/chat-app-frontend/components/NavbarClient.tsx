@@ -24,31 +24,10 @@ const NavbarClient = () => {
                 
                 {!user && <div className=' flex justify-center items-center gap-2'>
 
-                    <Link className='  border text-lg' style={{
-                        paddingInline: "15px",
-                        paddingBlock: "5px",
-                        marginTop: "2px",
-                        position: "relative",
-                        background: "white",
-                        border: "2px solid transparent",
-                        borderRadius: "4px",
-                        backgroundImage: "linear-gradient(rgb(24 24 27), rgb(24 24 27)), linear-gradient(to right, #A9A5FD, #EBD75D)",
-                        backgroundOrigin: "border-box",
-                        backgroundClip: "padding-box, border-box"
-                    }}
+                    <Link className='text-lg bg-white ff font-medium text-zinc-700 px-4 py-[6px] hover:bg- zinc-900/50 transition-all duration-200 hover:text -gray-300 rounded-md  hover:opacity-80' 
                         href="/signin">Login</Link>
-                    <Link style={{
-                        paddingInline: "15px",
-                        paddingBlock: "5px",
-                        marginTop: "2px",
-                        position: "relative",
-                        border: "2px solid transparent",
-                        borderRadius: "4px",
-                        background: "linear-gradient(to right, #A9A5FD, #EBD75D)",
-                        backgroundOrigin: "border-box",
-                        backgroundClip: "padding-box, border-box"
-                    }} className=' text-black  border text-lg' href="/signup">SignUp</Link>
-
+                    <Link className='text-lg bg-green-600 ff font-medium text-white px-4 py-[6px]  hover:bg-green-700 transition-all duration-200 hover:text-gray-300 rounded-md' href="/signup">Get Started</Link>
+                    
                 </div>}
 
                 {user && <div className=' flex justify-center items-center gap-2'>

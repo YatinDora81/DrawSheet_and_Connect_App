@@ -132,3 +132,16 @@
 .ff{
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+.inpbg:-webkit-autofill,
+.inpbg:-webkit-autofill:hover,
+.inpbg:-webkit-autofill:focus,
+.inpbg:-webkit-autofill:active {
+  background-color: #27272a !important; /* Match your bg-zinc-800 */
+  -webkit-box-shadow: 0 0 0px 1000px #27272a inset !important;
+  color: #ffffff !important;
+  caret-color: white !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: white !important;
+  appearance: none !important;
+}
