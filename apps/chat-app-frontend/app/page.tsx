@@ -1,6 +1,7 @@
 import Image, { type ImageProps } from "next/image";
 import { Button } from "@repo/ui/button";
 import styles from "./page.module.css";
+import HomePage from "../components/HomePage";
 
 type Props = Omit<ImageProps, "src"> & {
   srcLight: string;
@@ -20,6 +21,6 @@ const ThemeImage = (props: Props) => {
 
 export default function Home() {
   return (
-    <div className=" text-9xl text-red-900">Chat app</div>
+    <div className=" w-full h-fit overflow-x-hidden" style={{overflowX : "hidden"}}><HomePage /></div>
   );
 }

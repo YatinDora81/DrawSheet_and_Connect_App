@@ -145,3 +145,18 @@
   -webkit-text-fill-color: white !important;
   appearance: none !important;
 }
+
+.hero {
+  font-family: ui-sans-serif, system-ui, sans-serif, 
+               "Apple Color Emoji", "Segoe UI Emoji", 
+               "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 60px;
+  font-weight: 700;
+  line-height: 60px;
+  color: rgb(255, 255, 255);
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}

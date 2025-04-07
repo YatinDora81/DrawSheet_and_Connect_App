@@ -5,11 +5,12 @@ import Avatar from './Avatar'
 import { Toaster } from "react-hot-toast"
 import { useAuth } from '../hooks/useAuth'
 import { IoChatbubbleOutline, IoChatbubbleSharp } from 'react-icons/io5'
+import { useRouter } from 'next/navigation'
 
 const NavbarClient = () => {
 
     const {user , userLoading,  setUser , logoutUser , fetchUser} = useAuth()
-    
+    const router = useRouter()
     
 
   return (
@@ -17,8 +18,8 @@ const NavbarClient = () => {
             <div><Toaster position="bottom-right"
                 reverseOrder={false} /></div>
             <div className=' w-[90%]  flex justify-between items-center h-full' style={{ marginInline: "auto", paddingInline: "1.5rem" }}>
-                <div>
-                    <div className=' text-[25px] font-[700] leading-[28px] flex justify-center items-center gap-2 ff' ><span className=' text-green-600 text-3xl'><IoChatbubbleOutline /></span><span>connect</span></div>
+                <div >
+                    <div onClick={()=>router.push("/")} className=' cursor-pointer text-[25px] font-[700] leading-[28px] flex justify-center items-center gap-2 ff' ><span className=' text-green-600 text-3xl'><IoChatbubbleOutline /></span><span>connect</span></div>
                 </div>
 
                 
