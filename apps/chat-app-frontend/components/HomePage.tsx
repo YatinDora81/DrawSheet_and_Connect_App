@@ -1,11 +1,14 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import NavbarClient from './NavbarClient';
 import NavbarGuest from './NavbarGuest';
 import { AuthProvider } from '../hooks/useAuth';
 import SingleChat from "./SingleChat"
 import { IoChatbubbleOutline } from 'react-icons/io5';
+import { FiShield } from "react-icons/fi";
+import { BsLightningCharge } from "react-icons/bs";
+
 
 const HomePage = () => {
 
@@ -13,6 +16,30 @@ const HomePage = () => {
     const getCookie = (cookieName: string) => {
         return document.cookie.split("; ").find((s) => s.startsWith(cookieName))?.split("=")[1] || ""
     }
+
+    type featureCard = {
+        icon: ReactNode,
+        heading: string,
+        subHeading: string
+    }
+
+    const featureCards: featureCard[] = [
+        {
+            icon: <IoChatbubbleOutline />,
+            heading: "Real-time Messaging",
+            subHeading: "Send and receive messages instantly with live typing indicators and read receipts."
+        },
+        {
+            icon: <FiShield />,
+            heading: "End-to-End Encryption",
+            subHeading: "Your conversations are protected with industry-leading security protocols."
+        },
+        {
+            icon: <BsLightningCharge />,
+            heading: "Lightning Fast",
+            subHeading: "Engineered for speed and reliability, even on slow connections."
+        }
+    ]
 
 
     useEffect(() => {
@@ -71,21 +98,22 @@ const HomePage = () => {
                         <div className=' text-lg text-zinc-400'>Powerful features designed for seamless communication and collaboration.</div>
                     </div>
 
+                    {/* Feature Cards */}
                     <div className=' w-full flex flex-wrap justify-start items-center gap-5 px-2 relative'>
 
-                    <div className=' bg-green-500 blur-[250px] h-[10vh] z-[1] w-[30vw]  -top-[10%] right-[30%] absolute'></div>   
+                        <div className=' bg-green-500 blur-[250px] h-[10vh] z-[1] w-[30vw]  -top-[10%] right-[30%] absolute'></div>
 
                         {
-                            new Array(5).fill("").map((_,i) =>
-                                <div key={i} className='  text-white z-10 bg-zinc-900/40 hover:bg-zinc-900/70 transition-all duration-200 w-[32%] max-w-[32%] py-6 pb-8 rounded-xl border border-zinc-800 px-3 flex flex-col justify-start gap-3 items-start'>
+                            featureCards.map((c, i) =>
+                                <div key={i} className='  text-white z-10 bg-zinc-900/40 hover:bg-zinc-900/70 transition-all duration-200 w-[32%] max-w-[32%] py-6 pb-8 rounded-xl border border-zinc-800 px-4 flex flex-col justify-start gap-3 items-start'>
 
-                                    <div className=' text-green-500 text-2xl bg-green-800/20 h-11 w-11 flex justify-center items-center p-2 rounded-full'><IoChatbubbleOutline /></div>
+                                    <div className=' text-green-500 text-2xl bg-green-800/20 h-11 w-11 flex justify-center items-center p-2 rounded-full'>{c.icon}</div>
                                     <div className=' flex flex-col w-full justify-start items-start gap-1'>
                                         <div className=' text-xl font-semibold'>
-                                            Real-time Messaging
+                                            {c.heading}
                                         </div>
                                         <div className=' text-zinc-400 text-sm'>
-                                            Send and receive messages instantly with live typing indicators and read receipts.
+                                            {c.subHeading}
                                         </div>
                                     </div>
 
@@ -95,10 +123,48 @@ const HomePage = () => {
 
                     </div>
 
-
                 </div>
 
+                {/* Reviews */}
+                <div className=' flex flex-col justify-center items-center w-[117.5%] gap-[13vh] py-16 bg-zinc-900 '>
 
+                    <div className=' flex flex-col justify-center items-center gap-5'>
+                        <div className=' text-4xl font-bold'>Loved by teams and friends</div>
+                        <div className=' text-lg text-zinc-400'>Join thousands of users who rely on Connect for their communication needs.</div>
+                    </div>
+
+                    {/* Review Cards */}
+                    <div className=' w-full flex flex-wrap justify-start items-center gap-5 px-2 relative'>
+
+
+                        <div className=' w-[70%] flex flex-wrap justify-center mx-auto  items-center gap-5 px-2 relative'>
+
+                            
+
+                            {
+                                featureCards.map((c, i) =>
+                                    <div key={i} className='  text-white z-10 bg-zinc-900/40 hover:bg-zinc-900/70 transition-all duration-200 w-[32%] max-w-[32%] py-6 pb-8 rounded-xl border border-zinc-800 px-4 flex flex-col justify-start gap-3 items-start'>
+
+                                        <div className=' text-green-500 text-2xl bg-green-800/20 h-11 w-11 flex justify-center items-center p-2 rounded-full'>{c.icon}</div>
+                                        <div className=' flex flex-col w-full justify-start items-start gap-1'>
+                                            <div className=' text-xl font-semibold'>
+                                                {c.heading}
+                                            </div>
+                                            <div className=' text-zinc-400 text-sm'>
+                                                {c.subHeading}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                )
+                            }
+
+                        </div>
+
+
+                    </div>
+
+                </div>
 
                 <div className=' h-[50vh]'></div>
 
