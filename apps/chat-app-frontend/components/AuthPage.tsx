@@ -86,7 +86,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
 
 
     return (
-        <div className=' w-full min-h-[90vh] bg-zinc-950 text-white flex flex-col gap-7   justify-center items-center'>
+        <div className=' w-full  min-h-[90vh] bg-zinc-950 text-white flex flex-col gap-7   justify-center items-center'>
 
             { !isSignup ? <div>
                 <div className=' text-[25px] font-[700] leading-[28px] flex flex-col justify-center items-center  ff' ><span className=' text-green-600 text-4xl bg-zinc-900 p-2 rounded-full'><IoChatbubbleOutline /></span><span className=' text-3xl'>connect</span></div>

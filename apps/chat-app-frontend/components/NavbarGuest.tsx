@@ -2,10 +2,10 @@ import Link from 'next/link'
 import { Toaster } from 'react-hot-toast'
 import { IoChatbubbleOutline } from 'react-icons/io5'
 
-const NavbarGuest = () => {
+const NavbarGuest = ({extenedClass = ""} : {extenedClass ?: string}) => {
 
     return (
-        <div className=' text-white w-full border-b-[1px] border-b-zinc-800 bg-[#09090B] flex items-center justify-between h-[10vh]  '>
+        <div className={` text-white w-full border-b-[1px] border-b-zinc-800 bg-[#09090B] flex items-center justify-between h-[10vh] ${extenedClass} `}>
             <div><Toaster position="bottom-right"
                 reverseOrder={false} /></div>
             <div className=' w-[90%]  flex justify-between items-center h-full' style={{ marginInline: "auto", paddingInline: "1.5rem" }}>
