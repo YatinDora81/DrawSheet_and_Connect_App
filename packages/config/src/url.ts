@@ -1,8 +1,6 @@
 import { HTTP_PORT, WS_PORT } from "./ports";
-import { config } from "dotenv";
-config()
 
-const BASE_HTTP_URL =  process.env.HTTP_URL || ""
+const BASE_HTTP_URL = `http://localhost:${HTTP_PORT}`
 
 export const Get_User_Details_URL = BASE_HTTP_URL + `/api/auth/user-details`;
 
@@ -26,4 +24,4 @@ export const JOIN_NEW_ROOM_URL = BASE_HTTP_URL + "/api/rooms/join-room"
 
 export const UPDATE_ROOM_DETAILS = BASE_HTTP_URL + "/api/rooms/update-details"
 
-export const BASE_WS_URL = process.env.WS_URL || ""
+export const BASE_WS_URL = `ws://localhost:${WS_PORT}`
