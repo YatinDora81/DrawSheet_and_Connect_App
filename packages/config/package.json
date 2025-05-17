@@ -2,12 +2,13 @@
   "name": "@repo/config",
   "version": "1.0.0",
   "main": "index.js",
-  "exports" : {
-    "./PORTS" : "./src/ports.ts",
-    "./URL" : "./src/url.ts"
+  "exports": {
+    "./PORTS": "./src/ports.ts",
+    "./URL": "./src/url.ts"
   },
   "dependencies": {
-    "@repo/typescript-config" : "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "dotenv": "^16.5.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
