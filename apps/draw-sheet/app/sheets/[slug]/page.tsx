@@ -1,7 +1,10 @@
 import SheetClient from "../../../components/SheetClient"
 
-export default async function SheetsPage({ params }: { params: Promise<{ slug: string }> }) {
-    const slug = (await params).slug
-
-    return <div className=" w-full h-full  "><SheetClient /></div>
+export default async function SingleSheet({params} : {params : Promise<{slug  : string }>}){
+    
+    const sheetId = (await params).slug
+    
+    return <div className=" bg-[#1A1A1F] h-[100vh] overflow-hidden text-white ">
+        <SheetClient />
+    </div>
 }

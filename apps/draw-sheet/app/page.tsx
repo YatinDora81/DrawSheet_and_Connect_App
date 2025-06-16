@@ -19,7 +19,7 @@ const ThemeImage = (props: Props) => {
 export default function Home() {
   return (
     <div className="">
-
+        Welcome to this app 
     </div>
   );
 }
