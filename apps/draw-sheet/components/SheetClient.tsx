@@ -7,7 +7,7 @@ function SheetClient() {
   return (
     <div className=" h-full relative">
         <SideBar />
-        {/* <BottomBar></BottomBar> */}
+        <BottomBar />
         <canvas className=" h-full w-full "></canvas>
     </div>
   )

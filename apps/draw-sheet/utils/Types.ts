@@ -35,3 +35,41 @@ export const Frontend_SideBar_Tools : {
         icon : MdOutlineSave
     }
 ]
+
+export const Colors: {
+  color_name: string;
+  color_code: string;
+}[] = [
+  {
+    color_name: "Blue",
+    color_code: "#2A85FF"
+  },
+  {
+    color_name: "Red",
+    color_code: "#FF5757"
+  },
+  {
+    color_name: "Green",
+    color_code: "#7BBC5F"
+  },
+  {
+    color_name: "Yellow",
+    color_code: "#FFBC3F"
+  },
+  {
+    color_name: "Purple",
+    color_code: "#C97BFC"
+  },
+  {
+    color_name: "Orange",
+    color_code: "#FF8C5F"
+  },
+  {
+    color_name: "White",
+    color_code: "#FFFFFF"
+  },
+  {
+    color_name: "Gray",
+    color_code: "#BEBEBE"
+  }
+];
