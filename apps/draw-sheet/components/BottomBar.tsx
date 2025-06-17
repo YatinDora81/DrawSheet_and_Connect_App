@@ -28,35 +28,7 @@ function BottomBar({ selectedColor = Colors[0]?.color_code }: { selectedColor?: 
 
       <div className=' w-[35%] h-full flex  items-center justify-evenly gap-3'>
         <div className=' text-gray-400'>Size:</div>
-        <input type='range' className={`w-48 h-[4px]
-    appearance-none
-    bg-white/10
-    rounded-lg
-    outline-none
-    cursor-pointer
-    transition
-
-    [&::-webkit-slider-thumb]:appearance-none
-    [&::-webkit-slider-thumb]:w-4
-    [&::-webkit-slider-thumb]:h-4
-    [&::-webkit-slider-thumb]:bg-blue-500
-    [&::-webkit-slider-thumb]:rounded-full
-    [&::-webkit-slider-thumb]:shadow-md
-    [&::-webkit-slider-thumb]:transition
-    [&::-webkit-slider-thumb]:duration-200
-    [&::-webkit-slider-thumb]:hover:bg-blue-700
-    [&::-webkit-slider-thumb]:focus:bg-blue-300
-
-    [&::-moz-range-thumb]:appearance-none
-    [&::-moz-range-thumb]:w-4
-    [&::-moz-range-thumb]:h-4
-    [&::-moz-range-thumb]:bg-blue-500
-    [&::-moz-range-thumb]:rounded-full
-    [&::-moz-range-thumb]:shadow-md
-    [&::-moz-range-thumb]:transition
-    [&::-moz-range-thumb]:duration-200
-    [&::-moz-range-thumb]:hover:bg-blue-700
-    [&::-moz-range-thumb]:focus:bg-blue-300`} min={1} max={20} />
+        <input type='range' className="w-48 h-[4px] appearance-none bg-white/10 rounded-lg outline-none cursor-pointer transition [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition [&::-webkit-slider-thumb]:duration-200 [&::-webkit-slider-thumb]:hover:bg-blue-600 [&::-webkit-slider-thumb]:focus:bg-blue-300 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:bg-blue-500 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition [&::-moz-range-thumb]:duration-200 [&::-moz-range-thumb]:hover:bg-blue-600 [&::-moz-range-thumb]:focus:bg-blue-300" min={1} max={20} />
         <div className=' text-gray-200'>20</div>
 
       </div>
