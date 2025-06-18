@@ -1,7 +1,8 @@
+import AllSheetsClient from "../../components/AllSheetsClient";
 
-export default function AllSheets(){
+export default function AllSheets() {
 
     return (
-        <div>This is page to select all pages</div>
+        <AllSheetsClient />        
     )
 }
