@@ -2,7 +2,7 @@ import { PiPencilSimpleLineLight, PiPlus } from "react-icons/pi";
 
 function NavbarClient() {
     return (
-        <div className=" w-full border-b h-[4.5rem] top-0 sticky backdrop-blur-lg border-b-zinc-800">
+        <div className=" w-full border-b h-[4.5rem] top-0 sticky backdrop-blur-lg bg-zinc-950 z-[100] border-b-zinc-800">
             <div className=" h-full    text-white font-sans flex w-[89%]   "  style={{ marginInline: "auto" }}>
 
                 <div className=" flex justify-between w-full items-center">
