@@ -2,21 +2,23 @@
 import { PiPlus } from "react-icons/pi";
 import NavbarClient from "../components/NavbarClient";
 import { IoEnterOutline, IoListSharp } from "react-icons/io5";
-import { HiDotsVertical, HiOutlineHashtag } from "react-icons/hi";
+import { HiOutlineHashtag } from "react-icons/hi";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { MdGridOn } from "react-icons/md";
 import { useState } from "react";
-import { FaRegFileLines } from "react-icons/fa6";
+import SingleCard from "./SingleCard";
 
 
 function AllSheetsClient() {
+
+    const [showSubMenu, setShowSubMenu] = useState(-1)
 
     const [isGridUi, setIsGridUi] = useState(true)
     const DrawingTabs: { name: string }[] = [{ name: "All" }, { name: "Favorites" }, { name: "Recent" }]
     const [selectedTab, setSetlectedTab] = useState("All")
 
     return (
-        <div className=" bg-zinc-950 min-h-[100vh] text-white ">
+        <div onClick={(e)=>{e.stopPropagation(); setShowSubMenu(-1)}} className=" bg-zinc-950 min-h-[100vh] text-white ">
             <div className=" relative h-full flex min-h-[100vh] flex-col justify-start  items-center " style={{ marginInline: "auto" }}>
                 <NavbarClient />
 
@@ -91,42 +93,13 @@ function AllSheetsClient() {
                         <div className=" w-full flex justify-start items-start gap-5 flex-wrap gap-y-7">
 
                             {/* Single Card */}
-                            <div className="w-[23.5%] border border-zinc-800  h-[25rem] rounded-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer relative group hover:border-blue-500/60">
-
-                                {/* Background */}
-                                <div className=" w-full h-full absolute top-0 left-0 blur-lg">
-                                    <div className="h-10 aspect-square rounded-full group-hover:scale-[1.2] transition-all duration-300  bg-blue-500/60 absolute top-[1rem] left-[1.3rem]"></div>
-                                    <div className="h-7 aspect-square rounded-full bg-blue-500/60 absolute right-[2.2rem] group-hover:scale-[1.2] transition-all duration-500 bottom-[5.5rem]"></div>
-                                </div>
-
-                                {/* Foreground */}
-                                <div className=" w-full h-full flex flex-col justify-start items-start">
-
-                                    {/* Upper Section */}
-                                    <div className=" h-[82%] w-full gap-3 flex flex-col justify-center items-center ">
-                                        <div className=" text-blue-500 rounded-xl transition-colors duration-200 group-hover:text-blue-500/80 text-4xl border border-zinc-800 bg-zinc-950 " style={{padding : "1rem"}}>
-                                            <FaRegFileLines />
-                                        </div>
-
-                                        <div className=" text-center flex justify-center items-center  flex-col">
-                                            <div className=" font-semibold group-hover:text-blue-500 transition-colors duration-200">Abstract Art</div>
-                                            <div className=" text-sm text-gray-400 font-sans">May 15, 2023</div>
-                                        </div>
-                                    </div>
+                            {new Array(2).fill(".").map((_, i) => <SingleCard showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} />
+                            )}
 
 
-                                    {/* Lower Section */}
-                                    <div className=" h-[18%] w-full bg-gradient-to-r rounded-b-lg from-zinc-950 to-zinc-800/30 flex justify-between items-center" style={{ paddingLeft: "1.8rem", paddingRight: "1.4rem" }}>
 
-                                        <div className=" flex justify-center gap-2 text-sm text-gray-400 font-semibold items-center"><div className=" w-[0.7rem] aspect-square rounded-full bg-green-500" ></div>Ready to edit</div>
 
-                                        <div className=" text-gray-400 rounded-lg hover:bg-zinc-800/70 transition-all duration-200 z-[10]" style={{ padding: "0.7rem" }} ><HiDotsVertical /></div>
 
-                                    </div>
-
-                                </div>
-
-                            </div>
 
 
                         </div>
@@ -136,6 +109,11 @@ function AllSheetsClient() {
 
 
             </div>
+
+
+
+            <div className=" min-h-[70vh]"></div>
+
         </div>
     )
 }
