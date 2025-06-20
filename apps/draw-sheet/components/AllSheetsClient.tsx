@@ -7,13 +7,14 @@ import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { MdGridOn } from "react-icons/md";
 import { useState } from "react";
 import SingleCard from "./SingleCard";
+import SingleCardHorizontal from "./SingleCardHorizontal";
 
 
 function AllSheetsClient() {
 
     const [showSubMenu, setShowSubMenu] = useState(-1)
 
-    const [isGridUi, setIsGridUi] = useState(true)
+    const [isGridUi, setIsGridUi] = useState(false)
     const DrawingTabs: { name: string }[] = [{ name: "All" }, { name: "Favorites" }, { name: "Recent" }]
     const [selectedTab, setSetlectedTab] = useState("All")
 
@@ -89,20 +90,24 @@ function AllSheetsClient() {
                     </div>
 
                     {
-                        isGridUi &&
+                        isGridUi ?
                         <div className=" w-full flex justify-start items-start gap-5 flex-wrap gap-y-7">
 
-                            {/* Single Card */}
-                            {new Array(2).fill(".").map((_, i) => <SingleCard showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} />
+                            {/* Single Card Grid */}
+                            {new Array(5).fill(".").map((_, i) => <SingleCard key={i}  showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} />
                             )}
 
+                        </div>
 
+                        : 
+                        <div className=" w-full flex flex-col justify-start items-start flex-wrap gap-y-[14px]">
 
-
-
-
+                            {/* Single Card Horizontal */}
+                            {new Array(15).fill(".").map((_, i) => <SingleCardHorizontal key={i}  showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} />
+                            )}
 
                         </div>
+
                     }
 
                 </div>

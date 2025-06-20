@@ -25,7 +25,7 @@ function SingleCard({ showSubMenu, setShowSubMenu, index }: { showSubMenu: numbe
             <div
                 onClick={(e) => {
                     e.stopPropagation()
-                    if(showSubMenu!==-1) setShowSubMenu(-1)
+                    if (showSubMenu !== -1) setShowSubMenu(-1)
                     console.log("clicked on sheet card to navigate")
                 }}
                 className=" h-[82%] w-full gap-3 relative group-hover:bg-blue-500/10 flex flex-col justify-center items-center ">
@@ -43,7 +43,7 @@ function SingleCard({ showSubMenu, setShowSubMenu, index }: { showSubMenu: numbe
 
                 <div className=" text-center flex justify-center items-center  flex-col">
                     <div className=" font-semibold group-hover:text-blue-500 transition-colors duration-200">Abstract Art</div>
-                    <div className=" text-sm text-gray-400 font-sans">May 15, 2023</div>
+                    <div className=" text-sm text-gray-400 font-sans font-semibold">May 15, 2023</div>
                 </div>
             </div>
 
@@ -55,7 +55,8 @@ function SingleCard({ showSubMenu, setShowSubMenu, index }: { showSubMenu: numbe
 
                 <div onClick={(e) => {
                     e.stopPropagation();
-                    setShowSubMenu(index)
+                    if(showSubMenu===index) setShowSubMenu(-1)
+                    else setShowSubMenu(index)
                 }}
                     className=" cursor-pointer text-gray-400 rounded-lg hover:bg-zinc-800/70 transition-all duration-200 z-[10]" style={{ padding: "0.7rem" }} ><HiDotsVertical /></div>
 
@@ -63,7 +64,7 @@ function SingleCard({ showSubMenu, setShowSubMenu, index }: { showSubMenu: numbe
 
 
             {/* Menu Section */}
-            {showSubMenu === index && <div onClick={(e)=>{e.stopPropagation()}} className=' absolute bg-zinc-950 backdrop-blur-2xl border border-zinc-800 rounded-lg z-[90] min-h-[10rem] w-[50%] h-fit bottom-[13%] right-[13%] '>
+            {showSubMenu === index && <div onClick={(e) => { e.stopPropagation() }} className=' absolute bg-zinc-950 backdrop-blur-2xl border border-zinc-800 rounded-lg z-[90] min-h-[10rem] w-[50%] h-fit bottom-[13%] right-[13%] '>
                 <div className=' cursor-default border-b border-zinc-800 font-semibold' style={{ paddingInline: "0.7rem", paddingBlock: "0.4rem" }}>Actions</div>
 
                 <div className=' flex flex-col justify-start items-start'>
