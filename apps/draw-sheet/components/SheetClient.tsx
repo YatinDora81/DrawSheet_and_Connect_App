@@ -9,7 +9,7 @@ function SheetClient() {
     <div className=" h-full relative">
         <SideBar />
         <BottomBar />
-        <RightBar />
+        <RightBar />      
         <canvas className=" h-full w-full "></canvas>
     </div>
   )

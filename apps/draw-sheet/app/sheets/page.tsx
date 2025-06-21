@@ -1,8 +1,13 @@
 import AllSheetsClient from "../../components/AllSheetsClient";
+import ModalContainer from "../../components/Modals/ModalContainer";
+import { ModalContextProvider } from "../../hooks/useModal";
 
 export default function AllSheets() {
 
     return (
-        <AllSheetsClient />        
+        <ModalContextProvider>
+            <ModalContainer />
+            <AllSheetsClient />
+        </ModalContextProvider>
     )
 }

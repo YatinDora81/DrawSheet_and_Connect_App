@@ -8,6 +8,7 @@ import { MdGridOn } from "react-icons/md";
 import { useState } from "react";
 import SingleCard from "./SingleCard";
 import SingleCardHorizontal from "./SingleCardHorizontal";
+import { useModal } from "../hooks/useModal";
 
 
 function AllSheetsClient() {
@@ -17,6 +18,7 @@ function AllSheetsClient() {
     const [isGridUi, setIsGridUi] = useState(false)
     const DrawingTabs: { name: string }[] = [{ name: "All" }, { name: "Favorites" }, { name: "Recent" }]
     const [selectedTab, setSetlectedTab] = useState("All")
+    const {setShowModal} = useModal()
 
     return (
         <div onClick={(e)=>{e.stopPropagation(); setShowSubMenu(-1)}} className=" bg-zinc-950 min-h-[100vh] text-white ">
@@ -38,7 +40,7 @@ function AllSheetsClient() {
                                 <div className=" flex justify-center font-semibold items-center gap-2 text-2xl"><PiPlus className=" text-xl font-bold" /> Create Room</div>
                                 <div className=" text-zinc-400 text-sm ">Start a new collaboration room and invite others to join</div>
                             </div>
-                            <button className=" flex cursor-pointer gap-2 h-[2.5rem] font-semibold font-sans rounded-xl items-center justify-center w-full bg-blue-500 hover:bg-blue-500/80 transition-colors duration-200"><PiPlus />Create New Room</button>
+                            <button onClick={()=>setShowModal(0)} className=" flex cursor-pointer gap-2 h-[2.5rem] font-semibold font-sans rounded-xl items-center justify-center w-full bg-blue-500 hover:bg-blue-500/80 transition-colors duration-200"><PiPlus />Create New Room</button>
                         </div>
 
                         <div className=" w-[49.5%] border border-zinc-800 gap-6 rounded-xl flex flex-col items-start justify-center" style={{ paddingInline: "1.7rem", paddingBlock: "1.6rem" }}>

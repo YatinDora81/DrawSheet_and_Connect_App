@@ -27,3 +27,33 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #d4d4d8; /* Lighter zinc on hover */
 }
+
+body{
+  scroll-behavior: smooth;
+}
+
+/* Slim, dark, modern scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f0f0f; /* same as bg-zinc-950 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #3f3f46; /* zinc-700 */
+  border-radius: 9999px;
+  border: 1px solid #1c1c1c; /* slight border for depth */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #52525b; /* zinc-600 */
+}
+
+/* Firefox (optional) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 #0f0f0f;
+}
