@@ -2,6 +2,7 @@
 import { createContext, JSX, ReactNode, useContext, useState } from "react";
 import CreateModal from "../components/Modals/CreateModal";
 import JoinModal from "../components/Modals/JoinModal";
+import ChooseAvatar from "../components/Modals/ChooseAvatar";
 
 type ModalType = {
     name: string,
@@ -28,6 +29,10 @@ export const ModalContextProvider = ({ children }: { children: ReactNode }) => {
         {
             name : "join-modal",
             component : <JoinModal></JoinModal>
+        },
+        {
+            name : "choose-avatar",
+            component : <ChooseAvatar></ChooseAvatar>
         }
     ]
     

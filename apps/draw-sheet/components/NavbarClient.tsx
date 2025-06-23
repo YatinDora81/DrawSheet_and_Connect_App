@@ -19,6 +19,7 @@ function NavbarClient() {
                     </div>
                     <div className=" h-full flex justify-center items-center">
                         <button onClick={()=>setShowModal(0)} className=" border flex justify-center items-center h-[50%] w-[9rem] border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{paddingInline : ""}}> <PiPlus></PiPlus> New Drawing</button>
+                        <div className=" text-white" onClick={()=>setShowModal(2)}>YD</div>
                     </div>
                 </div>
 
