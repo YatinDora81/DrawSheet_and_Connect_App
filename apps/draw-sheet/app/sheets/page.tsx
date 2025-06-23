@@ -5,8 +5,7 @@ import { ModalContextProvider } from "../../hooks/useModal";
 export default function AllSheets() {
 
     return (
-        <ModalContextProvider>
-            <ModalContainer />
+        <ModalContextProvider>  
             <AllSheetsClient />
         </ModalContextProvider>
     )

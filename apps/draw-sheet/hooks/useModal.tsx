@@ -1,5 +1,7 @@
 "use client"
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, JSX, ReactNode, useContext, useState } from "react";
+import CreateModal from "../components/Modals/CreateModal";
+import JoinModal from "../components/Modals/JoinModal";
 
 type ModalType = {
     name: string,
@@ -18,9 +20,16 @@ const ModalContext = createContext<ModalConextType | null>(null)
 export const ModalContextProvider = ({ children }: { children: ReactNode }) => {
 
     const [showModal, setShowModal] = useState<number>(-1);
-    const Modals: ModalType[] = []
-
-    console.log(showModal);
+    const Modals: ModalType[] = [
+        {
+            name : "create-modal",
+            component : <CreateModal></CreateModal>
+        },
+        {
+            name : "join-modal",
+            component : <JoinModal></JoinModal>
+        }
+    ]
     
 
     return <ModalContext.Provider value={{ showModal, setShowModal, Modals }}>

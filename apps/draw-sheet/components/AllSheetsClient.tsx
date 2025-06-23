@@ -9,6 +9,7 @@ import { useState } from "react";
 import SingleCard from "./SingleCard";
 import SingleCardHorizontal from "./SingleCardHorizontal";
 import { useModal } from "../hooks/useModal";
+import ModalContainer from "./Modals/ModalContainer";
 
 
 function AllSheetsClient() {
@@ -18,10 +19,14 @@ function AllSheetsClient() {
     const [isGridUi, setIsGridUi] = useState(false)
     const DrawingTabs: { name: string }[] = [{ name: "All" }, { name: "Favorites" }, { name: "Recent" }]
     const [selectedTab, setSetlectedTab] = useState("All")
-    const {setShowModal} = useModal()
+    const {showModal, setShowModal ,Modals } = useModal()
+
 
     return (
         <div onClick={(e)=>{e.stopPropagation(); setShowSubMenu(-1)}} className=" bg-zinc-950 min-h-[100vh] text-white ">
+            
+            <ModalContainer setShowModal={setShowModal} showModal={showModal}>{Modals[showModal]?.component}</ModalContainer>
+
             <div className=" relative h-full flex min-h-[100vh] flex-col justify-start  items-center " style={{ marginInline: "auto" }}>
                 <NavbarClient />
 
@@ -52,7 +57,7 @@ function AllSheetsClient() {
                                     Enter a room code to join an existing collaboration session
                                 </div>
                             </div>
-                            <button className=" flex cursor-pointer gap-2 h-[2.5rem] font-semibold font-sans rounded-xl items-center justify-center w-full hover:bg-blue-500 border border-zinc-800 transition-colors duration-200">
+                            <button onClick={()=>setShowModal(1)} className=" flex cursor-pointer gap-2 h-[2.5rem] font-semibold font-sans rounded-xl items-center justify-center w-full hover:bg-blue-500 border border-zinc-800 transition-colors duration-200">
                                 <HiOutlineHashtag />Join Existing Room
                             </button>
                         </div>
