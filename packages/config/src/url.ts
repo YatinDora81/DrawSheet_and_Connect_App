@@ -24,4 +24,6 @@ export const JOIN_NEW_ROOM_URL = BASE_HTTP_URL + "/api/rooms/join-room"
 
 export const UPDATE_ROOM_DETAILS = BASE_HTTP_URL + "/api/rooms/update-details"
 
+export const GET_AVATARS_URL = BASE_HTTP_URL + "/api/auth/avatars"
+
 export const BASE_WS_URL = `ws://localhost:${WS_PORT}`

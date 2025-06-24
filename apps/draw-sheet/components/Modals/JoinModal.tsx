@@ -22,7 +22,7 @@ function JoinModal() {
                   <input type='text' className=' font-mono w-full border focus:border-white border-zinc-700 rounded-xl text-sm ' placeholder='Enter room code (e.g., ABC-123)' style={{padding : "0.5rem"}}></input>
                   <div className=' w-full flex justify-end items-center gap-1 font-mono'>
                       <button className=' border border-zinc-800 rounded-xl hover:bg-blue-500 transition-colors duration-100' style={{paddingInline : "0.8rem" , paddingBlock : "0.4rem"}}>Cancel</button>
-                      <button style={{paddingInline : "0.8rem" , paddingBlock : "0.4rem"}} className=' flex justify-center items-center border border-zinc-800 rounded-xl gap-2 hover:bg-blue-500/90 bg-blue-500 transition-colors duration-100'><FiUsers /><IoEnterOutline />Join Room</button>
+                      <button style={{paddingInline : "0.8rem" , paddingBlock : "0.4rem"}} className=' flex justify-center items-center border border-zinc-800 rounded-xl gap-2 hover:bg-blue-500/90 bg-blue-500 transition-colors duration-100'><IoEnterOutline />Join Room</button>
                   </div>
               </div>
   

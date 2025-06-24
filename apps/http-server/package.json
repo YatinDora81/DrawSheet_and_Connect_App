@@ -10,6 +10,7 @@
     "dev": " npm run build && npm run start"
   },
   "dependencies": {
+    "@multiavatar/multiavatar": "^1.0.7",
     "@paralleldrive/cuid2": "^2.2.2",
     "@repo/backend-common": "workspace:*",
     "@repo/config": "workspace:*",
