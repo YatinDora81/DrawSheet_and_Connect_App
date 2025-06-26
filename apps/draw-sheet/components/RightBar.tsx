@@ -6,7 +6,7 @@ import { FaRegCopy, FaRegUser } from 'react-icons/fa';
 
 function RightBar() {
 
-    const [isBarOpen, setIsBarFalse] = useState(true)
+    const [isBarOpen, setIsBarFalse] = useState(false)
 
     return (
         !isBarOpen ?

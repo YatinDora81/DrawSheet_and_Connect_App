@@ -4,17 +4,16 @@ import { HTTP_PORT } from "@repo/config/PORTS";
 import authRouter from "./routes/auth.js"
 import roomRouter from "./routes/room.js"
 import { isAuthenticatedUser } from "./middleware/isAuth.js";
+import { config } from "dotenv";
 import cors from "cors"
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+config()
 // app.use(cors({ origin: "http://localhost:3003", credentials: true }))
 
-const allowedOrigins = [
-  "http://localhost:3003",
-  "http://localhost:3000",
-];
+const allowedOrigins: string[] | string = process.env.ORIGINS || [];
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -35,5 +34,5 @@ app.use("/api/rooms", isAuthenticatedUser, roomRouter);
 
 
 app.listen(PORT, () => {
-    console.log(`App Running at ${PORT}`);
+  console.log(`App Running at ${PORT}`);
 })

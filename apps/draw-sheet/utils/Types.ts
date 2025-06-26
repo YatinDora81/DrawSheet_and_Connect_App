@@ -73,3 +73,38 @@ export const Colors: {
     color_code: "#BEBEBE"
   }
 ];
+
+export type Rectangle = {
+    type: "rectangle",
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
+    lineWidth : number,
+    color : string
+} 
+
+export type Shape = Rectangle | {
+    type: "circle",
+    startX: number,
+    startY: number,
+    radius: number,
+    lineWidth : number,
+    color : string
+} | {
+    type: 'pencil',
+    startPoints: { x: number, y: number }
+    cords: { x: number, y: number }[],
+    lineWidth : number,
+    color : string
+} | {
+    type: "textbox",
+    startX: number,
+    startY: number,
+    text: string,
+    font: string,
+    lineWidth : number,
+    color : string
+}
+
+export const Canvas_BG_COLOR = "#1A1A1F"
