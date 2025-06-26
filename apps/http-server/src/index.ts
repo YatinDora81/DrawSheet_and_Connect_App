@@ -9,8 +9,24 @@ import cors from "cors"
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:3003", credentials: true }))
+// app.use(cors({ origin: "http://localhost:3003", credentials: true }))
 
+const allowedOrigins = [
+  "http://localhost:3003",
+  "http://localhost:3000",
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 
 const PORT = HTTP_PORT
 
