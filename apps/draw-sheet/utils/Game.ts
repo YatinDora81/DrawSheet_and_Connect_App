@@ -20,6 +20,7 @@ export class Game {
     private scale: number
     private color: string
     private lineWidth: number
+    private lineWidthMultiplier = 0.6
 
     constructor(canvas: HTMLCanvasElement, tool: Tool, lineWidth: number, color: string) {
         this.canvas = canvas
@@ -36,7 +37,7 @@ export class Game {
         this.scale = 1
         this.tool = tool
         this.color = color
-        this.lineWidth = lineWidth
+        this.lineWidth = lineWidth * this.lineWidthMultiplier
 
         this.init()
     }
@@ -191,7 +192,7 @@ export class Game {
     }
 
     changeLineWidth = (lineWidth: number) => {
-        this.lineWidth = lineWidth
+        this.lineWidth = lineWidth * this.lineWidthMultiplier
     }
 
     changeTool = (tool: Tool) => {

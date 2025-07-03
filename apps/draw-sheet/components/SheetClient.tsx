@@ -11,8 +11,8 @@ function SheetClient() {
 
   const [game, setGame] = useState<Game | null>(null)
   const [selectedTool, setSelectedTool] = useState<Tool>("rectangle")
-  const [lineWidth, setLineWidth] = useState(1)
-  const [color, setColor] = useState("rgb(59 130 246)")
+  const [lineWidth, setLineWidth] = useState(5)
+  const [color, setColor] = useState("#2A85FF") //blue color
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
@@ -35,6 +35,16 @@ function SheetClient() {
     game.changeTool(selectedTool)
   }, [selectedTool])
 
+  useEffect(() => {
+    if (!game) return
+    game.changeColor(color)
+  }, [color])
+
+  useEffect(() => {
+    if (!game) return
+    game.changeLineWidth(lineWidth)
+  }, [lineWidth])
+
   return (
     <div className=" h-full relative">
 
@@ -44,7 +54,7 @@ function SheetClient() {
 
 
       <SideBar selectedTool={selectedTool} setSelectedTool={setSelectedTool} />
-      <BottomBar />
+      <BottomBar selectedColor={color} setSelectedColor={setColor} lineWidth={lineWidth} setLineWidth={setLineWidth} />
       <RightBar />
       <canvas ref={canvasRef} className=" h-full w-full "></canvas>
     </div>
