@@ -146,7 +146,7 @@ export class Game {
     }
 
 
-    private render() {
+    render() {
 
         if (!this.ctx) return
 

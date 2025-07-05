@@ -2,7 +2,7 @@
 import React, { SetStateAction } from 'react'
 import { Colors } from '../utils/Types'
 
-function BottomBar({ selectedColor = Colors[0]?.color_code, setSelectedColor, lineWidth, setLineWidth }: { selectedColor?: string, setSelectedColor: React.Dispatch<SetStateAction<String>>, lineWidth: number, setLineWidth: React.Dispatch<SetStateAction<Number>> }) {
+function BottomBar({ selectedColor = Colors[0]?.color_code, setSelectedColor, lineWidth, setLineWidth }: { selectedColor?: string, setSelectedColor: React.Dispatch<SetStateAction<string>>, lineWidth: number, setLineWidth: React.Dispatch<SetStateAction<number>> }) {
   return (
     <div className=' absolute bg-[#26262A]/70 left-[50%] bottom-[2vh] translate-x-[-50%] flex   justify-evenly items-center w-[38rem] h-[3rem] rounded-2xl gap-1 border border-gray-700'>
 
