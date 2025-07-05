@@ -7,15 +7,13 @@ import SideBar from "./SideBar"
 import { Game } from "../utils/Game"
 import { Tool } from "../utils/Types"
 import toast, { Toaster } from "react-hot-toast"
-import { IoIosDownload } from "react-icons/io"
-import { MdOutlineDownloadDone } from "react-icons/md"
 import { LiaDownloadSolid } from "react-icons/lia"
 
 
 function SheetClient() {
 
   const [game, setGame] = useState<Game | null>(null)
-  const [selectedTool, setSelectedTool] = useState<Tool>("rectangle")
+  const [selectedTool, setSelectedTool] = useState<Tool>("pencil")
   const [lineWidth, setLineWidth] = useState(5)
   const [color, setColor] = useState("#2A85FF") //blue color
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -70,7 +68,7 @@ function SheetClient() {
         background: '#333',
         color: '#fff',
       },
-      duration: 3000,  // Optional: fade after 3 seconds
+      duration: 3000,
     });
   }
 

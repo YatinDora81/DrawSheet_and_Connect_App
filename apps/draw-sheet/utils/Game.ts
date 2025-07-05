@@ -2,7 +2,7 @@
 // add redraw function
 // add size in text
 
-import { Canvas_BG_COLOR, Rectangle, Shape, Tool } from "./Types"
+import { Canvas_BG_COLOR, Circle, Pencil, Rectangle, Shape, Tool } from "./Types"
 
 export class Game {
     private canvas: HTMLCanvasElement
@@ -21,6 +21,7 @@ export class Game {
     private color: string
     private lineWidth: number
     private lineWidthMultiplier = 0.6
+    private localPencilCoords: { x: number, y: number }[]
 
     constructor(canvas: HTMLCanvasElement, tool: Tool, lineWidth: number, color: string) {
         this.canvas = canvas
@@ -38,6 +39,7 @@ export class Game {
         this.tool = tool
         this.color = color
         this.lineWidth = lineWidth * this.lineWidthMultiplier
+        this.localPencilCoords = []
 
         this.init()
     }
@@ -88,6 +90,10 @@ export class Game {
         if (this.tool === "hand") {
             this.lastPanning = { panX: this.panning.panX, panY: this.panning.panY }
         }
+        // else if (this.tool === 'pencil') {
+        //     this.localPencilCoords.length = 0
+        //     this.localPencilCoords.push({ x: this.startX, y: this.startY })
+        // }
     }
 
     private mouseUpHandler = (e: MouseEvent) => {
@@ -100,7 +106,7 @@ export class Game {
 
         if (this.tool === "rectangle") {
             const { x, y } = this.toCanvasCoords(e.clientX, e.clientY)
-            const rectangle: Shape = {
+            const rectangle: Rectangle = {
                 type: "rectangle",
                 startX: this.startX,
                 startY: this.startY,
@@ -111,6 +117,34 @@ export class Game {
             }
 
             this.shapes.push(rectangle)
+        }
+        else if (this.tool === 'circle') {
+            const { x, y } = this.toCanvasCoords(e.clientX, e.clientY)
+            const circle: Circle = {
+                type: "circle",
+                startX: this.startX,
+                startY: this.startY,
+                endX: x,
+                endY: y,
+                color: this.color,
+                lineWidth: this.lineWidth
+            }
+
+            this.shapes.push(circle)
+        }
+        else if (this.tool === 'pencil') {
+
+            const pencil: Pencil = {
+                type: "pencil",
+                startPoints: { x: this.startX, y: this.startY },
+                cords: [...this.localPencilCoords],
+                color: this.color,
+                lineWidth: this.lineWidth
+            }
+
+            this.shapes.push(pencil)
+
+            this.localPencilCoords.length = 0
         }
 
 
@@ -139,14 +173,41 @@ export class Game {
             this.ctx.strokeStyle = this.color
             this.ctx.lineWidth = this.lineWidth
             this.ctx.strokeRect(this.startX, this.startY, x - this.startX, y - this.startY)
-
         }
+        else if (this.tool === "circle") {
+            this.render()
 
+            const width = x - this.startX;
+            const height = y - this.startY;
+            const radius = Math.max(Math.abs(width), Math.abs(height)) / 2;
+            const centerX = this.startX + width / 2;
+            const centerY = this.startY + height / 2;
 
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = this.color;
+            this.ctx.lineWidth = this.lineWidth;
+            this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            this.ctx.stroke();
+        }
+        else if (this.tool === 'pencil') {
+            this.render()
+
+            this.localPencilCoords.push({ x, y })
+
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = this.color;
+            this.ctx.lineWidth = this.lineWidth;
+            this.ctx.moveTo(this.startX, this.startY)
+            this.localPencilCoords.forEach(({ x, y }) => {
+                if (!this.ctx) return
+                this.ctx.lineTo(x, y)
+            })
+            this.ctx.stroke()
+        }
     }
 
 
-    render() {
+    private render() {
 
         if (!this.ctx) return
 
@@ -159,7 +220,41 @@ export class Game {
         // draw shapes
         this.shapes.forEach((shape: Shape) => {
             if (shape.type === "rectangle") this.drawRectangle(shape)
+            else if (shape.type === 'circle') this.drawCircle(shape)
+            else if (shape.type === 'pencil') this.drawPencil(shape)
+
         })
+
+    }
+
+    private drawPencil = (shape: Pencil) => {
+        if (!this.ctx) return
+
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = shape.color;
+        this.ctx.lineWidth = shape.lineWidth;
+        this.ctx.moveTo(shape.startPoints.x, shape.startPoints.y)
+        shape.cords.forEach(({ x, y }) => {
+            if (!this.ctx) return
+            this.ctx.lineTo(x, y)
+        })
+        this.ctx.stroke()
+    }
+
+    private drawCircle = (shape: Circle) => {
+        if (!this.ctx) return
+
+        const width = shape.endX - shape.startX;
+        const height = shape.endY - shape.startY;
+        const radius = Math.max(Math.abs(width), Math.abs(height)) / 2;
+        const centerX = shape.startX + width / 2;
+        const centerY = shape.startY + height / 2;
+
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = shape.color;
+        this.ctx.lineWidth = shape.lineWidth;
+        this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        this.ctx.stroke();
 
     }
 
@@ -202,6 +297,5 @@ export class Game {
     addBufferShapes = (New_Shapes: Shape[]) => {
         this.bufferShapes = [...this.bufferShapes, ...New_Shapes]
     }
-
 
 }

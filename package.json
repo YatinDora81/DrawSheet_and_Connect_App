@@ -8,7 +8,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "start:ws": "pnpm --filter @repo/ws-server start",
     "start:http": "pnpm --filter @repo/http-server start",
-    "start:connect": "pnpm --filter chat-app-frontend start"
+    "start:connect": "pnpm --filter chat-app-frontend start",
+    "start:drawsheet": "pnpm --filter draw-sheet start"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
