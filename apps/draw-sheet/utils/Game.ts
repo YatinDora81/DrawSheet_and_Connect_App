@@ -2,7 +2,7 @@
 // add redraw function
 // add size in text
 
-import { Canvas_BG_COLOR, Circle, Pencil, Rectangle, Shape, Tool } from "./Types"
+import { Canvas_BG_COLOR, Circle, Pencil, Rectangle, Shape, Textbox, Tool } from "./Types"
 
 export class Game {
     private canvas: HTMLCanvasElement
@@ -54,6 +54,7 @@ export class Game {
         this.ctx.fillStyle = Canvas_BG_COLOR
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
         this.addEventListeners()
+        this.render()
     }
 
     private addEventListeners() {
@@ -222,8 +223,18 @@ export class Game {
             if (shape.type === "rectangle") this.drawRectangle(shape)
             else if (shape.type === 'circle') this.drawCircle(shape)
             else if (shape.type === 'pencil') this.drawPencil(shape)
-
+            else if (shape.type === 'textbox') this.drawTextBox(shape)
         })
+
+    }
+
+    private drawTextBox = (shape: Textbox) => {
+        if (!this.ctx) return
+        // console.log("freu" , shape);
+        
+        // this.ctx.font = shape.fontStyle
+        // this.ctx.fillStyle = shape.color
+        // this.ctx.strokeText(shape.text, shape.startX, shape.startY)
 
     }
 
@@ -293,9 +304,31 @@ export class Game {
     changeTool = (tool: Tool) => {
         this.tool = tool
     }
+    addTextBox = (text: string, color: string, fontStyle: string, coordinates: { x: number, y: number }) => {
+        if (this.bufferShapes.length > 0) {
+            this.shapes = [...this.shapes, ...this.bufferShapes]
+            this.bufferShapes.length = 0
+        }
+
+        const { x: pannedX, y: pannedY } = this.toCanvasCoords(coordinates.x, coordinates.y)
+
+        const textbox: Textbox = {
+            type: 'textbox',
+            startX: pannedX,
+            startY: pannedY,
+            color,
+            fontStyle,
+            text
+        }
+        this.shapes.push(textbox)
+        console.log("it is ", textbox);
+
+        this.render()
+    }
 
     addBufferShapes = (New_Shapes: Shape[]) => {
         this.bufferShapes = [...this.bufferShapes, ...New_Shapes]
     }
+
 
 }

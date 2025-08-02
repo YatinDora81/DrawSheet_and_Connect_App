@@ -16,7 +16,7 @@ function AllSheetsClient() {
 
     const [showSubMenu, setShowSubMenu] = useState(-1)
 
-    const [isGridUi, setIsGridUi] = useState(false)
+    const [isGridUi, setIsGridUi] = useState(true)
     const DrawingTabs: { name: string }[] = [{ name: "All" }, { name: "Favorites" }, { name: "Recent" }]
     const [selectedTab, setSetlectedTab] = useState("All")
     const {showModal, setShowModal ,Modals } = useModal()

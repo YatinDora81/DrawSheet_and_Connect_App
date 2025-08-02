@@ -101,16 +101,15 @@ export type Pencil = {
   lineWidth: number,
   color: string
 }
-
-export type Shape = Rectangle | Circle | Pencil |
-{
+export type Textbox = {
   type: "textbox",
   startX: number,
   startY: number,
   text: string,
-  font: string,
-  lineWidth: number,
+  fontStyle: string,
   color: string
 }
+
+export type Shape = Rectangle | Circle | Pencil | Textbox
 
 export const Canvas_BG_COLOR = "#1A1A1F"

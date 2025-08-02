@@ -7,7 +7,7 @@ function SideBar({ selectedTool, setSelectedTool , downloadCanvasAsImageHandler 
 
 
     return (
-        <div className=' absolute bg-[#26262A]/70 top-[50%] left-[3vh] translate-y-[-50%] flex  flex-col justify-evenly items-center min-h-[25rem] w-[4.5rem] rounded-2xl gap-1 border border-gray-700'>
+        <div className=' absolute bg-[#26262A]/70 top-[50%] left-[3vh] translate-y-[-50%] flex  flex-col justify-evenly items-center min-h-[25rem] w-[4.5rem] rounded-2xl gap-1 border border-gray-700 z-[123]'>
             {
                 Frontend_SideBar_Tools.map((t: { tool: Tool, icon: IconType }) => <div 
                 onClick={()=>{

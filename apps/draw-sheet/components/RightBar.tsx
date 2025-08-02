@@ -10,7 +10,7 @@ function RightBar() {
 
     return (
         !isBarOpen ?
-            <div className=' absolute top-[1.2rem] right-[1.2rem]'>
+            <div className='z-[123] absolute top-[1.2rem] right-[1.2rem]'>
 
                 <div className=' text-xl text-zinc-300 hover:text-white transition-all duration-200 hover:bg-[#26262A]/80 rounded-xl cursor-pointer' style={{ padding: "1rem" }}><LuUsers /></div>
 
@@ -18,7 +18,7 @@ function RightBar() {
 
             :
 
-            <div className=' absolute h-full w-[18rem] bg-zinc-950/40 right-0 top-0 flex-col items-' >
+            <div className='z-[123] absolute h-full w-[18rem] bg-zinc-950/40 right-0 top-0 flex-col items-' >
 
                 <div className=' w-full font-semibold text-[1.1rem] flex justify-between items-center border-b border-zinc-800/90 h-[9%]' style={{ paddingInline: "1rem", paddingBlock: "0.5rem" }}>
                     <div>Collaboration</div>
