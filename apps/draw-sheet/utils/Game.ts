@@ -17,7 +17,7 @@ export class Game {
     private lastPanning: { panX: number, panY: number }
     private startClientX: number
     private startClientY: number
-    private scale: number
+    public scale: number
     private color: string
     private lineWidth: number
     private lineWidthMultiplier = 0.6
@@ -230,11 +230,11 @@ export class Game {
 
     private drawTextBox = (shape: Textbox) => {
         if (!this.ctx) return
-        // console.log("freu" , shape);
         
-        // this.ctx.font = shape.fontStyle
-        // this.ctx.fillStyle = shape.color
-        // this.ctx.strokeText(shape.text, shape.startX, shape.startY)
+        this.ctx.font = shape.fontStyle;
+        this.ctx.fillStyle = shape.color;
+        this.ctx.textBaseline = 'top'; // optional: aligns better
+        this.ctx.fillText(shape.text, shape.startX, shape.startY);
 
     }
 

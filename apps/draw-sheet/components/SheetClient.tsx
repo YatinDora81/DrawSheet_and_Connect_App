@@ -13,13 +13,23 @@ import { LiaDownloadSolid } from "react-icons/lia"
 function SheetClient() {
 
   const [game, setGame] = useState<Game | null>(null)
-  const [selectedTool, setSelectedTool] = useState<Tool>("rectangle")
+  const [selectedTool, setSelectedTool] = useState<Tool>("textbox")
   const [lineWidth, setLineWidth] = useState(5)
   const [color, setColor] = useState("#2A85FF") //blue color
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [textTool, setTextTool] = useState("")
   const [currCords, setCurrCords] = useState<{ x: number, y: number } | null>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
+  const textAreaDivRef = useRef<HTMLDivElement | null>(null);
+
+  const addingTextHandler = () => {
+    if (currCords) {
+      textAreaRef.current?.blur()
+      setCurrCords(null)
+      if (textTool.trim().length !== 0 && game) game.addTextBox(textTool, color, `${lineWidth * 5 }px Arial`, currCords)
+      setTextTool("")
+    }
+  }
 
   useEffect(() => {
     if (canvasRef.current && game === null) {
@@ -35,6 +45,21 @@ function SheetClient() {
     }
 
   }, [canvasRef.current])
+
+  useEffect(() => {
+    if (textAreaDivRef.current && currCords) {
+      const divElement = textAreaDivRef.current
+      const wheelStopper = (e: WheelEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+      };
+      divElement.addEventListener("wheel" , wheelStopper)
+
+      return ()=>{
+        divElement.removeEventListener("wheel" , wheelStopper)
+      }
+    }
+  }, [currCords])
 
   useEffect(() => {
     if (!game) return
@@ -89,37 +114,40 @@ function SheetClient() {
       <BottomBar selectedColor={color} setSelectedColor={setColor} lineWidth={lineWidth} setLineWidth={setLineWidth} />
       <RightBar />
       <canvas onClick={(e) => {
-        if (selectedTool === "textbox") setCurrCords({ x: e.clientX, y: e.clientY })
+        if (selectedTool === "textbox" && !currCords) setCurrCords({ x: e.clientX, y: e.clientY })
+        else if (selectedTool === "textbox") addingTextHandler()
       }} ref={canvasRef} className={` h-full w-full ${selectedTool === "hand" ? 'cursor-move' : 'cursor-crosshair'}`}></canvas>
-      {currCords !== null && selectedTool === 'textbox' && <textarea
-        autoFocus={true}
-        className={`absolute outline-none resize-none overflow-hidden bg-transparent border-none no-underline caret-white `}
-        value={textTool}
-        spellCheck={false}
-        ref={textAreaRef}
-        onChange={(e) => setTextTool(e.target.value)}
-        onClick={()=>{
-          if(currCords){
-            textAreaRef.current?.blur()
-            setCurrCords(null)
-            game?.addTextBox(textTool , color , `${lineWidth * 5}px Arial` , currCords)
-            setTextTool("")
-          }
-        }}
-        style={{
-          top: currCords.y,
-          left: currCords.x,
-          fontSize: `calc(${lineWidth * 5}px)`,
-          fontFamily: 'sans-serif',
-          padding: 0,
-          margin: 0,
-          lineHeight: '1',
-          color: color,
-          width: `calc(100% - ${currCords.x}px)`,
-          height: `calc(100% - ${currCords.y}px)`,
-          zIndex : 1
-        }}
-      />}
+      {currCords !== null && selectedTool === 'textbox' &&
+        <div
+          ref={textAreaDivRef}
+          className={`absolute overflow-hidden  `}
+          style={{
+            top: currCords.y,
+            left: currCords.x,
+            width: `calc(100% - ${currCords.x}px)`,
+            height: `calc(100% - ${currCords.y}px)`,
+            zIndex: 1
+          }}
+        >
+          <div
+            className=" bg-transparent w-full h-full absolute z-10"
+            onClick={() => addingTextHandler}
+          ></div>
+          <textarea
+            autoFocus={true}
+            className={`w-full  h-full outline-none resize-none overflow-hidden bg-transparent border-none no-underline caret-white `}
+            value={textTool}
+            spellCheck={false}
+            ref={textAreaRef}
+            onChange={(e) => setTextTool(e.target.value)}
+            onBlur={addingTextHandler}
+            style={{
+              fontSize: `calc(${lineWidth * 5 * (game?.scale || 1)}px)`,
+              fontFamily: 'sans-serif',
+              lineHeight: '1',
+              color: color,
+            }}
+          /></div>}
 
     </div>
   )
