@@ -63,8 +63,8 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         if (socket?.OPEN === 1 && rooms?.length > 0) {
             rooms.forEach((room: any) => {
-                
-                setNewMessagesMap((prev)=>{
+
+                setNewMessagesMap((prev) => {
                     const map = new Map<string, number>(prev);
                     if (!map.has(room.room.id)) map.set(room.room.id, 0);
                     return map
@@ -76,6 +76,10 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
                     }
                 }))
             });
+
+            socket.send(JSON.stringify({
+                type: "get-online-users"
+            }))
         }
     }, [rooms])
 

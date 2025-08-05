@@ -29,9 +29,9 @@ wss.on("connection", (ws: WebSocket, request) => {
     }
 
     const userrr = wsMap.get(ws);
-    if(userrr) userManager.createUser(ws, userrr);
+    if (userrr) userManager.createUser(ws, userrr);
 
-    ws.on("message",async (ev) => {
+    ws.on("message", async (ev) => {
         let obj: any
         try {
             const s = ev.toString();
@@ -64,6 +64,8 @@ wss.on("connection", (ws: WebSocket, request) => {
             sendResponse(ws, true, "join", data, "Room Joined Successfully")
 
             roomManager.notifyUsers(false, ws, obj.payload.roomId, { type: "notification", success: true, data: user.name + " has joined room", message: user.name + " has joined room" })
+
+
 
         }
         else if (obj.type === "subscribe") {
@@ -105,16 +107,16 @@ wss.on("connection", (ws: WebSocket, request) => {
 
             try {
                 await prismaClient.chat.create({
-                    data : {
-                        message : obj.payload.message,
-                        userId : user.user_id,
-                        roomId : obj.payload.roomId
+                    data: {
+                        message: obj.payload.message,
+                        userId: user.user_id,
+                        roomId: obj.payload.roomId
                     }
                 })
                 roomManager.addChat(user, obj.payload.message, obj.payload.roomId)
-    
-                
-    
+
+
+
                 roomManager.notifyUsers(true, ws, obj.payload.roomId, {
                     type: "chat", success: true, data: {
                         sender: {
@@ -127,9 +129,9 @@ wss.on("connection", (ws: WebSocket, request) => {
                 })
             } catch (error) {
                 console.log(error);
-                sendErrorResponse(ws , "Error Occour At Adding Chat!!!" , "Error Occour At Adding Chat!!!");
+                sendErrorResponse(ws, "Error Occour At Adding Chat!!!", "Error Occour At Adding Chat!!!");
             }
-            
+
         }
         else if (obj.type === "leave") {
             // input looks like
@@ -145,24 +147,38 @@ wss.on("connection", (ws: WebSocket, request) => {
             roomManager.leaveRoom(user, obj.payload.roomId);
             roomManager.notifyUsers(false, ws, obj.payload.roomId, { type: "notification", success: true, data: user.name + " has left room", message: user.name + " has left room" })
         }
+        else if (obj.type === "get-online-users") {
+            // input looks like
+            // {
+            //     type : "get-online-users",
+            // }
+            online_offline_notification(ws)
+
+        }
         else {
             sendErrorResponse(ws, "Invalid Request Type", "Invalid Request Type")
         }
 
     })
 
-    ws.on("error" , ()=>{
-        sendErrorResponse(ws , "Something Went Wrong!!!" , "Something Went Wrong!!!" );
+    ws.on("error", () => {
+        sendErrorResponse(ws, "Something Went Wrong!!!", "Something Went Wrong!!!");
         // ws.close();
     })
 
     ws.on("close", () => {
         const user = wsMap.get(ws);
         if (user) {
-            userManager.removeUserEntry(ws);
             roomManager.removeUserEntry(user);
+            online_offline_notification(ws);
+            userManager.removeUserEntry(ws);
         }
         wsMap.delete(ws);
     })
 
 })
+
+
+const online_offline_notification = (ws: WebSocket) => {
+    userManager.getUserMap(ws)?.rooms.forEach((roomId) => roomManager.update_online_user_count(roomId))    
+}

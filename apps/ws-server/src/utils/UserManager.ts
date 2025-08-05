@@ -1,13 +1,13 @@
 import { WebSocket } from "ws";
 
-export  interface User{
+export interface User{
     user_id : string,
     email : string,
     name : string,
     socket : WebSocket
 }
 
-interface UserMapValue {
+export interface UserMapValue {
     rooms : Set<string>, // string room id
     user : User
 }
@@ -54,6 +54,10 @@ export class UserManager{
             return;
         }
         this.userMap.delete(ws);
+    }
+
+    getUserMap(ws : WebSocket){
+        return this.userMap.get(ws)
     }
 
     
