@@ -64,6 +64,7 @@ wss.on("connection", (ws: WebSocket, request) => {
             sendResponse(ws, true, "join", data, "Room Joined Successfully")
 
             roomManager.notifyUsers(false, ws, obj.payload.roomId, { type: "notification", success: true, data: user.name + " has joined room", message: user.name + " has joined room" })
+            roomManager.update_online_user_count(obj.payload.roomId)
 
 
 

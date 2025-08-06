@@ -55,6 +55,9 @@ const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: number, se
                             roomId: d.data.id
                         }
                     }))
+                    socket.send(JSON.stringify({
+                        type: "get-online-users"
+                    }))
                 }
 
 

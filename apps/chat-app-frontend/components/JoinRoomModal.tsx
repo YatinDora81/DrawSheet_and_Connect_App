@@ -11,12 +11,12 @@ const JoinNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setS
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false)
-    const { setRooms , newMessagesMap , setNewMessagesMap  } = useRoom()
-    const {socket} = useSocket()
+    const { setRooms, newMessagesMap, setNewMessagesMap } = useRoom()
+    const { socket } = useSocket()
 
     const handleSubmit = async () => {
-        
-        
+
+
         try {
 
             if (!inputRef || !inputRef.current || inputRef.current.value.trim() === "") {
@@ -31,37 +31,40 @@ const JoinNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setS
             const d = await res.json();
 
             // console.log(d);
-            if(d.success){
+            if (d.success) {
                 inputRef.current.value = ""
                 setError("");
                 toast.success(d.message)
-                
+
                 setShowModal(-1)
-                setRooms((prev)=>[ { "room" : d.data} , ...prev ])
+                setRooms((prev) => [{ "room": d.data }, ...prev])
                 // @ts-ignore
-                setNewMessagesMap((prev)=>{
-                    const map = new Map<string,number>(prev)
-                    map.set(d.data.id,0);
+                setNewMessagesMap((prev) => {
+                    const map = new Map<string, number>(prev)
+                    map.set(d.data.id, 0);
                     return map
                 })
 
                 // fetchRooms()
-                if(socket && socket.OPEN){
+                if (socket && socket.OPEN) {
                     socket.send(JSON.stringify({
-                    type: "join",
-                    payload: {
-                        roomId: d.data.id
-                    }
-                }))    
+                        type: "join",
+                        payload: {
+                            roomId: d.data.id
+                        }
+                    }))
+                    socket.send(JSON.stringify({
+                        type: "get-online-users"
+                    }))
                 }
             }
-            else{
+            else {
                 console.log(d);
                 setError(d.message);
                 toast.error(d.message || "Something Went Wrong!!!")
             }
 
-            
+
 
         } catch (error) {
             console.log("Error", error);
@@ -69,14 +72,14 @@ const JoinNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setS
             toast.error("Please Try Again Later!!!")
 
         }
-        finally{
+        finally {
             setLoading(false)
         }
     }
 
     return (
-        <div onClick={(e)=>{e.stopPropagation()}} className=' relative text-white w-[45%] min-h-[35%] border border-zinc-700 bg-zinc-900 rounded-2xl py-4 px-6 flex flex-col items-start justify-evenly'>
-            <IoIosCloseCircleOutline className=' text-red-600 text-3xl absolute right-2 top-2 cursor-pointer' onClick={()=>setShowModal(-1)} />
+        <div onClick={(e) => { e.stopPropagation() }} className=' relative text-white w-[45%] min-h-[35%] border border-zinc-700 bg-zinc-900 rounded-2xl py-4 px-6 flex flex-col items-start justify-evenly'>
+            <IoIosCloseCircleOutline className=' text-red-600 text-3xl absolute right-2 top-2 cursor-pointer' onClick={() => setShowModal(-1)} />
             <h1 className=' text-3xl w-full text-center'> Join New Room</h1>
             <div className=' w-full flex flex-col gap-2'>
                 <input ref={inputRef} onKeyDown={(e) => {
@@ -85,7 +88,7 @@ const JoinNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setS
                     }
                 }} type='text' placeholder='Enter Room Code' className=' bg-zinc-800 w-full py-2 text-lg px-2 rounded-xl'></input>
                 {error.trim().length !== 0 && <div className=' text-red-500 text-sm -my-1 px-1'>*{error}</div>}
-                <button disabled={loading} onClick={handleSubmit} className=' w-full bg-blue-600 rounded-sm  transition-all duration-200 hover:bg-blue-700 cursor-pointer h-10 text-xl'>{loading ? <PulseLoader color='white' size={9} /> :  "Join Room"}</button>
+                <button disabled={loading} onClick={handleSubmit} className=' w-full bg-blue-600 rounded-sm  transition-all duration-200 hover:bg-blue-700 cursor-pointer h-10 text-xl'>{loading ? <PulseLoader color='white' size={9} /> : "Join Room"}</button>
             </div>
         </div>
     )

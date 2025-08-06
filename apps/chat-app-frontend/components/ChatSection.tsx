@@ -16,10 +16,11 @@ import RoomInfo from './RoomInfo'
 
 const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
 
-    const { currRoom , onlineUsers } = useRoom()
+    const { currRoom, onlineUsers } = useRoom()
     const { socket } = useSocket()
     const [chats, setChats] = useState<any[]>([])
     const [message, setMessage] = useState("")
+    const [currOnlineUsers, setCurrOnlineUsers] = useState(1)
     const [userInfo, setUserInfo] = useState<any>(null)
     const bottomRef = useRef<HTMLDivElement>(null);
     const [scroll, setScroll] = useState(0);
@@ -45,6 +46,9 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
                 payload: {
                     roomId: currRoom.id
                 }
+            }))
+            socket.send(JSON.stringify({
+                type: "get-online-users"
             }))
         }
     }
@@ -124,17 +128,34 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
     }
 
     const incommingMessages = () => {
+
         if (socket?.OPEN) {
+
             socket.onmessage = (ev) => {
-                // console.log(JSON.parse(ev.data));
+
                 const obj = JSON.parse(ev.data)
                 if (obj.type === "chat") {
+
                     setChats((prev) => [...prev, obj.data])
 
+                }
+                else if (obj.type === "online-users" && obj?.data?.roomId === currRoom.id) {
+                    setCurrOnlineUsers(obj.data.online_count)
+                    // {
+                    //     type: "online-users",
+                    //     success: true,
+                    //     data: {
+                    //         online_count: uniqueUsers.size,
+                    //         users : uniqueUsers,
+                    //         roomId,
+                    //     },
+                    //     message: "user is online😊"
+                    // }
                 }
 
             }
         }
+
     }
 
     const decodeToken = () => {
@@ -160,6 +181,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [scroll])
 
+
     useEffect(() => {
 
         if (socket && currRoom) {
@@ -176,6 +198,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
                 join_code: null
             })
             setShowRoomInfoPage(false)
+            setCurrOnlineUsers(1)
         }
 
     }, [currRoom, socket])
@@ -215,7 +238,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
 
                     <div className=' flex items-center h-full gap-1 '>
                         {/* Group Icon */}
-                        <div onClick={()=>setShowRoomInfoPage(true)} className=' cursor-pointer h-[40px] w-[40px] rounded-full bg-gray-400'>
+                        <div onClick={() => setShowRoomInfoPage(true)} className=' cursor-pointer h-[40px] w-[40px] rounded-full bg-gray-400'>
                             {!currRoom.roomPic && !updatedRoomDetails.roomPic ? <svg
                                 viewBox="0 0 212 212"
                                 height="40"
@@ -241,13 +264,13 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
                                 <img className=' w-full h-full rounded-full object-cover object-center' src={updatedRoomDetails.roomPic && updatedRoomDetails.roomPic.trim() !== "" ? updatedRoomDetails.roomPic : currRoom.roomPic} alt='Room Pic' loading='lazy' />}
                         </div>
 
-                        <div onClick={()=>setShowRoomInfoPage(true)} className=' cursor-pointer text-xl font-semibold'>{updatedRoomDetails.roomName ? updatedRoomDetails.roomName : currRoom.roomName}</div>
+                        <div onClick={() => setShowRoomInfoPage(true)} className=' cursor-pointer text-xl font-semibold'>{updatedRoomDetails.roomName ? updatedRoomDetails.roomName : currRoom.roomName}</div>
 
                     </div>
 
 
                     <div className=' h-full flex items-center justify-center gap-2'>
-                        <div className=' flex justify-center items-center'><GoDotFill className=' text-green-500' />{onlineUsers && currRoom.id && onlineUsers.has(currRoom.id) ? onlineUsers.get(currRoom.id)?.count : '1' } Online</div>
+                        <div className=' flex justify-center items-center'><GoDotFill className=' text-green-500' />{currOnlineUsers} Online</div>
                         <ChatMenuItem setShowRoomInfoPage={setShowRoomInfoPage} />
 
                         {/* <IoCloseCircleOutline className=' text-4xl text-red-500 transition-all duration-200 hover:text-red-700' /> */}
@@ -290,3 +313,5 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
 }
 
 export default ChatSection
+
+// export const dynamic = "force-dynamic"
