@@ -16,7 +16,7 @@ import RoomInfo from './RoomInfo'
 
 const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
 
-    const { currRoom } = useRoom()
+    const { currRoom , onlineUsers } = useRoom()
     const { socket } = useSocket()
     const [chats, setChats] = useState<any[]>([])
     const [message, setMessage] = useState("")
@@ -247,7 +247,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
 
 
                     <div className=' h-full flex items-center justify-center gap-2'>
-                        <div className=' flex justify-center items-center'><GoDotFill className=' text-green-500' />9 Online</div>
+                        <div className=' flex justify-center items-center'><GoDotFill className=' text-green-500' />{onlineUsers && currRoom.id && onlineUsers.has(currRoom.id) ? onlineUsers.get(currRoom.id)?.count : '1' } Online</div>
                         <ChatMenuItem setShowRoomInfoPage={setShowRoomInfoPage} />
 
                         {/* <IoCloseCircleOutline className=' text-4xl text-red-500 transition-all duration-200 hover:text-red-700' /> */}

@@ -5,12 +5,14 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import { useRoom } from '../hooks/useRoom';
 import { JOIN_NEW_ROOM_URL } from '@repo/config/URL';
 import { PulseLoader } from 'react-spinners';
+import { useSocket } from '../hooks/useSocket';
 
 const JoinNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setShowModal: (value: number) => void }) => {
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false)
     const { setRooms , newMessagesMap , setNewMessagesMap  } = useRoom()
+    const {socket} = useSocket()
 
     const handleSubmit = async () => {
         
@@ -44,6 +46,14 @@ const JoinNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setS
                 })
 
                 // fetchRooms()
+                if(socket && socket.OPEN){
+                    socket.send(JSON.stringify({
+                    type: "join",
+                    payload: {
+                        roomId: d.data.id
+                    }
+                }))    
+                }
             }
             else{
                 console.log(d);

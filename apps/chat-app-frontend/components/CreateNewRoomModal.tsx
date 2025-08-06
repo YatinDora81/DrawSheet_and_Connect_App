@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { PulseLoader } from 'react-spinners';
 import { useRoom } from '../hooks/useRoom';
+import { useSocket } from '../hooks/useSocket';
 
 const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setShowModal: (value: number) => void }) => {
     // console.log(showModal); 
@@ -13,6 +14,7 @@ const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: number, se
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false)
     const { setRooms, newMessagesMap, setNewMessagesMap } = useRoom()
+    const { socket } = useSocket()
 
     const handleSubmit = async () => {
 
@@ -40,11 +42,20 @@ const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: number, se
                 setShowModal(-1)
                 setRooms((prev) => [{ "room": d.data }, ...prev])
                 // @ts-ignore
-                setNewMessagesMap((prev)=>{
-                    const map = new Map<string,number>(prev)
-                    map.set(d.data.id,0);
+                setNewMessagesMap((prev) => {
+                    const map = new Map<string, number>(prev)
+                    map.set(d.data.id, 0);
                     return map
                 })
+
+                if (socket && socket.OPEN) {
+                    socket.send(JSON.stringify({
+                        type: "join",
+                        payload: {
+                            roomId: d.data.id
+                        }
+                    }))
+                }
 
 
                 // fetchRooms()

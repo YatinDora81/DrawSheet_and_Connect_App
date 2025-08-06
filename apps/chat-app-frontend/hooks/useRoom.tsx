@@ -14,7 +14,9 @@ export interface RoomContextType {
     setLoadingRooms: React.Dispatch<React.SetStateAction<boolean>>,
     fetchRooms: () => void,
     newMessagesMap: Map<string, number>,
-    setNewMessagesMap: (val: Map<string, number>) => void
+    setNewMessagesMap: (val: Map<string, number>) => void,
+    onlineUsers: Map<String, { count: number, members: Set<string> }>,
+    setOnlineUsers: (val: Map<String, { count: number, members: Set<string> }>) => void
 }
 
 const RoomContext = createContext<RoomContextType | null>(null)
@@ -25,6 +27,7 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
     const [currRoom, setCurrRoom] = useState<any | null>(null)
     const [loadingRooms, setLoadingRooms] = useState(false)
     const [newMessagesMap, setNewMessagesMap] = useState<Map<string, number>>(new Map<string, number>());
+    const [onlineUsers, setOnlineUsers] = useState<Map<String, { count: number, members: Set<string> }>>(new Map<String, { count: number, members: Set<string> }>())
     const { socket } = useSocket()
 
     console.log("rooommsm", rooms);
@@ -84,6 +87,36 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
     }, [rooms])
 
     useEffect(() => {
+        if (socket && socket.OPEN === 1) {
+            socket.onmessage = (ev) => {
+                const obj = JSON.parse(ev.data);
+
+                if (obj.type === "online-users") {
+
+                    setOnlineUsers((prev) => {
+                        const newMap = new Map<String, { count: number, members: Set<string> }>(prev)
+                        const roomId = obj.data.roomId
+                        newMap.set(roomId, { count: obj.data.online_count, members: obj.data.users })
+
+                        return newMap
+                    })
+
+                    // {
+                    //     type: "online-users",
+                    //     success: true,
+                    //     data: {
+                    //         online_count: uniqueUsers.size,
+                    //         users : uniqueUsers,
+                    //         roomId,
+                    //     },
+                    //     message: "user is online😊"
+                    // }
+                }
+            }
+        }
+    }, [socket])
+
+    useEffect(() => {
         // if(currRoom===null || currRoom.id===null) return;
         // @ts-ignore
         if (currRoom && newMessagesMap.get(currRoom.id) > 0) {
@@ -98,7 +131,7 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
 
 
 
-    return <RoomContext.Provider value={{ rooms, setRooms, currRoom, setCurrRoom, loadingRooms, setLoadingRooms, fetchRooms, setNewMessagesMap, newMessagesMap }}>{children}</RoomContext.Provider>
+    return <RoomContext.Provider value={{ rooms, setRooms, currRoom, setCurrRoom, loadingRooms, setLoadingRooms, fetchRooms, setNewMessagesMap, newMessagesMap, onlineUsers, setOnlineUsers }}>{children}</RoomContext.Provider>
 }
 
 
