@@ -4,6 +4,7 @@ export interface User{
     user_id : string,
     email : string,
     name : string,
+    profilePic : string,
     socket : WebSocket
 }
 

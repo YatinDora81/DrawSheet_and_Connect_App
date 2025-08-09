@@ -37,6 +37,7 @@ export function isUserVerified(ws : WebSocket , request : any){
         user_id: userInfo.user_id,
         name : userInfo.name,
         email : userInfo.email,
+        profilePic : userInfo.profilePic,
         socket :ws
     }
     

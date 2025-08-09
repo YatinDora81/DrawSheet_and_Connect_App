@@ -58,6 +58,7 @@ wss.on("connection", (ws: WebSocket, request) => {
                 name: user.name,
                 user_id: user.user_id,
                 email: user.email,
+                profilePic: user.profilePic,
                 roomId: obj.payload.roomId
             }
 
@@ -66,8 +67,25 @@ wss.on("connection", (ws: WebSocket, request) => {
             roomManager.notifyUsers(false, ws, obj.payload.roomId, { type: "notification", success: true, data: user.name + " has joined room", message: user.name + " has joined room" })
             roomManager.update_online_user_count(obj.payload.roomId)
 
-
-
+        }
+        else if (obj.type === "newly-joined") {
+            // input looks like
+            // {
+            //     type :  "newly-joined",
+            //     payload : {
+            //         roomId : ""
+            //     }
+            // }
+            const user = wsMap.get(ws);
+            if (!user) return;
+            const data = {
+                id: user.user_id,
+                name: user.name,
+                email: user.email,
+                profilePic: user.profilePic,
+                roomId : obj.payload.roomId
+            }
+            roomManager.notifyUsers(false, ws, obj.payload.roomId, { type: "newly-joined", success: true, data })
         }
         else if (obj.type === "subscribe") {
             // input looks like
@@ -124,6 +142,7 @@ wss.on("connection", (ws: WebSocket, request) => {
                             name: user.name,
                             user_id: user.user_id,
                             email: user.email,
+                            profilePic: user.profilePic,
                             roomId: obj.payload.roomId
                         }, message: obj.payload.message
                     }, message: "New Chat Added"
@@ -181,5 +200,5 @@ wss.on("connection", (ws: WebSocket, request) => {
 
 
 const online_offline_notification = (ws: WebSocket) => {
-    userManager.getUserMap(ws)?.rooms.forEach((roomId) => roomManager.update_online_user_count(roomId))    
+    userManager.getUserMap(ws)?.rooms.forEach((roomId) => roomManager.update_online_user_count(roomId))
 }

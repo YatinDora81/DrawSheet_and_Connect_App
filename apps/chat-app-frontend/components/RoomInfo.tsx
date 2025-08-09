@@ -12,7 +12,7 @@ import { BeatLoader, ClipLoader } from 'react-spinners'
 import { CLOUD_NAME, UPLOAD_PRESET } from '../utils/cloudinary'
 import { UPDATE_ROOM_DETAILS } from '@repo/config/URL'
 
-const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails , setShowRoomInfoPage }: {setShowRoomInfoPage : any, updatedRoomDetails: { roomPic: null | string, roomName: null | string, join_code: null | string }, setUpdatedRoomDetails: any }) => {
+const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails, setShowRoomInfoPage }: { setShowRoomInfoPage: any, updatedRoomDetails: { roomPic: null | string, roomName: null | string, join_code: null | string }, setUpdatedRoomDetails: any }) => {
 
     const { currRoom, setCurrRoom, setRooms } = useRoom()
     const { user, userLoading } = useAuth()
@@ -24,12 +24,13 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails , setShowRoomInfoP
     const [file, setFile] = useState<File | null>();
     const [fileLoading, setFileLoading] = useState(false)
     const [searchMembers, setSearchMembers] = useState<any[]>([])
+    const [uniqueMembers, setUniqueMembers] = useState<any[]>([]);
     const [searchMemberText, setSearchMemberText] = useState("")
     const [showSearchMemberInput, setShowSearchMemberInput] = useState(false)
     const memberInputRef = useRef<HTMLInputElement | null>(null)
-    useEffect(()=>{
-        if(showSearchMemberInput && memberInputRef.current) memberInputRef.current.focus()
-    } , [showSearchMemberInput])
+    useEffect(() => {
+        if (showSearchMemberInput && memberInputRef.current) memberInputRef.current.focus()
+    }, [showSearchMemberInput])
 
     const copyRoomIdHandler = () => {
         if (!currRoom.join_code) {
@@ -44,9 +45,28 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails , setShowRoomInfoP
         if (currRoom) {
             setRoomNameInpValue(currRoom.roomName)
             setSearchMembers(currRoom.members)
+            const set = new Set<string>();
+            currRoom.members?.map((m: any) => set.add(JSON.stringify(m)))
+            setUniqueMembers(() => {
+                const arr: any[] = [];
+                set.forEach((s: string) => arr.push(JSON.parse(s)))
+                return arr
+            })
+
         }
         setShowRoomNameInput(false)
-    }, [currRoom])
+
+        }, [currRoom , currRoom.members , currRoom.members.length])
+
+    useEffect(() => {
+        const set = new Set<string>();
+        searchMembers.map((m: any) => set.add(JSON.stringify(m)))
+        setUniqueMembers(() => {
+            const arr: any[] = [];
+            set.forEach((s: string) => arr.push(JSON.parse(s)))
+            return arr
+        })
+    }, [searchMembers])
 
     useEffect(() => {
         if (showRoomNameInput === true) if (roomNameInputRef.current) { roomNameInputRef.current.focus() }
@@ -164,6 +184,12 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails , setShowRoomInfoP
         }, 1000)
     }
 
+    const getUniqueMembersCount = ()=>{
+        const set = new Set<string>();
+        currRoom?.members.map((m: any) => set.add(JSON.stringify(m)))
+        return set.size   
+    }
+
     useEffect(() => {
         if (file) {
             uploadImage()
@@ -176,7 +202,7 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails , setShowRoomInfoP
         <div className=' w-[55%] h-full bg-zinc-900 rounded-xl'>
 
             <div className=' flex items-center justify-start py-3 text-2xl gap-3 px-4 h-20 border-b border-b-gray-700'>
-                <MdClose onClick={()=>setShowRoomInfoPage(false)} className=' cursor-pointer text-red-400 text-2xl hover:text-red-300 transition-all duration-100' />
+                <MdClose onClick={() => setShowRoomInfoPage(false)} className=' cursor-pointer text-red-400 text-2xl hover:text-red-300 transition-all duration-100' />
                 <div className=''>Room Info</div>
             </div>
 
@@ -251,7 +277,7 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails , setShowRoomInfoP
                         </div>}
                 </div>
 
-                <div className=' text-gray-200'>Room Member - {currRoom.members?.length}</div>
+                <div className=' text-gray-200'>Room Member - {currRoom.members?.length && getUniqueMembersCount()}</div>
 
                 <div className=' bg-zinc-950 h-1 my-2 w-full'></div>
 
@@ -268,10 +294,10 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails , setShowRoomInfoP
                 {/* Serach Member */}
                 <div className=' w-[90%] my-1'>
                     {!showSearchMemberInput ? <div className=' w-full flex justify-between items-center '>
-                        <div onClick={()=>{setShowSearchMemberInput(true);}} className=' text-zinc-300 cursor-pointer hover:text-zinc-400 transition-all duration-200'>
-                            {currRoom.members?.length} Members
+                        <div onClick={() => { setShowSearchMemberInput(true); }} className=' text-zinc-300 cursor-pointer hover:text-zinc-400 transition-all duration-200'>
+                            {currRoom.members?.length && getUniqueMembersCount()} Members
                         </div>
-                        <div onClick={()=>{setShowSearchMemberInput(true);}} className=' text-lg cursor-pointer hover:text-zinc-400 transition-all duration-200'>
+                        <div onClick={() => { setShowSearchMemberInput(true); }} className=' text-lg cursor-pointer hover:text-zinc-400 transition-all duration-200'>
                             <IoIosSearch />
                         </div>
                     </div> :
@@ -299,8 +325,8 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails , setShowRoomInfoP
 
 
                     {
-                        searchMembers.length > 0 ?
-                            searchMembers.map((member: any, i: number) => <div key={member.user.id} className=' w-[100%] flex items-center justify-between  py-1 border-b border-b-zinc-700'>
+                        uniqueMembers.length > 0 ?
+                            uniqueMembers.map((member: any, i: number) => <div key={member.user.id} className=' w-[100%] flex items-center justify-between  py-1 border-b border-b-zinc-700'>
                                 <div className=' flex gap-2'>
                                     <Avatar height='h-11' width='w-11' img={member.user.profilePic} username={member.user.name}></Avatar>
                                     <div className=' flex flex-col'>

@@ -10,41 +10,37 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
 
 
     const [searchText, setSearchText] = useState("")
-    const { rooms, loadingRooms, setCurrRoom, currRoom, newMessagesMap, setNewMessagesMap } = useRoom()
+    const { rooms, loadingRooms, setCurrRoom, currRoom, newMessagesMap, setNewMessagesMap, setRooms } = useRoom()
     const { socket } = useSocket()
 
     const [searchRooms, setSearchRooms] = useState(rooms || [])
 
-    useEffect(()=>{
-        if(rooms) setSearchRooms(rooms);
-    } , [rooms])
+    useEffect(() => {
+        if (rooms) setSearchRooms(rooms);
+    }, [rooms])
 
-    const newNotification = () => {
+    function localSocket(ev: any) {
+        const obj = JSON.parse(ev.data);
 
-        if (socket && socket.OPEN === 1) {
-            socket.onmessage = (ev) => {
-                const obj = JSON.parse(ev.data);
+        if (obj.type === "notification" && obj.notificationType && obj.notificationType === "chat") {
+            // @ts-ignore
+            setNewMessagesMap((prevMap) => {
+                const newMap = new Map(prevMap); // Clone the previous state
+                // @ts-ignore
+                newMap.set(obj.data.roomId, (newMap.get(obj.data.roomId) || 0) + 1);
+                return newMap;
+            });
 
-                if (obj.type === "notification" && obj.notificationType && obj.notificationType === "chat") {
-                    // @ts-ignore
-                    setNewMessagesMap((prevMap) => {
-                        const newMap = new Map(prevMap); // Clone the previous state
-                        // @ts-ignore
-                        newMap.set(obj.data.roomId, (newMap.get(obj.data.roomId) || 0) + 1);
-                        return newMap;
-                    });
-
-                }
-            }
         }
 
     }
 
     useEffect(() => {
-        if (socket) newNotification()
-    }, [socket?.OPEN])
-
-
+        if (socket) socket.addEventListener("message", localSocket);
+        return ()=>{
+            if(socket) socket.removeEventListener("message" , localSocket)
+        }
+    }, [socket, socket?.OPEN])
 
     return <div style={{ paddingInline: "15px", paddingBlock: "" }} className=" min-h-[90vh] max-h-[90vh] min-w-[28%]  max-w-[35%]  bg-[#09090B] flex flex-col items-start justify-start gap-4 overflow-y-auto custom-scrollbar relative">
 
@@ -69,15 +65,17 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
         }
 
 
-        {!loadingRooms && rooms.length>0 && <div className=" w-full flex  flex-col gap-2 items-start sticky top-0 z-8 bg-[#09090B] pt-4 pb-1">
+        {!loadingRooms && rooms.length > 0 && <div className=" w-full flex  flex-col gap-2 items-start sticky top-0 z-8 bg-[#09090B] pt-4 pb-1">
             <div className=" bg-zinc-900 w-full flex justify-start items-center gap-2  text-xl p-2 rounded-full px-4 ">
                 <label htmlFor="sea" className=" text-xl cursor-pointer"><BiSearch></BiSearch></label>
-                <input type="text" value={searchText} onChange={(e) => {setSearchText(e.target.value); setSearchRooms(()=>{
-                    const r = rooms.filter( (d)=>d["room"]?.roomName?.toLowerCase().includes(e.target.value.toLowerCase()) )
-                    console.log("r" , r);
-                    return r
-                }) }} placeholder="Search" id="sea" className="p-1 w-full bg-lue-600 text-white outline-none text-lg"></input>
-                {searchText?.length > 0 && <IoClose onClick={() => {setSearchText("");setSearchRooms(rooms)}} className=" transition-all duration-100 hover:text-red-500 cursor-pointer border rounded-full p-[2px] text-2xl" />}
+                <input type="text" value={searchText} onChange={(e) => {
+                    setSearchText(e.target.value); setSearchRooms(() => {
+                        const r = rooms.filter((d) => d["room"]?.roomName?.toLowerCase().includes(e.target.value.toLowerCase()))
+                        console.log("r", r);
+                        return r
+                    })
+                }} placeholder="Search" id="sea" className="p-1 w-full bg-lue-600 text-white outline-none text-lg"></input>
+                {searchText?.length > 0 && <IoClose onClick={() => { setSearchText(""); setSearchRooms(rooms) }} className=" transition-all duration-100 hover:text-red-500 cursor-pointer border rounded-full p-[2px] text-2xl" />}
             </div>
             <div className=" flex justify-center items-center gap-2 my-1">
                 <button onClick={() => setModal(0)} className=" px-5 py-2 bg-green-600 text-black font-semibold rounded-lg hover:bg-green-700 cursor-pointer transition-all flex items-center justify-center">
@@ -152,10 +150,10 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
         }
 
         {
-            searchRooms.length===0 && searchText.trim()!=="" && <div className="w-full flex flex-col justify-center items-center mt-4 text-center p-4 bg-zinc-900 text-gray-400 rounded-lg shadow-lg">
-            <h2 className="text-xl font-semibold">No Room Found</h2>
-            <p className="text-sm mt-1">Try searching with a different name or create a new room.</p>
-        </div>
+            searchRooms.length === 0 && searchText.trim() !== "" && <div className="w-full flex flex-col justify-center items-center mt-4 text-center p-4 bg-zinc-900 text-gray-400 rounded-lg shadow-lg">
+                <h2 className="text-xl font-semibold">No Room Found</h2>
+                <p className="text-sm mt-1">Try searching with a different name or create a new room.</p>
+            </div>
         }
 
 

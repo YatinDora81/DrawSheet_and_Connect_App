@@ -538,7 +538,7 @@ export const join_roomController = async (req: Request, res: Response) => {
             return
         }
 
-        const isRoom = await prismaClient.room.findFirst({
+        let isRoom = await prismaClient.room.findFirst({
             where: {
                 join_code: parsedData.data.roomJoinCode
             },
@@ -587,6 +587,27 @@ export const join_roomController = async (req: Request, res: Response) => {
             data: {
                 userId: req.user.user_id,
                 roomId: isRoom.id
+            }
+        })
+
+
+        isRoom = await prismaClient.room.findFirst({
+            where: {
+                join_code: parsedData.data.roomJoinCode
+            },
+            select: {
+                id: true,
+                roomName: true,
+                roomPic: true,
+                createdById: true,
+                createdAt: true,
+                updatedAt: true,
+                join_code: true,
+                members: {
+                    select: {
+                        user: true
+                    }
+                }
             }
         })
 

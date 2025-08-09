@@ -54,7 +54,10 @@ const JoinNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setS
                         }
                     }))
                     socket.send(JSON.stringify({
-                        type: "get-online-users"
+                        type: "newly-joined",
+                        payload : {
+                            roomId : d.data.id
+                        }
                     }))
                 }
             }
