@@ -146,11 +146,11 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
 
                         {isSignup && 
                         <div className=' w-full flex flex-col gap-1'>
-                        <label htmlFor='passs'>Password</label>
+                        <label htmlFor='cpasss'>Confirm Password</label>
                         <div className=' flex justify-center items-center w-full border border-zinc-950 shadow-2xl'>
                             <IoLockClosedOutline className=' text-gray-300 bg-zinc-800 rounded-l-lg h-11 w-[12%] px-3 p-[8px]' />
                             <div className=' w-full relative'>
-                            <input value={formData.confirmPassword} onChange={(e) => setFormData((prev) => { return { ...prev, confirmPassword: e.target.value } })} style={{ paddingBlock: "22px", paddingInline: "15px" }} className='inpbg rounded-r-lg outline-none w-full bg-zinc-800 h-10 px-10' type={showPassword2 ? "text" : "password"} placeholder='Confirm Password'></input>
+                            <input id='cpasss' value={formData.confirmPassword} onChange={(e) => setFormData((prev) => { return { ...prev, confirmPassword: e.target.value } })} style={{ paddingBlock: "22px", paddingInline: "15px" }} className='inpbg rounded-r-lg outline-none w-full bg-zinc-800 h-10 px-10' type={showPassword2 ? "text" : "password"} placeholder='Confirm Password'></input>
                                 {!showPassword2 ? <FaRegEye onClick={() => setShowPassword2((prev) => !prev)} className=' absolute text-xl right-3 cursor-pointer hover:opacity-60 transition-all duration-200 top-[30%]' /> :
                                     <FaRegEyeSlash onClick={() => setShowPassword2((prev) => !prev)} className=' absolute text-xl right-3 cursor-pointer hover:opacity-60 transition-all duration-200 top-[30%]' />}
                             </div>

@@ -33,7 +33,7 @@ function NavbarClient() {
                 <div className=" flex justify-between w-full items-center">
                     <div className=" flex text-2xl gap-2 justify-start items-center">
                         <PiPencilSimpleLineLight className=" text-blue-500" />
-                        <div className="  ">Drawsheet</div>
+                        <div className=" font-semibold ">Drawsheet</div>
                     </div>
                     <div className=" h-full flex gap-3 justify-center items-center">
                         <button onClick={() => setShowModal(0)} className=" border flex justify-center items-center h-[50%] w-[9rem] border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingInline: "" }}> <PiPlus></PiPlus> New Drawing</button>
