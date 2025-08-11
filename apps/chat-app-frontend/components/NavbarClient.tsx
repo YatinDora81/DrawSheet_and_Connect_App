@@ -12,10 +12,7 @@ const NavbarClient = () => {
     const {user , userLoading,  setUser , logoutUser , fetchUser} = useAuth()
     const router = useRouter()
     const pathName = usePathname();
-
     
-    
-
   return (
     <div className={` text-white w-full border-b-[1px] border-b-zinc-800 bg-[#09090B] flex items-center justify-between h-[10vh] ${pathName==="/" && " bg-zinc-950/80 backdrop-blur-sm z-[1000] fixed top-0"} `}>
             <div><Toaster position="bottom-right"
