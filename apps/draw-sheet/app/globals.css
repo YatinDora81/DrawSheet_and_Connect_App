@@ -57,3 +57,17 @@ body{
   scrollbar-width: thin;
   scrollbar-color: #3f3f46 #0f0f0f;
 }
+
+
+.inpbg:-webkit-autofill,
+.inpbg:-webkit-autofill:hover,
+.inpbg:-webkit-autofill:focus,
+.inpbg:-webkit-autofill:active {
+  background-color: #09090b !important; /* Match your bg-zinc-800 */
+  -webkit-box-shadow: 0 0 0px 1000px #09090b inset !important;
+  color: #ffffff !important;
+  caret-color: white !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: white !important;
+  appearance: none !important;
+}

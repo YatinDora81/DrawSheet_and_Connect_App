@@ -14,15 +14,18 @@
     "@repo/ui": "workspace:*",
     "@tailwindcss/postcss": "^4.0.3",
     "clsx": "^2.1.1",
+    "jose": "^5.10.0",
     "next": "^15.1.6",
     "postcss": "^8.5.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.1",
     "react-icons": "^5.4.0",
+    "react-spinners": "^0.15.0",
     "tailwindcss": "^4.0.3"
   },
   "devDependencies": {
+    "@repo/backend-common": "workspace:*",
     "@repo/config": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",

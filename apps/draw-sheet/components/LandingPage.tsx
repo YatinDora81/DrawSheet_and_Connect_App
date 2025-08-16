@@ -12,7 +12,7 @@ function LandingPage() {
 
 
     return (
-        <div className=" w-full bg-zinc-950 min-h-[100vh] text-white">
+        <div className=" w-full bg-zinc-950 min-h-[100vh] text-white scroll-smooth">
 
             <SelectNavbar />
 

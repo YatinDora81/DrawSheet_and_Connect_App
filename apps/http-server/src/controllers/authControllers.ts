@@ -39,7 +39,8 @@ export const signupController = async (req: Request, res: Response) => {
                 data: {
                     name: parsedData.data.name,
                     email: parsedData.data.email,
-                    password: hassedPassword
+                    password: hassedPassword,
+                    isDraw: parsedData.data.isDraw ? true : false
                 },
                 select: {
                     name: true,
@@ -102,7 +103,8 @@ export const signinController =  async (req: Request, res: Response) => {
         //db call
         const isUser = await prismaClient.user.findFirst({
             where: {
-                email: parsedData.data.email
+                email: parsedData.data.email,
+                isDraw: parsedData.data.isDraw ? true : false
             }
         })
 
