@@ -3,31 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { useModal } from '../../hooks/useModal'
 import { IoClose, IoReloadOutline } from 'react-icons/io5'
 import Avatar_Container from '../Avatar_Container'
+import { AvatarProvider } from '../../hooks/useAvatars'
+import { AuthProvider } from '../../hooks/useAuth'
 // import multiavatar from '@multiavatar/multiavatar'
 
 function ChooseAvatar() {
     const { setShowModal } = useModal()
-    const [avatars, setAvatars] = useState([]);
 
-    // const fetchAvatars = async () => {
-    //     try {
-    //         const res = await fetch('http://localhost:3001/api/auth/avatars')
-    //         const data = await res.json()
-    //         if (data?.avatar && Array.isArray(data.avatar)) {
-    //             setAvatars(data.avatar)
-    //         } else {
-    //             console.error("Invalid API response format", data)
-    //             setAvatars([]) // prevent undefined
-    //         }
-    //     } catch (err) {
-    //         console.error('Failed to load avatars', err)
-    //     } finally {
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     fetchAvatars()
-    // },[])
 
     return (
         <div onClick={(e) => e.stopPropagation()} className=' relative flex flex-col justify-start items-start bg-zinc-950 border border-zinc-700 rounded-xl text-white h-[20rem] w-[32rem]' style={{ paddingInline: "1.3rem", paddingTop: "1.5rem", paddingBottom: "0.5rem" }}>
@@ -49,10 +31,11 @@ function ChooseAvatar() {
                 <div className=' w-full h-full overflow-y-auto custom-scrollbar  flex flex-wrap justify-center items-start scroll-smooth gap-5' style={{ paddingBlock: "0.5rem" }}>
 
 
-
-                    <Avatar_Container />
-
-                    
+                    <AuthProvider>
+                    <AvatarProvider>
+                        <Avatar_Container />
+                    </AvatarProvider>
+                    </AuthProvider>
 
 
 

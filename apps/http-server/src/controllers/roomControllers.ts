@@ -655,6 +655,7 @@ export const get_all_roomsController = async (req: Request, res: Response) => {
                         createdAt: true,
                         updatedAt: true,
                         join_code: true,
+                        isFavourite: true,
                         members: {
                             select: {
                                 user: true
@@ -744,6 +745,7 @@ export const update_details_controller = async (req: Request, res: Response) => 
                 createdAt: true,
                 updatedAt: true,
                 join_code: true,
+                isFavourite: true,
                 members: {
                     select: {
                         user: true

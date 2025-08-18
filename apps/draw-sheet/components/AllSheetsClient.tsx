@@ -10,6 +10,8 @@ import SingleCard from "./SingleCard";
 import SingleCardHorizontal from "./SingleCardHorizontal";
 import { useModal } from "../hooks/useModal";
 import ModalContainer from "./Modals/ModalContainer";
+import { AuthProvider } from "../hooks/useAuth";
+import { AvatarProvider } from "../hooks/useAvatars";
 
 
 function AllSheetsClient() {
@@ -19,16 +21,20 @@ function AllSheetsClient() {
     const [isGridUi, setIsGridUi] = useState(true)
     const DrawingTabs: { name: string }[] = [{ name: "All" }, { name: "Favorites" }, { name: "Recent" }]
     const [selectedTab, setSetlectedTab] = useState("All")
-    const {showModal, setShowModal ,Modals } = useModal()
+    const { showModal, setShowModal, Modals } = useModal()
 
 
     return (
-        <div onClick={(e)=>{e.stopPropagation(); setShowSubMenu(-1)}} className=" bg-zinc-950 min-h-[100vh] text-white ">
-            
+        <div onClick={(e) => { e.stopPropagation(); setShowSubMenu(-1) }} className=" bg-zinc-950 min-h-[100vh] text-white ">
+
             <ModalContainer setShowModal={setShowModal} showModal={showModal}>{Modals[showModal]?.component}</ModalContainer>
 
             <div className=" relative h-full flex min-h-[100vh] flex-col justify-start  items-center " style={{ marginInline: "auto" }}>
-                <NavbarClient />
+                <AuthProvider>
+                    <AvatarProvider>
+                        <NavbarClient />
+                    </AvatarProvider>
+                </AuthProvider>
 
                 {/* Collabration Rooms Section */}
                 <div className="h-full border-b border-b-zinc-800   text-white gap-5 font-sans flex w-[89%]  flex-col  items-start justify-center " style={{ marginInline: "auto", paddingBlock: "2rem" }}>
@@ -45,7 +51,7 @@ function AllSheetsClient() {
                                 <div className=" flex justify-center font-semibold items-center gap-2 text-2xl"><PiPlus className=" text-xl font-bold" /> Create Room</div>
                                 <div className=" text-zinc-400 text-sm ">Start a new collaboration room and invite others to join</div>
                             </div>
-                            <button onClick={()=>setShowModal(0)} className=" flex cursor-pointer gap-2 h-[2.5rem] font-semibold font-sans rounded-xl items-center justify-center w-full bg-blue-500 hover:bg-blue-500/80 transition-colors duration-200"><PiPlus />Create New Room</button>
+                            <button onClick={() => setShowModal(0)} className=" flex cursor-pointer gap-2 h-[2.5rem] font-semibold font-sans rounded-xl items-center justify-center w-full bg-blue-500 hover:bg-blue-500/80 transition-colors duration-200"><PiPlus />Create New Room</button>
                         </div>
 
                         <div className=" w-[49.5%] border border-zinc-800 gap-6 rounded-xl flex flex-col items-start justify-center" style={{ paddingInline: "1.7rem", paddingBlock: "1.6rem" }}>
@@ -57,7 +63,7 @@ function AllSheetsClient() {
                                     Enter a room code to join an existing collaboration session
                                 </div>
                             </div>
-                            <button onClick={()=>setShowModal(1)} className=" flex cursor-pointer gap-2 h-[2.5rem] font-semibold font-sans rounded-xl items-center justify-center w-full hover:bg-blue-500 border border-zinc-800 transition-colors duration-200">
+                            <button onClick={() => setShowModal(1)} className=" flex cursor-pointer gap-2 h-[2.5rem] font-semibold font-sans rounded-xl items-center justify-center w-full hover:bg-blue-500 border border-zinc-800 transition-colors duration-200">
                                 <HiOutlineHashtag />Join Existing Room
                             </button>
                         </div>
@@ -98,22 +104,22 @@ function AllSheetsClient() {
 
                     {
                         isGridUi ?
-                        <div className=" w-full flex justify-start items-start gap-5 flex-wrap gap-y-7">
+                            <div className=" w-full flex justify-start items-start gap-5 flex-wrap gap-y-7">
 
-                            {/* Single Card Grid */}
-                            {new Array(5).fill(".").map((_, i) => <SingleCard key={i}  showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} />
-                            )}
+                                {/* Single Card Grid */}
+                                {new Array(5).fill(".").map((_, i) => <SingleCard key={i} showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} />
+                                )}
 
-                        </div>
+                            </div>
 
-                        : 
-                        <div className=" w-full flex flex-col justify-start items-start flex-wrap gap-y-[14px]">
+                            :
+                            <div className=" w-full flex flex-col justify-start items-start flex-wrap gap-y-[14px]">
 
-                            {/* Single Card Horizontal */}
-                            {new Array(15).fill(".").map((_, i) => <SingleCardHorizontal key={i}  showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} />
-                            )}
+                                {/* Single Card Horizontal */}
+                                {new Array(15).fill(".").map((_, i) => <SingleCardHorizontal key={i} showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} />
+                                )}
 
-                        </div>
+                            </div>
 
                     }
 

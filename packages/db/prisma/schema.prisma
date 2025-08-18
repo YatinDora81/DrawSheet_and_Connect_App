@@ -33,6 +33,7 @@ model Room{
   updatedAt DateTime @default(now())
   join_code String @unique
   members UserRoom[]
+  isFavourite Boolean @default(false)
 
   createdBy User @relation( fields: [createdById] , references: [id] , onDelete: Cascade ) 
 }

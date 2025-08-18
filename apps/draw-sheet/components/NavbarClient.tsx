@@ -3,16 +3,17 @@ import { PiPencilSimpleLineLight, PiPlus, PiSignOutLight } from "react-icons/pi"
 import ModalContainer from "./Modals/ModalContainer";
 import { useModal } from "../hooks/useModal";
 import NavbarImage from "./NavbarImage";
-import { MdOutlineDeleteOutline, MdOutlineFileDownload, MdOutlineFileUpload } from "react-icons/md";
-import { IoShareOutline } from "react-icons/io5";
+import { MdOutlineFileUpload } from "react-icons/md";
 import { svg_string } from "../utils/mockdata";
 import { CiCamera } from "react-icons/ci";
 import { useEffect, useRef, useState } from "react";
-import { GoSignOut } from "react-icons/go";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { toast_darktheme } from "../utils/toast-darktheme";
 import { SignOut_User_URL } from "@repo/config/URL";
+import { useAuth } from "../hooks/useAuth";
+import { LuLayoutDashboard } from "react-icons/lu";
+import { useAvatar } from "../hooks/useAvatars";
 
 function NavbarClient() {
 
@@ -20,6 +21,9 @@ function NavbarClient() {
     const [openMenuItems, setOpenMenuItems] = useState(false)
     const menuItemRef = useRef<HTMLDivElement>(null)
     const router = useRouter()
+    const { user } = useAuth()
+    const { avatars } = useAvatar()
+    const pathName = usePathname()
 
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
@@ -80,18 +84,20 @@ function NavbarClient() {
                             {openMenuItems && <div ref={menuItemRef} onClick={(e) => { e.stopPropagation() }} className=' absolute bg-zinc-950 backdrop-blur-2xl flex flex-col gap-1 border border-zinc-800 rounded-lg z-[90] min-h-[10rem] w-[18rem] h-fit top-[110%] -right-[150%]  ' style={{ paddingBlock: "0.5rem", paddingInline: "0.8rem" }}>
                                 <div className=' flex flex-col justify-center gap-1 items-center h-[5.8rem]' style={{ paddingInline: "0.7rem", paddingBlock: "0.4rem" }}>
 
-                                    <div
-                                        dangerouslySetInnerHTML={{ __html: svg_string }}
+                                    {user && <div
+                                        dangerouslySetInnerHTML={{ __html: user.profilePic ? avatars[parseInt(user.profilePic)] : svg_string }}
                                         className='h-full border border-zinc-800 rounded-full aspect-square'
-                                    />
-                                    <div className=" font-semibold">Welcome back!</div>
+                                    />}
+
+                                    <div className=" font-semibold">Welcome back {user && user.name}!</div>
 
                                 </div>
 
                                 <div className=" w-full flex-col justify-center items-center gap-2 flex">
                                     <button onClick={() => setShowModal(2)} className=" border flex justify-center items-center h-[50%] w-full  font-semibold border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingBlock: "0.5rem" }}> <CiCamera className=" text-xl"></CiCamera> Choose Avatar</button>
-                                    <button onClick={() => { }} className=" border flex justify-center items-center h-[50%] w-full  font-semibold border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingBlock: "0.5rem" }}> <MdOutlineFileUpload className=" text-xl"></MdOutlineFileUpload > Upload Photo</button>
-                                    <button onClick={signoutHandler} className=" border text-red-500 flex justify-center items-center h-[50%] w-full  font-semibold border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingBlock: "0.5rem" }}> <PiSignOutLight className=" text-xl" />Sign Out</button>
+                                    {/* <button onClick={() => { }} className=" border flex justify-center items-center h-[50%] w-full  font-semibold border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingBlock: "0.5rem" }}> <MdOutlineFileUpload className=" text-xl"></MdOutlineFileUpload > Upload Photo</button> */}
+                                    {pathName !== '/sheets' && <button onClick={() => { }} className=" border flex justify-center items-center h-[50%] w-full  font-semibold border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingBlock: "0.5rem" }}> <LuLayoutDashboard className=" text-xl"></LuLayoutDashboard > Dashborad</button>}
+                                    <button onClick={signoutHandler} className=" border text-red-500 flex justify-center items-center h-[50%] w-full  font-semibold border-zinc-800 rounded-lg cursor-pointer hover:opacity-70 gap-2 transition-colors duration-200 text-sm" style={{ paddingBlock: "0.5rem" }}> <PiSignOutLight className=" text-xl" />Sign Out</button>
                                 </div>
 
 
@@ -99,7 +105,7 @@ function NavbarClient() {
 
 
 
-                            <NavbarImage name="YD" svg="c" />
+                            <NavbarImage name={user?.name || 'Yat'} svg={user?.profilePic} />
 
 
 

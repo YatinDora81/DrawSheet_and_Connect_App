@@ -1,9 +1,9 @@
 import { signInShouldBe, signUpShouldBe } from "@repo/backend-common/backend-common";
-import { Request , Response } from "express";
+import { Request, Response } from "express";
 import bcrypt from "bcrypt"
 import { prismaClient } from "@repo/db/db";
 import { sendTokenAndCookie } from "../utils/sendTokenAndCookie.js";
-
+import { z } from 'zod';
 
 
 export const signupController = async (req: Request, res: Response) => {
@@ -50,7 +50,7 @@ export const signupController = async (req: Request, res: Response) => {
                 }
             })
             sendTokenAndCookie(res, { user_id: newUser.id, email: newUser.email, name: newUser.name, profilePic: newUser.profilePic || "" });
-            
+
         } catch (error: any) {
             if (error.code && error.code === "P2002" && error.meta?.target?.includes("email")) {
                 return res.status(400).json({
@@ -85,7 +85,7 @@ export const signupController = async (req: Request, res: Response) => {
     }
 }
 
-export const signinController =  async (req: Request, res: Response) => {
+export const signinController = async (req: Request, res: Response) => {
     try {
 
         const parsedData = signInShouldBe.safeParse(req.body)
@@ -150,18 +150,18 @@ export const signinController =  async (req: Request, res: Response) => {
     }
 }
 
-export const signoutController = (req : Request , res : Response)=>{
+export const signoutController = (req: Request, res: Response) => {
     try {
-        res.clearCookie("authToken" , {httpOnly : true})
+        res.clearCookie("authToken", { httpOnly: true })
 
         res.status(200).json({
-            success : true,
-            data : "User Signout Successfully!!!",
-            message : "User Signout Successfully!!!"
+            success: true,
+            data: "User Signout Successfully!!!",
+            message: "User Signout Successfully!!!"
         })
-        
 
-    } catch (error : any) {
+
+    } catch (error: any) {
         res.status(500).json({
             success: false,
             data: error.message || "",
@@ -170,25 +170,25 @@ export const signoutController = (req : Request , res : Response)=>{
     }
 }
 
-export const userDetailController = (req : Request ,res : Response)=>{
+export const userDetailController = (req: Request, res: Response) => {
     try {
 
-        if(!req.user){
-            res.json(400).json({
-                success : false,
-                data : "User Not Authenicated!!!",
-                message : "User Not Authenicated!!!"
+        if (!req.user) {
+            res.status(400).json({
+                success: false,
+                data: "User Not Authenicated!!!",
+                message: "User Not Authenicated!!!"
             })
-            return 
+            return
         }
 
         res.status(200).json({
-            success : true,
-            data : req.user,
-            message : "Successfully Get User Details"
+            success: true,
+            data: req.user,
+            message: "Successfully Get User Details"
         })
-        
-    } catch (error : any) {
+
+    } catch (error: any) {
         res.status(500).json({
             success: false,
             data: error.message || "",
@@ -197,3 +197,53 @@ export const userDetailController = (req : Request ,res : Response)=>{
     }
 }
 
+export const updateAvatar = async (req: Request, res: Response) => {
+    try {
+
+        const body = z.object({
+            avatarNumber: z.string()
+        })
+        const parsedData = body.safeParse(req.body)
+        if (!parsedData.success) {
+            res.status(400).json({
+                success: false,
+                data: parsedData?.error?.issues[0]?.message || "",
+                message: "Invalid Format!!!"
+            })
+            return
+        }
+
+
+        if (!req.user) {
+            res.status(400).json({
+                success: false,
+                data: "User Not Authenicated!!!",
+                message: "User Not Authenicated!!!"
+            })
+            return
+        }
+
+
+        const newuser = await prismaClient.user.update({
+            where: {
+                id: req.user.user_id,
+            },
+            data: {
+                profilePic: parsedData.data.avatarNumber
+            },
+        })
+
+        res.status(200).json({
+            success: true,
+            data: newuser,
+            message: "Avatar Updated Successfully"
+        })
+
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            data: error.message || "",
+            message: "Internal Server Error",
+        });
+    }
+}

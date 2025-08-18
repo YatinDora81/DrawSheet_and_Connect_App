@@ -1,6 +1,6 @@
 import express, { Router } from "express"
 import { get_all_avatars, get_single_avatar, isAuthenticatedUser } from "../middleware/isAuth.js"
-import { signinController, signoutController, signupController, userDetailController } from "../controllers/authControllers.js"
+import { signinController, signoutController, signupController, updateAvatar, userDetailController } from "../controllers/authControllers.js"
 
 
 const router: Router = express.Router()
@@ -21,5 +21,7 @@ router.get("/avatars", get_all_avatars)
 
 // @ts-ignore
 router.get("/avatars/:id", get_single_avatar)
+
+router.post("/avatars/update"  , isAuthenticatedUser ,updateAvatar)
 
 export default router;

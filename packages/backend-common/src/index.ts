@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 export const signUpShouldBe = z.object({
-    name: z.string().min(3),
+    name: z.string().min(3).max(12),
     email: z.string().email(),
     password: z.string().min(6, { message: "Password Should Be Atleast 6 Character" }),
     isDraw: z.boolean().optional()
