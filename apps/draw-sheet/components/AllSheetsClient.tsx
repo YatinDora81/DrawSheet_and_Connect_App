@@ -12,6 +12,10 @@ import { useModal } from "../hooks/useModal";
 import ModalContainer from "./Modals/ModalContainer";
 import { AuthProvider } from "../hooks/useAuth";
 import { AvatarProvider } from "../hooks/useAvatars";
+import { useRoom } from "../hooks/useRoom";
+import { BarLoader } from "react-spinners";
+import { FiUsers } from "react-icons/fi";
+import NoRooms from "./NoRooms";
 
 
 function AllSheetsClient() {
@@ -22,6 +26,7 @@ function AllSheetsClient() {
     const DrawingTabs: { name: string }[] = [{ name: "All" }, { name: "Favorites" }, { name: "Recent" }]
     const [selectedTab, setSetlectedTab] = useState("All")
     const { showModal, setShowModal, Modals } = useModal()
+    const { room, roomLoading } = useRoom()
 
 
     return (
@@ -96,30 +101,37 @@ function AllSheetsClient() {
                 {/* Drawing Tabs Section */}
 
                 <div className=" flex justify-start  gap-6 flex-col w-[89%] items-start   " style={{ marginInline: "auto", paddingBottom: "2.3rem" }}>
-                    <div className=" bg-zinc-800  rounded-lg flex justify-start items-center text-[0.97rem] font-sans gap-2 " style={{ padding: "0.2rem" }}>
+                    {room && room.length!==0 && <div className=" bg-zinc-800  rounded-lg flex justify-start items-center text-[0.97rem] font-sans gap-2 " style={{ padding: "0.2rem" }}>
                         {
                             DrawingTabs.map((d, i) => <div key={i} className={` cursor-pointer  font-semibold rounded-[0.30rem] ${selectedTab === d.name ? 'bg-zinc-950 text-white' : 'text-white/70'}  `} onClick={() => setSetlectedTab(d.name)} style={{ padding: "0.5rem", paddingInline: "0.8rem" }}>{d.name}</div>)
                         }
-                    </div>
+                    </div>}
+
+                    {!roomLoading && room && room.length===0 &&  <NoRooms />}
 
                     {
-                        isGridUi ?
-                            <div className=" w-full flex justify-start items-start gap-5 flex-wrap gap-y-7">
-
-                                {/* Single Card Grid */}
-                                {new Array(5).fill(".").map((_, i) => <SingleCard key={i} showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} />
-                                )}
-
-                            </div>
-
+                        roomLoading ? <>
+                            <BarLoader color="oklch(0.932 0.032 255.585)" width={"100%"} />
+                            <div className=" text-2xl font-mono">Loading....</div>
+                        </>
                             :
-                            <div className=" w-full flex flex-col justify-start items-start flex-wrap gap-y-[14px]">
+                            isGridUi ?
+                                <div className=" w-full flex justify-start items-start gap-5 flex-wrap gap-y-7">
 
-                                {/* Single Card Horizontal */}
-                                {new Array(15).fill(".").map((_, i) => <SingleCardHorizontal key={i} showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} />
-                                )}
+                                    {/* Single Card Grid */}
+                                    {room?.map((r : any, i : number) => <SingleCard key={i} showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} data={r}/>
+                                    )}
 
-                            </div>
+                                </div>
+
+                                :
+                                <div className=" w-full flex flex-col justify-start items-start flex-wrap gap-y-[14px]">
+
+                                    {/* Single Card Horizontal */}
+                                    {room?.map((r : any, i : number) => <SingleCardHorizontal key={i} showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} data={r}/>
+                                    )}
+
+                                </div>
 
                     }
 

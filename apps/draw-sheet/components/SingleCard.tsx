@@ -7,7 +7,7 @@ import { LuStarOff } from 'react-icons/lu'
 import { MdOutlineDeleteOutline, MdOutlineFileDownload } from 'react-icons/md'
 import { PiPencilSimpleLineLight } from 'react-icons/pi'
 
-function SingleCard({ showSubMenu, setShowSubMenu, index }: { showSubMenu: number, setShowSubMenu: (n: number) => void, index: number }) {
+function SingleCard({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu: number, setShowSubMenu: (n: number) => void, index: number, data: any }) {
 
     return <div className="w-[20rem] border border-zinc-800  h-[25rem] rounded-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer relative group hover:border-blue-500/60">
 
@@ -31,7 +31,7 @@ function SingleCard({ showSubMenu, setShowSubMenu, index }: { showSubMenu: numbe
                 className=" h-[82%] w-full gap-3 relative group-hover:bg-blue-500/10 flex flex-col justify-center items-center ">
 
                 <div className=" absolute text-xl rounded-lg bg-zinc-950 opacity-0 group-hover:opacity-100 transition-all duration-300  top-[4%] right-[4%] hover:scale-[1.06]" style={{ padding: "0.7rem" }}>
-                    {true ?
+                    {data?.room?.isFavourite ?
                         <GoStarFill className=" text-yellow-500" />
                         :
                         <LuStarOff />}
@@ -42,8 +42,8 @@ function SingleCard({ showSubMenu, setShowSubMenu, index }: { showSubMenu: numbe
                 </div>
 
                 <div className=" text-center flex justify-center items-center  flex-col">
-                    <div className=" font-semibold group-hover:text-blue-500 transition-colors duration-200">Abstract Art</div>
-                    <div className=" text-sm text-gray-400 font-sans font-semibold">May 15, 2023</div>
+                    <div className=" font-semibold group-hover:text-blue-500 capitalize transition-colors duration-200">{data?.room?.roomName}</div>
+                    <div className=" text-sm text-gray-400 font-sans font-semibold">{(new Date(data?.room?.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }))}</div>
                 </div>
             </div>
 
@@ -55,7 +55,7 @@ function SingleCard({ showSubMenu, setShowSubMenu, index }: { showSubMenu: numbe
 
                 <div onClick={(e) => {
                     e.stopPropagation();
-                    if(showSubMenu===index) setShowSubMenu(-1)
+                    if (showSubMenu === index) setShowSubMenu(-1)
                     else setShowSubMenu(index)
                 }}
                     className=" cursor-pointer text-gray-400 rounded-lg hover:bg-zinc-800/70 transition-all duration-200 z-[10]" style={{ padding: "0.7rem" }} ><HiDotsVertical /></div>
@@ -64,12 +64,12 @@ function SingleCard({ showSubMenu, setShowSubMenu, index }: { showSubMenu: numbe
 
 
             {/* Menu Section */}
-            {showSubMenu === index && <div onClick={(e) => { e.stopPropagation() }} className=' absolute bg-zinc-950 backdrop-blur-2xl border border-zinc-800 rounded-lg z-[90] min-h-[10rem] w-[50%] h-fit bottom-[13%] right-[13%] '>
+            {showSubMenu === index && <div onClick={(e) => { e.stopPropagation() }} className=' absolute bg-zinc-950 backdrop-blur-2xl border border-zinc-800 rounded-lg z-[90] min-h-[8rem] w-[50%] h-fit bottom-[13%] right-[13%] '>
                 <div className=' cursor-default border-b border-zinc-800 font-semibold' style={{ paddingInline: "0.7rem", paddingBlock: "0.4rem" }}>Actions</div>
 
                 <div className=' flex flex-col justify-start items-start'>
                     <div className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><PiPencilSimpleLineLight className=' text-blue-500 text-lg' /><div>Edit</div></div>
-                    <div className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><MdOutlineFileDownload className=' text-lg' /><div>Download</div></div>
+                    {/* <div className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><MdOutlineFileDownload className=' text-lg' /><div>Download</div></div> */}
                     <div className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><IoShareOutline className=' text-lg' /><div>Share</div></div>
                 </div>
 

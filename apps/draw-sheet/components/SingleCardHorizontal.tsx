@@ -7,7 +7,7 @@ import { LuStarOff } from 'react-icons/lu'
 import { MdOutlineDeleteOutline, MdOutlineFileDownload } from 'react-icons/md'
 import { PiPencilSimpleLineLight } from 'react-icons/pi'
 
-function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index }: { showSubMenu: number, setShowSubMenu: (n: number) => void, index: number }) {
+function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index , data }: { showSubMenu: number, setShowSubMenu: (n: number) => void, index: number , data : any }) {
     return (
         <div className='  w-full min-h-[5rem]  border border-zinc-800 bg-gradient-to-r rounded-b-lg from-zinc-950 to-zinc-900/20  rounded-lg transition-all duration-200 cursor-pointer relative group hover:border-blue-500/60 flex justify-between items-center'>
 
@@ -21,10 +21,10 @@ function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index }: { showSubM
                 </div>
 
                 <div className=" text-center flex justify-center items-start  flex-col">
-                    <div className=" font-semibold group-hover:text-blue-500 transition-colors duration-200">Abstract Art</div>
+                    <div className=" font-semibold group-hover:text-blue-500 capitalize transition-colors duration-200">{data?.room?.roomName}</div>
                     <div className=" text-sm text-gray-400 font-sans flex gap-x-2 gap-y-0 justify-center items-center">
                         <div className=" w-[0.5rem] aspect-square rounded-full bg-green-500 cursor-default" ></div>
-                        <div className=' font-semibold'>May 15, 2023</div>
+                        <div className=' font-semibold'>{(new Date(data?.room?.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }))}</div>
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@ function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index }: { showSubM
             <div className=' flex items-center justify-evenly gap-[2px]' style={{ paddingInline: "1rem" }}>
 
                 <div className=" text-lg rounded-xl hover:bg-zinc-800/70 opacity-100 transition-all duration-300  hover:scale-[1.06]" style={{ padding: "0.6rem" }}>
-                    {false ?
+                    {data?.room?.isFavourite ?
                         <GoStarFill className=" text-yellow-500" />
                         :
                         <LuStarOff />}
