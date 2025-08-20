@@ -12,10 +12,11 @@ import { useModal } from "../hooks/useModal";
 import ModalContainer from "./Modals/ModalContainer";
 import { AuthProvider } from "../hooks/useAuth";
 import { AvatarProvider } from "../hooks/useAvatars";
-import { useRoom } from "../hooks/useRoom";
+import { tabs, useRoom } from "../hooks/useRoom";
 import { BarLoader } from "react-spinners";
 import { FiUsers } from "react-icons/fi";
 import NoRooms from "./NoRooms";
+import NoSearchedRoom from "./NoSearchedRoom";
 
 
 function AllSheetsClient() {
@@ -23,10 +24,9 @@ function AllSheetsClient() {
     const [showSubMenu, setShowSubMenu] = useState(-1)
 
     const [isGridUi, setIsGridUi] = useState(true)
-    const DrawingTabs: { name: string }[] = [{ name: "All" }, { name: "Favorites" }, { name: "Recent" }]
-    const [selectedTab, setSetlectedTab] = useState("All")
+    
     const { showModal, setShowModal, Modals } = useModal()
-    const { room, roomLoading } = useRoom()
+    const { room, roomLoading, setSearchedRoomText, searchedRoomText, originalRooms , DrawingTabs , selectedTab , setSetlectedTab } = useRoom()
 
 
     return (
@@ -84,7 +84,7 @@ function AllSheetsClient() {
                     <div className=" flex items-center justify-center gap-3">
                         <div className=" flex gap-2 justify-center focus-within:outline-1 transition-all duration-200 items-center rounded-lg w-[18rem] border border-zinc-800 bg-zinc-950" style={{ padding: "0.5rem" }}>
                             <label htmlFor="search"><HiOutlineMagnifyingGlass /></label>
-                            <input type="text" id="search" className=" w-[90%] font-mono outline-none" placeholder="Search Drawings..."></input>
+                            <input value={searchedRoomText} onChange={(e) => setSearchedRoomText(e.target.value)} type="text" id="search" className=" w-[90%] font-mono outline-none" placeholder="Search Drawings..."></input>
                         </div>
 
                         <input name="cards-ui" id="card" type="radio" value="card" className=" hidden" defaultChecked />
@@ -101,13 +101,19 @@ function AllSheetsClient() {
                 {/* Drawing Tabs Section */}
 
                 <div className=" flex justify-start  gap-6 flex-col w-[89%] items-start   " style={{ marginInline: "auto", paddingBottom: "2.3rem" }}>
-                    {room && room.length!==0 && <div className=" bg-zinc-800  rounded-lg flex justify-start items-center text-[0.97rem] font-sans gap-2 " style={{ padding: "0.2rem" }}>
+                    {originalRooms && originalRooms.length !== 0 && <div className=" bg-zinc-800  rounded-lg flex justify-start items-center text-[0.97rem] font-sans gap-2 " style={{ padding: "0.2rem" }}>
                         {
-                            DrawingTabs.map((d, i) => <div key={i} className={` cursor-pointer  font-semibold rounded-[0.30rem] ${selectedTab === d.name ? 'bg-zinc-950 text-white' : 'text-white/70'}  `} onClick={() => setSetlectedTab(d.name)} style={{ padding: "0.5rem", paddingInline: "0.8rem" }}>{d.name}</div>)
+                            DrawingTabs.map((d, i) => <div key={i} className={` cursor-pointer  font-semibold rounded-[0.30rem] ${selectedTab === d.name ? 'bg-zinc-950 text-white' : 'text-white/70'}  `} onClick={() => setSetlectedTab(d.name as tabs)} style={{ padding: "0.5rem", paddingInline: "0.8rem" }}>{d.name}</div>)
                         }
                     </div>}
 
-                    {!roomLoading && room && room.length===0 &&  <NoRooms />}
+                    {!roomLoading && originalRooms && originalRooms.length === 0 && <NoRooms />}
+                    {!roomLoading && originalRooms && originalRooms.length !== 0 && (!room || room.length === 0) &&
+                        <NoSearchedRoom
+                            type={searchedRoomText.length > 0 ? "search" : selectedTab.toLowerCase() as any}
+                        />
+                    }
+
 
                     {
                         roomLoading ? <>
@@ -119,7 +125,7 @@ function AllSheetsClient() {
                                 <div className=" w-full flex justify-start items-start gap-5 flex-wrap gap-y-7">
 
                                     {/* Single Card Grid */}
-                                    {room?.map((r : any, i : number) => <SingleCard key={i} showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} data={r}/>
+                                    {room?.map((r: any, i: number) => <SingleCard key={i} showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} data={r} />
                                     )}
 
                                 </div>
@@ -128,7 +134,7 @@ function AllSheetsClient() {
                                 <div className=" w-full flex flex-col justify-start items-start flex-wrap gap-y-[14px]">
 
                                     {/* Single Card Horizontal */}
-                                    {room?.map((r : any, i : number) => <SingleCardHorizontal key={i} showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} data={r}/>
+                                    {room?.map((r: any, i: number) => <SingleCardHorizontal key={i} showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} index={i} data={r} />
                                     )}
 
                                 </div>

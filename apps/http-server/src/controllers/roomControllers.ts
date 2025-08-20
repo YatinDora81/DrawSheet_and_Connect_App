@@ -715,19 +715,21 @@ export const update_details_controller = async (req: Request, res: Response) => 
             return
         }
 
-        if(parsedData.data.roomName.trim() === "" && parsedData.data.join_code===false && parsedData.data.roomPic.trim()===""){
-            res.status(400).json({
-                success : false,
-                data : "Invalid Input",
-                message : "Invalid Input"
-            })
-            return;
-        }
+        // if(parsedData.data.roomName.trim() === "" && parsedData.data.join_code===false && parsedData.data.roomPic.trim()===""){
+        //     res.status(400).json({
+        //         success : false,
+        //         data : "Invalid Input",
+        //         message : "Invalid Input"
+        //     })
+        //     return;
+        // }
 
         let obj = {};
-        if (parsedData.data.roomName !== "") obj = { ...obj, "roomName": parsedData.data.roomName }
+        if (parsedData.data?.roomName !== "") obj = { ...obj, "roomName": parsedData.data.roomName }
         if (parsedData.data.join_code) obj = { ...obj, "join_code": createId() }
-        if (parsedData.data.roomPic!=="") obj = { ...obj, "roomPic": parsedData.data.roomPic };
+        if (parsedData.data.roomPic && parsedData.data.roomPic!=="") obj = { ...obj, "roomPic": parsedData.data.roomPic };
+        if (parsedData.data?.isFavourite===true || parsedData.data?.isFavourite===false) obj = {...obj , 'isFavourite' : parsedData.data.isFavourite}
+        
         
         const updatedRoom = await prismaClient.room.update({
             where: {

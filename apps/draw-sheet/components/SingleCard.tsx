@@ -1,4 +1,5 @@
 "use client"
+import toast from 'react-hot-toast'
 import { FaRegFileLines } from 'react-icons/fa6'
 import { GoStarFill } from 'react-icons/go'
 import { HiDotsVertical } from 'react-icons/hi'
@@ -6,9 +7,12 @@ import { IoShareOutline } from 'react-icons/io5'
 import { LuStarOff } from 'react-icons/lu'
 import { MdOutlineDeleteOutline, MdOutlineFileDownload } from 'react-icons/md'
 import { PiPencilSimpleLineLight } from 'react-icons/pi'
+import { toast_darktheme } from '../utils/toast-darktheme'
+import { useRoom } from '../hooks/useRoom'
 
 function SingleCard({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu: number, setShowSubMenu: (n: number) => void, index: number, data: any }) {
 
+    const { updateRoomDetails , updateRoomDetailsLoading } = useRoom()
     return <div className="w-[20rem] border border-zinc-800  h-[25rem] rounded-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer relative group hover:border-blue-500/60">
 
         {/* Background */}
@@ -30,7 +34,10 @@ function SingleCard({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu:
                 }}
                 className=" h-[82%] w-full gap-3 relative group-hover:bg-blue-500/10 flex flex-col justify-center items-center ">
 
-                <div className=" absolute text-xl rounded-lg bg-zinc-950 opacity-0 group-hover:opacity-100 transition-all duration-300  top-[4%] right-[4%] hover:scale-[1.06]" style={{ padding: "0.7rem" }}>
+                <div onClick={(e) => {
+                    e.stopPropagation()
+                    if(!updateRoomDetailsLoading) updateRoomDetails(data?.room?.id , {isFavourite : !data?.room?.isFavourite})
+                }} className=" absolute text-xl rounded-lg bg-zinc-950 opacity-0 group-hover:opacity-100 transition-all duration-300  top-[4%] right-[4%] hover:scale-[1.06]" style={{ padding: "0.7rem" }}>
                     {data?.room?.isFavourite ?
                         <GoStarFill className=" text-yellow-500" />
                         :
@@ -68,9 +75,12 @@ function SingleCard({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu:
                 <div className=' cursor-default border-b border-zinc-800 font-semibold' style={{ paddingInline: "0.7rem", paddingBlock: "0.4rem" }}>Actions</div>
 
                 <div className=' flex flex-col justify-start items-start'>
-                    <div className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><PiPencilSimpleLineLight className=' text-blue-500 text-lg' /><div>Edit</div></div>
+                    <div onClick={() => toast.success("Comming Soon!!!", toast_darktheme)} className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><PiPencilSimpleLineLight className=' text-blue-500 text-lg' /><div>Edit</div></div>
                     {/* <div className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><MdOutlineFileDownload className=' text-lg' /><div>Download</div></div> */}
-                    <div className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><IoShareOutline className=' text-lg' /><div>Share</div></div>
+                    <div onClick={() => {
+                        navigator.clipboard.writeText(data?.room?.join_code)
+                        toast.success("Room Code Copied!!!", toast_darktheme)
+                    }} className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><IoShareOutline className=' text-lg' /><div>Share</div></div>
                 </div>
 
                 <div className=' border-t border-zinc-800 font-semibold flex text-sm justify-start items-center gap-1 text-red-400 hover:bg-blue-500/70 rounded-lg transition-colors duration-200' style={{ paddingInline: "0.5rem", paddingBlock: "0.5rem" }}><MdOutlineDeleteOutline className=' text-lg' /> Delete</div>

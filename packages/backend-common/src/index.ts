@@ -23,9 +23,10 @@ export const joinRoomShouldBe = z.object({
 
 export const updateRoomDetailsShouldBe = z.object({
     roomId : z.string(),
-    roomName : z.string(),
-    join_code : z.boolean(),
-    roomPic : z.string()
+    roomName : z.string().optional(),
+    join_code : z.boolean().optional(),
+    roomPic : z.string().optional(),
+    isFavourite : z.boolean().optional()
 })
 export type authTokenType = { user_id: string, email: string, name: string }
 

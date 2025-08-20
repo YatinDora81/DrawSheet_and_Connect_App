@@ -1,4 +1,5 @@
 import React from 'react'
+import toast from 'react-hot-toast'
 import { FaRegFileLines } from 'react-icons/fa6'
 import { GoStarFill } from 'react-icons/go'
 import { HiDotsVertical } from 'react-icons/hi'
@@ -6,8 +7,12 @@ import { IoShareOutline } from 'react-icons/io5'
 import { LuStarOff } from 'react-icons/lu'
 import { MdOutlineDeleteOutline, MdOutlineFileDownload } from 'react-icons/md'
 import { PiPencilSimpleLineLight } from 'react-icons/pi'
+import { RxShare1 } from 'react-icons/rx'
+import { toast_darktheme } from '../utils/toast-darktheme'
+import { useRoom } from '../hooks/useRoom'
 
-function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index , data }: { showSubMenu: number, setShowSubMenu: (n: number) => void, index: number , data : any }) {
+function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu: number, setShowSubMenu: (n: number) => void, index: number, data: any }) {
+    const { updateRoomDetailsLoading, updateRoomDetails } = useRoom()
     return (
         <div className='  w-full min-h-[5rem]  border border-zinc-800 bg-gradient-to-r rounded-b-lg from-zinc-950 to-zinc-900/20  rounded-lg transition-all duration-200 cursor-pointer relative group hover:border-blue-500/60 flex justify-between items-center'>
 
@@ -33,18 +38,27 @@ function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index , data }: { s
             {/* Right Section */}
             <div className=' flex items-center justify-evenly gap-[2px]' style={{ paddingInline: "1rem" }}>
 
-                <div className=" text-lg rounded-xl hover:bg-zinc-800/70 opacity-100 transition-all duration-300  hover:scale-[1.06]" style={{ padding: "0.6rem" }}>
+                <div
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        if (!updateRoomDetailsLoading) updateRoomDetails(data?.room?.id, { isFavourite: !data?.room?.isFavourite })
+                    }}
+                    className=" text-lg rounded-xl hover:bg-zinc-800/70 opacity-100 transition-all duration-300  hover:scale-[1.06]" style={{ padding: "0.6rem" }
+                    }>
                     {data?.room?.isFavourite ?
                         <GoStarFill className=" text-yellow-500" />
                         :
                         <LuStarOff />}
                 </div>
 
-                <div className=" text-lg rounded-xl hover:bg-zinc-800/70 opacity-100 transition-all duration-300  hover:scale-[1.06]" style={{ padding: "0.6rem" }} ><MdOutlineFileDownload /></div>
+                <div onClick={() => {
+                    navigator.clipboard.writeText(data?.room?.join_code)
+                    toast.success("Room Code Copied!!!", toast_darktheme)
+                }} className=" text-lg rounded-xl hover:bg-zinc-800/70 opacity-100 transition-all duration-300  hover:scale-[1.06]" style={{ padding: "0.6rem" }} ><RxShare1 /></div>
 
                 <div onClick={(e) => {
                     e.stopPropagation()
-                    if(showSubMenu===index) setShowSubMenu(-1)
+                    if (showSubMenu === index) setShowSubMenu(-1)
                     else setShowSubMenu(index)
                 }}
                     className="text-lg rounded-xl hover:bg-zinc-800/70 opacity-100 transition-all duration-300  hover:scale-[1.06]" style={{ padding: "0.6rem" }} ><HiDotsVertical /></div>
@@ -57,8 +71,11 @@ function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index , data }: { s
                 <div className=' cursor-default border-b border-zinc-800 font-semibold' style={{ paddingInline: "0.7rem", paddingBlock: "0.4rem" }}>Actions</div>
 
                 <div className=' flex flex-col justify-start items-start'>
-                    <div className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><PiPencilSimpleLineLight className=' text-blue-500 text-lg' /><div>Edit</div></div>
-                    <div className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><IoShareOutline className=' text-lg' /><div>Share</div></div>
+                    <div onClick={() => toast.success("Comming Soon!!!", toast_darktheme)} className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><PiPencilSimpleLineLight className=' text-blue-500 text-lg' /><div>Edit</div></div>
+                    <div onClick={() => {
+                        navigator.clipboard.writeText(data?.room?.join_code)
+                        toast.success("Room Code Copied!!!", toast_darktheme)
+                    }} className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><IoShareOutline className=' text-lg' /><div>Share</div></div>
                 </div>
 
                 <div className=' border-t border-zinc-800 font-semibold flex text-sm justify-start items-center gap-1 text-red-400 hover:bg-blue-500/70 rounded-lg transition-colors duration-200' style={{ paddingInline: "0.5rem", paddingBlock: "0.5rem" }}><MdOutlineDeleteOutline className=' text-lg' /> Delete</div>

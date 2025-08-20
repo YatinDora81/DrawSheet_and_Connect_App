@@ -102,9 +102,6 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails, setShowRoomInfoPa
 
             const obj = { "roomName": "", "join_code": false, "roomId": currRoom.id, "roomPic": data.secure_url };
 
-            console.log("obj", obj);
-
-
             const res = await fetch(UPDATE_ROOM_DETAILS, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...obj }) })
 
             const d = await res.json();
