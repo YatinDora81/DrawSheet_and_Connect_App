@@ -125,6 +125,16 @@ wss.on("connection", (ws: WebSocket, request) => {
             if (!user) return;
 
             try {
+                const isRoom = await prismaClient.userRoom.findFirst({
+                    where : {
+                        roomId : obj.payload.roomId,
+                        userId : user.user_id
+                    }
+                })
+                if(!isRoom){
+                    sendErrorResponse(ws, "You Are not a member of this room", "Invalid Request!!!")
+                    return 
+                }
                 await prismaClient.chat.create({
                     data: {
                         message: obj.payload.message,

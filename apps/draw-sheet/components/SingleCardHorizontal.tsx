@@ -10,11 +10,20 @@ import { PiPencilSimpleLineLight } from 'react-icons/pi'
 import { RxShare1 } from 'react-icons/rx'
 import { toast_darktheme } from '../utils/toast-darktheme'
 import { useRoom } from '../hooks/useRoom'
+import { useSocket } from '../hooks/useSocket'
+import { useRouter } from 'next/navigation'
 
 function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu: number, setShowSubMenu: (n: number) => void, index: number, data: any }) {
+    const {socket , socketLoading , connectWs} = useSocket()
     const { updateRoomDetailsLoading, updateRoomDetails } = useRoom()
+    const router =  useRouter()
     return (
-        <div className='  w-full min-h-[5rem]  border border-zinc-800 bg-gradient-to-r rounded-b-lg from-zinc-950 to-zinc-900/20  rounded-lg transition-all duration-200 cursor-pointer relative group hover:border-blue-500/60 flex justify-between items-center'>
+        <div onClick={()=>{
+            if(!socketLoading){
+                if(socket && socket.OPEN===1) router.push(`/sheets/${data?.room?.id}`)
+                else connectWs()
+            }
+        }} className='  w-full min-h-[5rem]  border border-zinc-800 bg-gradient-to-r rounded-b-lg from-zinc-950 to-zinc-900/20  rounded-lg transition-all duration-200 cursor-pointer relative group hover:border-blue-500/60 flex justify-between items-center'>
 
 
             {/* Left Section */}
@@ -28,7 +37,7 @@ function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index, data }: { sh
                 <div className=" text-center flex justify-center items-start  flex-col">
                     <div className=" font-semibold group-hover:text-blue-500 capitalize transition-colors duration-200">{data?.room?.roomName}</div>
                     <div className=" text-sm text-gray-400 font-sans flex gap-x-2 gap-y-0 justify-center items-center">
-                        <div className=" w-[0.5rem] aspect-square rounded-full bg-green-500 cursor-default" ></div>
+                        <div className={` w-[0.5rem] aspect-square rounded-full ${ socketLoading ? 'bg-yellow-400' : ( socket && socket.OPEN===1 ? 'bg-green-500' : 'bg-red-500' ) }  cursor-default`}></div>
                         <div className=' font-semibold'>{(new Date(data?.room?.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }))}</div>
                     </div>
                 </div>
@@ -51,7 +60,8 @@ function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index, data }: { sh
                         <LuStarOff />}
                 </div>
 
-                <div onClick={() => {
+                <div onClick={(e) => {
+                    e.stopPropagation()
                     navigator.clipboard.writeText(data?.room?.join_code)
                     toast.success("Room Code Copied!!!", toast_darktheme)
                 }} className=" text-lg rounded-xl hover:bg-zinc-800/70 opacity-100 transition-all duration-300  hover:scale-[1.06]" style={{ padding: "0.6rem" }} ><RxShare1 /></div>

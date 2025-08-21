@@ -9,10 +9,14 @@ import { MdOutlineDeleteOutline, MdOutlineFileDownload } from 'react-icons/md'
 import { PiPencilSimpleLineLight } from 'react-icons/pi'
 import { toast_darktheme } from '../utils/toast-darktheme'
 import { useRoom } from '../hooks/useRoom'
+import { useRouter } from 'next/navigation'
+import { useSocket } from '../hooks/useSocket'
 
 function SingleCard({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu: number, setShowSubMenu: (n: number) => void, index: number, data: any }) {
 
-    const { updateRoomDetails , updateRoomDetailsLoading } = useRoom()
+    const { updateRoomDetails, updateRoomDetailsLoading } = useRoom()
+    const router = useRouter();
+    const { socket, socketLoading, connectWs } = useSocket();
     return <div className="w-[20rem] border border-zinc-800  h-[25rem] rounded-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer relative group hover:border-blue-500/60">
 
         {/* Background */}
@@ -30,13 +34,16 @@ function SingleCard({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu:
                 onClick={(e) => {
                     e.stopPropagation()
                     if (showSubMenu !== -1) setShowSubMenu(-1)
-                    console.log("clicked on sheet card to navigate")
+                    if (!socketLoading) {
+                        if (socket && socket.OPEN === 1) router.push(`/sheets/${data?.room?.id}`)
+                        else connectWs()
+                    }
                 }}
                 className=" h-[82%] w-full gap-3 relative group-hover:bg-blue-500/10 flex flex-col justify-center items-center ">
 
                 <div onClick={(e) => {
                     e.stopPropagation()
-                    if(!updateRoomDetailsLoading) updateRoomDetails(data?.room?.id , {isFavourite : !data?.room?.isFavourite})
+                    if (!updateRoomDetailsLoading) updateRoomDetails(data?.room?.id, { isFavourite: !data?.room?.isFavourite })
                 }} className=" absolute text-xl rounded-lg bg-zinc-950 opacity-0 group-hover:opacity-100 transition-all duration-300  top-[4%] right-[4%] hover:scale-[1.06]" style={{ padding: "0.7rem" }}>
                     {data?.room?.isFavourite ?
                         <GoStarFill className=" text-yellow-500" />
@@ -58,7 +65,25 @@ function SingleCard({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu:
             {/* Lower Section */}
             <div className=" cursor-default h-[18%] w-full bg-gradient-to-r rounded-b-lg from-zinc-950 to-zinc-800/30 flex justify-between items-center" style={{ paddingLeft: "1.8rem", paddingRight: "1.4rem" }}>
 
-                <div className=" cursor-text flex justify-center gap-2 text-sm text-gray-400 font-semibold items-center"><div className=" w-[0.7rem] aspect-square rounded-full bg-green-500 cursor-default" ></div>Ready to edit</div>
+                {socketLoading ? <div className="flex items-center gap-2">
+                    <div className="w-[0.7rem] aspect-square rounded-full bg-yellow-400 cursor-default"></div>
+                    Connecting to server...
+                </div>
+                    :
+                    (socket && socket.OPEN === 1) ? <div className=" cursor-text flex justify-center gap-2 text-sm text-gray-400 font-semibold items-center">
+                        <div className=" w-[0.7rem] aspect-square rounded-full bg-green-500 cursor-default" ></div>
+                        Ready to edit</div>
+                        :
+                        <div onClick={(e) => {
+                            e.stopPropagation()
+                            connectWs();
+                        }} className=" flex items-center gap-2 cursor-pointer">
+                            <div className="w-[0.7rem] aspect-square rounded-full bg-red-500"></div>
+                            Failed — click to retry
+                        </div>
+                }
+
+
 
                 <div onClick={(e) => {
                     e.stopPropagation();
