@@ -11,14 +11,15 @@ import { toast_darktheme } from '../utils/toast-darktheme'
 import { useRoom } from '../hooks/useRoom'
 import { useRouter } from 'next/navigation'
 import { useSocket } from '../hooks/useSocket'
+import { useModal } from '../hooks/useModal'
 
 function SingleCard({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu: number, setShowSubMenu: (n: number) => void, index: number, data: any }) {
 
     const { updateRoomDetails, updateRoomDetailsLoading } = useRoom()
     const router = useRouter();
     const { socket, socketLoading, connectWs } = useSocket();
+    const {setShowModal , setRoomData} = useModal()
     return <div className="w-[20rem] border border-zinc-800  h-[25rem] rounded-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer relative group hover:border-blue-500/60">
-
         {/* Background */}
         <div className=" w-full h-full absolute top-0 left-0 blur-lg">
             <div className="h-10 aspect-square rounded-full group-hover:scale-[1.2] transition-all duration-300  bg-blue-500/60 absolute top-[1rem] left-[1.3rem]"></div>
@@ -100,7 +101,13 @@ function SingleCard({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu:
                 <div className=' cursor-default border-b border-zinc-800 font-semibold' style={{ paddingInline: "0.7rem", paddingBlock: "0.4rem" }}>Actions</div>
 
                 <div className=' flex flex-col justify-start items-start'>
-                    <div onClick={() => toast.success("Comming Soon!!!", toast_darktheme)} className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><PiPencilSimpleLineLight className=' text-blue-500 text-lg' /><div>Edit</div></div>
+                    <div onClick={
+                        () => {
+                            setRoomData(data)
+                            setShowModal(3)
+                        }
+                    } 
+                        className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><PiPencilSimpleLineLight className=' text-blue-500 text-lg' /><div>Edit</div></div>
                     {/* <div className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><MdOutlineFileDownload className=' text-lg' /><div>Download</div></div> */}
                     <div onClick={() => {
                         navigator.clipboard.writeText(data?.room?.join_code)

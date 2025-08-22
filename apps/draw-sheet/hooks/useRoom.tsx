@@ -22,7 +22,7 @@ type RoomConextType = {
     DrawingTabs: { name: string }[],
     selectedTab: tabs
     setSetlectedTab: (val: tabs) => void,
-    updateRoomDetails: (roomId: string, data: { [key: string]: any }) => Promise<void>,
+    updateRoomDetails: (roomId: string, data: { [key: string]: any }) => Promise<any>,
     setUpdateRoomDetailsLoading: (val: boolean) => void,
     updateRoomDetailsLoading: boolean
 }
@@ -120,27 +120,29 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
             toast_darktheme
         )
         return res
-    }
+    }    
 
     const updateRoomDetails = async (roomId: string, data: { [key: string]: any }) => {
         setUpdateRoomDetailsLoading(true);
         const api = fetch(UPDATE_ROOM_DETAILS, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, roomId }) }).then(async (res) => {
-            const data = await res.json();
-            if (data?.success) {
+            const dataa = await res.json();
+            if (dataa?.success) {
                 setOriginalRooms((prev: any) => {
                     const newRoomData = prev.map((ele: any) => {
                         if (ele.room.id === roomId) {
                             const e = ele.room
-                            return { room: { ...e, isFavourite: e.isFavourite ? false : true } }
+                            const key : string = Object?.keys(data)?.[0]!
+                            return { room: { ...e, [key] : dataa?.data?.[key] } }
                         }
                         else return ele
                     })
-                    return newRoomData
+                    return [...newRoomData]
                 })
+                return dataa
             }
             else {
                 // toast.error(data?.message || "Something went Wrong!!!", toast_darktheme)
-                throw new Error(data?.message || "Something went Wrong!!!")
+                throw new Error(dataa?.message || "Something went Wrong!!!")
             }
         }).catch((error) => { toast.error(error?.message || "Something went Wrong!!!", toast_darktheme) }).finally(()=>{
             setUpdateRoomDetailsLoading(false)

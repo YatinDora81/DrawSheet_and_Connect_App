@@ -5,7 +5,7 @@ import { IoEnterOutline, IoListSharp } from "react-icons/io5";
 import { HiOutlineHashtag } from "react-icons/hi";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { MdGridOn } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SingleCard from "./SingleCard";
 import SingleCardHorizontal from "./SingleCardHorizontal";
 import { useModal } from "../hooks/useModal";
@@ -17,6 +17,7 @@ import { BarLoader } from "react-spinners";
 import { FiUsers } from "react-icons/fi";
 import NoRooms from "./NoRooms";
 import NoSearchedRoom from "./NoSearchedRoom";
+import RoomDetails from "./Modals/RoomDetails";
 
 
 function AllSheetsClient() {
@@ -24,16 +25,26 @@ function AllSheetsClient() {
     const [showSubMenu, setShowSubMenu] = useState(-1)
 
     const [isGridUi, setIsGridUi] = useState(true)
-    
+
     const { showModal, setShowModal, Modals } = useModal()
-    const { room, roomLoading, setSearchedRoomText, searchedRoomText, originalRooms , DrawingTabs , selectedTab , setSetlectedTab } = useRoom()
+    const { room, roomLoading, setSearchedRoomText, searchedRoomText, originalRooms, DrawingTabs, selectedTab, setSetlectedTab } = useRoom()
+    const [showRoomModal, setShowRoomModal] = useState()
 
+    useEffect(() => {
+        if (showRoomModal) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
 
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [showRoomModal]);
     return (
         <div onClick={(e) => { e.stopPropagation(); setShowSubMenu(-1) }} className=" bg-zinc-950 min-h-[100vh] text-white ">
 
             <ModalContainer setShowModal={setShowModal} showModal={showModal}>{Modals[showModal]?.component}</ModalContainer>
-
             <div className=" relative h-full flex min-h-[100vh] flex-col justify-start  items-center " style={{ marginInline: "auto" }}>
                 <AuthProvider>
                     <AvatarProvider>
