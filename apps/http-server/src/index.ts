@@ -6,6 +6,7 @@ import roomRouter from "./routes/room.js"
 import { isAuthenticatedUser } from "./middleware/isAuth.js";
 import { config } from "dotenv";
 import cors from "cors"
+import { authLimiter, roomLimiter } from "./config/rateLimiter.js";
 
 const app = express();
 app.use(express.json());
@@ -29,8 +30,8 @@ app.use(cors({
 
 const PORT = HTTP_PORT
 
-app.use("/api/auth", authRouter)
-app.use("/api/rooms", isAuthenticatedUser, roomRouter);
+app.use("/api/auth", authLimiter, authRouter)
+app.use("/api/rooms", roomLimiter, isAuthenticatedUser, roomRouter);
 
 
 app.listen(PORT, () => {
