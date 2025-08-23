@@ -18,13 +18,14 @@ import { FiUsers } from "react-icons/fi";
 import NoRooms from "./NoRooms";
 import NoSearchedRoom from "./NoSearchedRoom";
 import RoomDetails from "./Modals/RoomDetails";
+import { getLocalStorage, setLocalStorage } from "../utils/localStorage";
 
 
 function AllSheetsClient() {
 
     const [showSubMenu, setShowSubMenu] = useState(-1)
-
-    const [isGridUi, setIsGridUi] = useState(true)
+    const isGri = getLocalStorage('ui-grid')
+    const [isGridUi, setIsGridUi] = useState((isGri && isGri !== 'null' || isGri !== null) ? isGri : 'true')
 
     const { showModal, setShowModal, Modals } = useModal()
     const { room, roomLoading, setSearchedRoomText, searchedRoomText, originalRooms, DrawingTabs, selectedTab, setSetlectedTab } = useRoom()
@@ -41,6 +42,10 @@ function AllSheetsClient() {
             document.body.style.overflow = "";
         };
     }, [showRoomModal]);
+
+    useEffect(()=>{
+        if(isGridUi!==isGri) setLocalStorage('ui-grid' , isGridUi)
+    } , [isGridUi])
     return (
         <div onClick={(e) => { e.stopPropagation(); setShowSubMenu(-1) }} className=" bg-zinc-950 min-h-[100vh] text-white ">
 
@@ -101,8 +106,8 @@ function AllSheetsClient() {
                         <input name="cards-ui" id="card" type="radio" value="card" className=" hidden" defaultChecked />
                         <input name="cards-ui" id="line" type="radio" value="line" className=" hidden" />
                         <div className=" flex justify-center items-center">
-                            <label htmlFor="card" onClick={() => { setIsGridUi(() => true) }} className={` border-[2px] border-zinc-800 rounded-l-xl h-10  aspect-square flex justify-center items-center text-lg cursor-pointer ${isGridUi && 'bg-zinc-800'} ${!isGridUi && 'hover:bg-blue-500'} transition-colors duration-200`}><MdGridOn /></label>
-                            <label htmlFor="line" onClick={() => { setIsGridUi(() => false) }} className={`h-10 rounded-r-xl border border-zinc-800  aspect-square flex justify-center items-center text-lg cursor-pointer ${!isGridUi && 'bg-zinc-800'} ${isGridUi && 'hover:bg-blue-500'} transition-colors duration-200`}><IoListSharp /></label>
+                            <label htmlFor="card" onClick={() => { setIsGridUi('true') }} className={` border-[2px] border-zinc-800 rounded-l-xl h-10  aspect-square flex justify-center items-center text-lg cursor-pointer ${isGridUi && 'bg-zinc-800'} ${!isGridUi && 'hover:bg-blue-500'} transition-colors duration-200`}><MdGridOn /></label>
+                            <label htmlFor="line" onClick={() => { setIsGridUi('false') }} className={`h-10 rounded-r-xl border border-zinc-800  aspect-square flex justify-center items-center text-lg cursor-pointer ${!isGridUi && 'bg-zinc-800'} ${isGridUi && 'hover:bg-blue-500'} transition-colors duration-200`}><IoListSharp /></label>
                         </div>
 
                     </div>
@@ -132,7 +137,7 @@ function AllSheetsClient() {
                             <div className=" text-2xl font-mono">Loading....</div>
                         </>
                             :
-                            isGridUi ?
+                            isGridUi.toLocaleLowerCase()==='true' ?
                                 <div className=" w-full flex justify-start items-start gap-5 flex-wrap gap-y-7">
 
                                     {/* Single Card Grid */}

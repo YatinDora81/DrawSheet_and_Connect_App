@@ -12,15 +12,17 @@ import { toast_darktheme } from '../utils/toast-darktheme'
 import { useRoom } from '../hooks/useRoom'
 import { useSocket } from '../hooks/useSocket'
 import { useRouter } from 'next/navigation'
+import { useModal } from '../hooks/useModal'
 
 function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu: number, setShowSubMenu: (n: number) => void, index: number, data: any }) {
-    const {socket , socketLoading , connectWs} = useSocket()
+    const { socket, socketLoading, connectWs } = useSocket()
     const { updateRoomDetailsLoading, updateRoomDetails } = useRoom()
-    const router =  useRouter()
+    const router = useRouter()
+    const { setShowModal, setRoomData } = useModal()
     return (
-        <div onClick={()=>{
-            if(!socketLoading){
-                if(socket && socket.OPEN===1) router.push(`/sheets/${data?.room?.id}`)
+        <div onClick={() => {
+            if (!socketLoading) {
+                if (socket && socket.OPEN === 1) router.push(`/sheets/${data?.room?.id}`)
                 else connectWs()
             }
         }} className='  w-full min-h-[5rem]  border border-zinc-800 bg-gradient-to-r rounded-b-lg from-zinc-950 to-zinc-900/20  rounded-lg transition-all duration-200 cursor-pointer relative group hover:border-blue-500/60 flex justify-between items-center'>
@@ -37,7 +39,7 @@ function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index, data }: { sh
                 <div className=" text-center flex justify-center items-start  flex-col">
                     <div className=" font-semibold group-hover:text-blue-500 capitalize transition-colors duration-200">{data?.room?.roomName}</div>
                     <div className=" text-sm text-gray-400 font-sans flex gap-x-2 gap-y-0 justify-center items-center">
-                        <div className={` w-[0.5rem] aspect-square rounded-full ${ socketLoading ? 'bg-yellow-400' : ( socket && socket.OPEN===1 ? 'bg-green-500' : 'bg-red-500' ) }  cursor-default`}></div>
+                        <div className={` w-[0.5rem] aspect-square rounded-full ${socketLoading ? 'bg-yellow-400' : (socket && socket.OPEN === 1 ? 'bg-green-500' : 'bg-red-500')}  cursor-default`}></div>
                         <div className=' font-semibold'>{(new Date(data?.room?.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }))}</div>
                     </div>
                 </div>
@@ -81,7 +83,12 @@ function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index, data }: { sh
                 <div className=' cursor-default border-b border-zinc-800 font-semibold' style={{ paddingInline: "0.7rem", paddingBlock: "0.4rem" }}>Actions</div>
 
                 <div className=' flex flex-col justify-start items-start'>
-                    <div onClick={() => toast.success("Comming Soon!!!", toast_darktheme)} className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><PiPencilSimpleLineLight className=' text-blue-500 text-lg' /><div>Edit</div></div>
+                    <div onClick={
+                        () => {
+                            setRoomData(data)
+                            setShowModal(3)
+                        }
+                    } className=' flex justify-start items-center gap-1 text-sm w-full rounded-lg transition-colors duration-200 hover:bg-blue-500/70 font-[400]' style={{ padding: "0.5rem" }}><PiPencilSimpleLineLight className=' text-blue-500 text-lg' /><div>Edit</div></div>
                     <div onClick={() => {
                         navigator.clipboard.writeText(data?.room?.join_code)
                         toast.success("Room Code Copied!!!", toast_darktheme)

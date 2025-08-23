@@ -2,6 +2,7 @@
 // add redraw function
 // add size in text
 
+import { useSocket } from "../hooks/useSocket"
 import { Canvas_BG_COLOR, Circle, Pencil, Rectangle, Shape, Textbox, Tool } from "./Types"
 
 export class Game {
@@ -22,8 +23,11 @@ export class Game {
     private lineWidth: number
     private lineWidthMultiplier = 0.6
     private localPencilCoords: { x: number, y: number }[]
+    private socket: WebSocket
+    private sheetId: string
+    
 
-    constructor(canvas: HTMLCanvasElement, tool: Tool, lineWidth: number, color: string) {
+    constructor(canvas: HTMLCanvasElement, tool: Tool, lineWidth: number, color: string, Socket: WebSocket, SheetId: string) {
         this.canvas = canvas
         this.ctx = canvas.getContext("2d")
         this.shapes = []
@@ -40,7 +44,8 @@ export class Game {
         this.color = color
         this.lineWidth = lineWidth * this.lineWidthMultiplier
         this.localPencilCoords = []
-
+        this.socket = Socket
+        this.sheetId = SheetId
         this.init()
     }
 
@@ -97,6 +102,16 @@ export class Game {
         // }
     }
 
+    private sendChatToSocket = (message: Shape) => {
+        this.socket.send(JSON.stringify({
+            type: "chat",
+            payload: {
+                roomId: this.sheetId,
+                message : JSON.stringify(message)
+            }
+        }))
+    }
+
     private mouseUpHandler = (e: MouseEvent) => {
         this.clicked = false
 
@@ -118,6 +133,7 @@ export class Game {
             }
 
             this.shapes.push(rectangle)
+            this.sendChatToSocket(rectangle)
         }
         else if (this.tool === 'circle') {
             const { x, y } = this.toCanvasCoords(e.clientX, e.clientY)
@@ -132,6 +148,8 @@ export class Game {
             }
 
             this.shapes.push(circle)
+            this.sendChatToSocket(circle)
+
         }
         else if (this.tool === 'pencil') {
 
@@ -144,6 +162,7 @@ export class Game {
             }
 
             this.shapes.push(pencil)
+            this.sendChatToSocket(pencil)
 
             this.localPencilCoords.length = 0
         }
@@ -208,7 +227,7 @@ export class Game {
     }
 
 
-    private render() {
+    render() {
 
         if (!this.ctx) return
 
@@ -219,6 +238,11 @@ export class Game {
         this.ctx.setTransform(this.scale, 0, 0, this.scale, this.panning.panX, this.panning.panY);
 
         // draw shapes
+        if(this.bufferShapes.length!==0){
+            this.shapes = [...this.shapes , ...this.bufferShapes]
+            this.bufferShapes.length = 0
+        }
+
         this.shapes.forEach((shape: Shape) => {
             if (shape.type === "rectangle") this.drawRectangle(shape)
             else if (shape.type === 'circle') this.drawCircle(shape)
@@ -230,7 +254,7 @@ export class Game {
 
     private drawTextBox = (shape: Textbox) => {
         if (!this.ctx) return
-        
+
         this.ctx.font = shape.fontStyle;
         this.ctx.fillStyle = shape.color;
         this.ctx.textBaseline = 'top'; // optional: aligns better
@@ -321,12 +345,15 @@ export class Game {
             text
         }
         this.shapes.push(textbox)
+        this.sendChatToSocket(textbox)
         console.log("it is ", textbox);
 
         this.render()
     }
 
     addBufferShapes = (New_Shapes: Shape[]) => {
+        // New_Shapes = New_Shapes.map((n)=>JSON.parse(n))
+        console.log("buff" , New_Shapes);
         this.bufferShapes = [...this.bufferShapes, ...New_Shapes]
     }
 
