@@ -6,6 +6,7 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 import toast from "react-hot-toast"
 import { toast_darktheme } from "../utils/toast-darktheme"
 import { useAuth } from "./useAuth"
+import { avatarFromApi } from "../utils/mockdata"
 
 type AvatarConextType = {
     avatars: any,
@@ -28,17 +29,18 @@ export const AvatarProvider = ({ children }: { children: ReactNode }) => {
     const fetchAvatar = async () => {
         try {
             setAvatarLoading(true)
-            const res = await fetch(GET_AVATARS_URL, { method: "GET", credentials: "include" })
-            const d = await res.json()
-            if (d.success && Array.isArray(d.data.avatar)) {
-                setAvatars(d.data.avatar); // `avatar` is string[]
-            }
-            else {
-                toast.error(d.message, toast_darktheme);
-            }
+            // const res = await fetch(GET_AVATARS_URL, { method: "GET", credentials: "include" })
+            // const d = await res.json()
+            // if (d.success && Array.isArray(d.data.avatar)) {
+            //     setAvatars(d.data.avatar); // `avatar` is string[]
+            // }
+            // else {
+            //     toast.error(d.message, toast_darktheme);
+            // }
+            setAvatars(avatarFromApi)
         } catch (error) {
             console.log("Error", error);
-            toast.error("Something Went Wrong!!!" , toast_darktheme)
+            toast.error("Something Went Wrong!!!", toast_darktheme)
         }
         finally {
             setAvatarLoading(false)
@@ -52,7 +54,7 @@ export const AvatarProvider = ({ children }: { children: ReactNode }) => {
                     "Content-Type": "application/json"
                 },
                 credentials: "include",
-                body: JSON.stringify({ avatarNumber : (n + '') })
+                body: JSON.stringify({ avatarNumber: (n + '') })
             }).then(async (res) => {
                 const d = await res.json()
                 if (d.success) {
@@ -64,9 +66,9 @@ export const AvatarProvider = ({ children }: { children: ReactNode }) => {
                 return d
             })
             const d = await toast.promise(
-                res ,
+                res,
                 {
-                    loading : "Updating Avatar!!!",
+                    loading: "Updating Avatar!!!",
                     success: (d: any) => d.message || "User logged out successfully!",
                     error: (err: any) => err.message || "Something went wrong!",
                 },
@@ -75,7 +77,7 @@ export const AvatarProvider = ({ children }: { children: ReactNode }) => {
 
         } catch (error) {
             console.log("Error", error);
-            toast.error("Something Went Wrong!!!" , toast_darktheme)
+            toast.error("Something Went Wrong!!!", toast_darktheme)
         }
     }
 

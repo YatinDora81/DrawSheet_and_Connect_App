@@ -40,7 +40,7 @@ export const isAuthenticatedUser = (req: Request, res: Response, next: NextFunct
     }
 }
 
-export const get_all_avatars = (req: Request, res: Response) => {
+export const    get_all_avatars = (req: Request, res: Response) => {
     try {
         const count = 18
 
