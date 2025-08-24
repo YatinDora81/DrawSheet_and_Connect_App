@@ -1,5 +1,5 @@
 "use client"
-import { LuUsers } from "react-icons/lu";
+import { LuLayoutDashboard, LuUsers } from "react-icons/lu";
 import { IoClose } from "react-icons/io5";
 import { FaHashtag, FaRegCopy, FaRegUser } from 'react-icons/fa';
 import { CiSettings } from 'react-icons/ci';
@@ -8,23 +8,25 @@ import toast from "react-hot-toast";
 import { toast_darktheme } from "../utils/toast-darktheme";
 import NavbarImage from "./NavbarImage";
 import { useEffect, useState } from "react";
-import { AvatarProvider, useAvatar } from "../hooks/useAvatars";
-import { AuthProvider, useAuth } from "../hooks/useAuth";
-import { svg_string } from "../utils/mockdata";
+import { useAvatar } from "../hooks/useAvatars";
+import { useAuth } from "../hooks/useAuth";
+import { hashCode, svgArray } from "../utils/mockdata";
+import { useRouter } from "next/navigation";
+import { useModal } from "../hooks/useModal";
+import ModalContainer from "./Modals/ModalContainer";
 
 function RightBar({ isBarOpen, setIsBarOper, currOnlineUsers, sheetId }: { isBarOpen: boolean, setIsBarOper: (val: boolean) => void, currOnlineUsers: number, sheetId: string }) {
 
     const { originalRooms } = useRoom()
     const { user } = useAuth()
-    const {avatars} = useAvatar()
+    const { avatars } = useAvatar()
     const [roomDetails, setRoomDetails] = useState<any>(null);
-    console.log("isu", user);
+    const router = useRouter()
+    const { showModal, setShowModal, Modals, setRoomData } = useModal()
 
     useEffect(() => {
         setRoomDetails(originalRooms?.find((r: any) => r?.room?.id === sheetId))
     }, [originalRooms])
-
-
 
     return (
         !isBarOpen ?
@@ -37,7 +39,7 @@ function RightBar({ isBarOpen, setIsBarOper, currOnlineUsers, sheetId }: { isBar
             :
 
             <div className='z-[123] absolute h-full w-[18rem] bg-zinc-950/70 right-0 top-0 flex-col items-' >
-
+                <ModalContainer setShowModal={setShowModal} showModal={showModal}>{Modals[showModal]?.component}</ModalContainer>
                 <div className=' w-full font-semibold text-[1.1rem] flex justify-between items-center border-b border-zinc-800/90 h-[9%]' style={{ paddingInline: "1rem", paddingBlock: "0.5rem" }}>
                     <div>Collaboration</div>
                     <div className=' cursor-pointer  hover:bg-blue-500/80 transition-all duration-200 rounded-sm text-gray-300 hover:text-white ' style={{ padding: "0.35rem" }} onClick={() => { setIsBarOper(false) }}><IoClose /></div>
@@ -67,8 +69,7 @@ function RightBar({ isBarOpen, setIsBarOper, currOnlineUsers, sheetId }: { isBar
 
                     <div className='flex flex-col justify-start items-start custom-scrollbar h-[60%] overflow-y-auto gap-[9px]' style={{ paddingBlock: "0.4rem", }}>
 
-                        <div className=' w-full flex flex-col items-start justify-start gap-3'>
-
+                        <div className=' w-full overflow-y-auto h-[85%] flex flex-col items-start justify-start gap-3'>
                             {
                                 roomDetails?.room?.members?.map((m: any, i: number) => {
                                     return (
@@ -77,9 +78,10 @@ function RightBar({ isBarOpen, setIsBarOper, currOnlineUsers, sheetId }: { isBar
 
                                                 <div className={` w-[2.3rem] flex justify-center items-center h-[2.3rem] rounded-full text-[1rem] bg-[#26262A]/80 text-white/70  cursor-pointer  transition-colors duration-300  relative `} >
                                                     <div
-                                                        dangerouslySetInnerHTML={{ __html: m?.user?.profilePic ? avatars[parseInt(m?.user?.profilePic)] : svg_string }}
+                                                        dangerouslySetInnerHTML={{ __html: m?.user?.profilePic && avatars?.length !== 0 ? avatars[parseInt(m?.user?.profilePic)] : svgArray[hashCode(m?.user?.id) % svgArray.length] }}
                                                         className='h-full border border-zinc-800 rounded-full aspect-square'
                                                     />
+
                                                     {/* <AuthProvider>
                                                     <AvatarProvider>
                                                         <NavbarImage name={m?.user?.name || 'Yat'} svg={m?.user?.profilePic} />
@@ -95,21 +97,29 @@ function RightBar({ isBarOpen, setIsBarOper, currOnlineUsers, sheetId }: { isBar
                                     )
                                 })
                             }
-
-
-
                         </div>
-
-
-
                     </div>
-
                 </div>
 
+                <div className=' w-[18rem] font-semibold text-[0.87rem] flex fixed bottom-0 justify-between items-center border-t border-zinc-800/90 min-h-[12.5%] gap-2 flex-col' style={{ paddingInline: "1rem", paddingBlock: "0.5rem" }}>
 
-                <div className=' w-[18rem] font-semibold text-[0.87rem] flex fixed bottom-0 justify-between items-center border-t border-zinc-800/90 h-[12.5%] flex-col' style={{ paddingInline: "1rem", paddingBlock: "0.5rem" }}>
-                    <button className=' w-full cursor-pointer flex items-center justify-center gap-1 hover:bg-blue-500/80 transition-all duration-200 rounded-sm text-white border border-zinc-700 hover:text-white/90' style={{ padding: "0.35rem" }}><CiSettings /> Room Settings</button>
-                    <button className=' w-full cursor-pointer flex items-center justify-center gap-1 bg-blue-500/80 transition-all duration-200 rounded-sm text-white hover:bg-blue-600 hover:text-white/90' style={{ padding: "0.35rem" }}><FaHashtag />Share Room Code</button>
+                    <button
+                        onClick={() => { router.push("/sheets") }}
+                        className=' w-full cursor-pointer flex items-center justify-center gap-1 hover:bg-blue-500/80 transition-all duration-200 rounded-sm text-white border border-zinc-700 hover:text-white/90' style={{ padding: "0.35rem" }}> <LuLayoutDashboard /> Dashborad</button>
+                    <button
+                        onClick={() => {
+                            if (roomDetails) {
+                                setRoomData(roomDetails)
+                                setShowModal(3)
+                            }
+                        }}
+                        className=' w-full cursor-pointer flex items-center justify-center gap-1 hover:bg-blue-500/80 transition-all duration-200 rounded-sm text-white border border-zinc-700 hover:text-white/90' style={{ padding: "0.35rem" }}><CiSettings /> Room Settings</button>
+                    <button
+                        onClick={() => {
+                            navigator.clipboard.writeText(roomDetails?.room?.join_code)
+                            toast.success("Room Code Copied!!!", toast_darktheme)
+                        }}
+                        className=' w-full cursor-pointer flex items-center justify-center gap-1 bg-blue-500/80 transition-all duration-200 rounded-sm text-white hover:bg-blue-600 hover:text-white/90' style={{ padding: "0.35rem" }}><FaHashtag />Share Room Code</button>
                 </div>
 
             </div>

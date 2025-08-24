@@ -28,7 +28,7 @@ function SheetClient({ sheetId }: { sheetId: string }) {
   const textAreaDivRef = useRef<HTMLDivElement | null>(null);
   const { socket } = useSocket()
   const [currOnlineUsers, setCurrOnlineUsers] = useState<number>(1)
-  const [isBarOpen, setIsBarOper] = useState(true)
+  const [isBarOpen, setIsBarOper] = useState(false)
 
 
   useEffect(() => {

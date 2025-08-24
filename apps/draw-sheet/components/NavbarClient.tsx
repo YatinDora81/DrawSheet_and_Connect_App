@@ -4,7 +4,7 @@ import ModalContainer from "./Modals/ModalContainer";
 import { useModal } from "../hooks/useModal";
 import NavbarImage from "./NavbarImage";
 import { MdOutlineFileUpload } from "react-icons/md";
-import { svg_string } from "../utils/mockdata";
+import { hashCode, svg_string, svgArray } from "../utils/mockdata";
 import { CiCamera } from "react-icons/ci";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -14,6 +14,7 @@ import { SignOut_User_URL } from "@repo/config/URL";
 import { useAuth } from "../hooks/useAuth";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { useAvatar } from "../hooks/useAvatars";
+import Link from "next/link";
 
 function NavbarClient() {
 
@@ -58,7 +59,10 @@ function NavbarClient() {
                 toast_darktheme
             );
 
-            router.push("/");
+            if (pathName === '/') {
+                window.location.reload()
+            }
+            else router.push("/");
         } catch (error) {
             console.error("Error", error);
             toast.error("Something Went Wrong!!!", toast_darktheme)
@@ -71,10 +75,10 @@ function NavbarClient() {
             <div className=" h-full    text-white font-sans flex w-[89%]   " style={{ marginInline: "auto" }}>
 
                 <div className=" flex justify-between w-full items-center">
-                    <div className=" flex text-2xl gap-2 justify-start items-center">
+                    <Link href={'/'} className=" flex text-2xl gap-2 justify-start items-center">
                         <PiPencilSimpleLineLight className=" text-blue-500" />
                         <div className=" font-semibold ">Drawsheet</div>
-                    </div>
+                    </Link>
                     <div className=" h-full flex gap-3 justify-center items-center">
                         <button onClick={() => setShowModal(0)} className=" border flex justify-center items-center h-[50%] w-[9rem] border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingInline: "" }}> <PiPlus></PiPlus> New Drawing</button>
                         <div className=" text-white relative" onClick={() => { setOpenMenuItems((prev) => !prev) }}>
@@ -85,7 +89,13 @@ function NavbarClient() {
                                 <div className=' flex flex-col justify-center gap-1 items-center h-[5.8rem]' style={{ paddingInline: "0.7rem", paddingBlock: "0.4rem" }}>
 
                                     {user && <div
-                                        dangerouslySetInnerHTML={{ __html: user.profilePic ? avatars[parseInt(user.profilePic)] : svg_string }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: user?.profilePic
+                                                ?
+                                                avatars[parseInt(user?.profilePic)]
+                                                :
+                                                svgArray[hashCode(user?.user_id) % (svgArray.length || 2)]
+                                        }}
                                         className='h-full border border-zinc-800 rounded-full aspect-square'
                                     />}
 
@@ -105,7 +115,7 @@ function NavbarClient() {
 
 
 
-                            <NavbarImage name={user?.name || 'Yat'} svg={user?.profilePic} />
+                            <NavbarImage name={user?.name || 'Yat'} svg={user?.profilePic} id={user?.user_id || "okay"} />
 
 
 

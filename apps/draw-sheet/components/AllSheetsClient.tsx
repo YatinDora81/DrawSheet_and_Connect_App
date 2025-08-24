@@ -19,6 +19,7 @@ import NoRooms from "./NoRooms";
 import NoSearchedRoom from "./NoSearchedRoom";
 import RoomDetails from "./Modals/RoomDetails";
 import { getLocalStorage, setLocalStorage } from "../utils/localStorage";
+import Footer from "./Footer";
 
 
 function AllSheetsClient() {
@@ -164,7 +165,8 @@ function AllSheetsClient() {
 
 
 
-            <div className=" min-h-[70vh]"></div>
+            <div className=" min-h-[10vh]"></div>
+            <Footer />
 
         </div>
     )
