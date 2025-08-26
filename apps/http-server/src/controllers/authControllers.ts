@@ -1,9 +1,10 @@
-import { signInShouldBe, signUpShouldBe } from "@repo/backend-common/backend-common";
+import { forgotPasswordShouldBe, signInShouldBe, signUpShouldBe } from "@repo/backend-common/backend-common";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt"
 import { prismaClient } from "@repo/db/db";
 import { sendTokenAndCookie } from "../utils/sendTokenAndCookie.js";
 import { z } from 'zod';
+import { sendEmail } from "../config/nodemailer.js";
 
 
 export const signupController = async (req: Request, res: Response) => {
@@ -237,6 +238,52 @@ export const updateAvatar = async (req: Request, res: Response) => {
             success: true,
             data: newuser,
             message: "Avatar Updated Successfully"
+        })
+
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            data: error.message || "",
+            message: "Internal Server Error",
+        });
+    }
+}
+
+export const forgotPassword = async (req: Request, res: Response) => {
+    try {
+        const parsedData = forgotPasswordShouldBe.safeParse(req.body)
+        if (!parsedData.success) {
+            res.status(400).json({
+                success: false,
+                data: parsedData?.error?.issues[0]?.message || "",
+                message: "Invalid Format!!!"
+            })
+            return
+        }
+
+
+        const isUser = await prismaClient.user.findFirst({
+            where: {
+                email: parsedData.data.email,
+                isDraw: parsedData.data.isDraw
+            }
+        })
+
+        if (!isUser) {
+            res.status(400).json({
+                success: false,
+                data: "No User Exists!!!",
+                message: "No User Exists!!!"
+            })
+            return
+        }
+
+        await sendEmail(isUser.name, parsedData.data.email, '123456', parsedData.data.isDraw)
+
+        res.status(200).json({
+            success: true,
+            data: 'Email Send Successfully!!!',
+            message: 'Email Send Successfully!!!'
         })
 
     } catch (error: any) {

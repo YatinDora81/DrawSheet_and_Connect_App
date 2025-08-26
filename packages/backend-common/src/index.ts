@@ -18,16 +18,21 @@ export const roomShouldBe = z.object({
 })
 
 export const joinRoomShouldBe = z.object({
-    roomJoinCode : z.string().min(1)
+    roomJoinCode: z.string().min(1)
 })
 
 export const updateRoomDetailsShouldBe = z.object({
-    roomId : z.string(),
-    roomName : z.string().optional(),
-    join_code : z.boolean().optional(),
-    roomPic : z.string().optional(),
-    isFavourite : z.boolean().optional()
+    roomId: z.string(),
+    roomName: z.string().optional(),
+    join_code: z.boolean().optional(),
+    roomPic: z.string().optional(),
+    isFavourite: z.boolean().optional()
 })
 export type authTokenType = { user_id: string, email: string, name: string }
 
-export const JWT_SECRET = process.env.JWT_SECRET ||"_+"
+export const JWT_SECRET = process.env.JWT_SECRET || "_+"
+
+export const forgotPasswordShouldBe = z.object({
+    email: z.string().email({ message: "Please give a email" }),
+    isDraw: z.boolean().optional().default(false)
+})
