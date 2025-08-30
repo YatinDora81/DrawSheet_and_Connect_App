@@ -319,7 +319,7 @@ export const add_chatController = async (req: Request, res: Response) => {
         }
 
         // Ensure the user is a member of the room
-        if (!room.members.some(member => member.userId === req.user!.user_id)) {
+        if (!room.members.some((member : any) => member.userId === req.user!.user_id)) {
             res.status(403).json({
                 success: false,
                 data: "User is not a member of this room.",

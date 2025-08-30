@@ -1,4 +1,4 @@
-import { forgotPasswordShouldBe, signInShouldBe, signUpShouldBe } from "@repo/backend-common/backend-common";
+import { forgotPasswordShouldBe, signInShouldBe, signUpShouldBe, verifyOtpShouldBe } from "@repo/backend-common/backend-common";
 import bcrypt from "bcrypt"
 import otpGenerator from "otp-generator"
 import { prismaClient } from "@repo/db/db";
@@ -6,6 +6,7 @@ import { date, z } from 'zod';
 import { Request, Response } from "express";
 import { sendTokenAndCookie } from "../utils/sendTokenAndCookie.js";
 import { sendEmail } from "../config/nodemailer.js";
+import { success } from "zod/v4";
 
 export const signupController = async (req: Request, res: Response) => {
     try {
@@ -282,17 +283,108 @@ export const forgotPassword = async (req: Request, res: Response) => {
         const otpLength = 6;
         const otp = otpGenerator.generate(otpLength, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: true, specialChars: false })
 
-        // await prismaClient
+        await prismaClient.opt.create({
+            data: {
+                otp,
+                email: parsedData.data.email,
+                isDraw: parsedData.data.isDraw,
+                expirayTime: BigInt(Date.now() + (2 * 60 * 1000))
+            }
+        })
 
         await sendEmail(isUser.name, parsedData.data.email, otp, parsedData.data.isDraw)
-
-        
 
         res.status(200).json({
             success: true,
             data: 'Email Send Successfully!!!',
             message: 'Email Send Successfully!!!'
         })
+
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            data: error.message || "",
+            message: "Internal Server Error",
+        });
+    }
+}
+
+export const verifyOtp = async (req: Request, res: Response) => {
+    try {
+        const parsedData = verifyOtpShouldBe.safeParse(req.body)
+        if (!parsedData.success) {
+            res.status(400).json({
+                success: false,
+                data: parsedData?.error?.issues[0]?.message || "",
+                message: "Invalid Format!!!"
+            })
+            return
+        }
+
+        const getDetail = await prismaClient.opt.findMany({
+            where: {
+                email: parsedData.data.email,
+                isDraw: parsedData.data.isDraw
+            },
+            orderBy: {
+                id: 'desc'
+            }
+        })
+
+        if (!getDetail || getDetail.length === 0) {
+            res.status(400).json({
+                success: false,
+                data: "No Otp is there with this email!!!",
+                message: "No Otp is there with this email!!!"
+            })
+            return
+        }
+
+        if (parsedData.data.otp === getDetail[0]?.otp) {
+            if (Date.now() <= getDetail[0]?.expirayTime!) {
+
+                if (getDetail[0].isUsed) {
+                    res.status(200).json({
+                        success: true,
+                        data: 'Otp Already Used!!!',
+                        message: 'Otp Already Used!!!'
+                    })
+                    return
+                }
+
+                await prismaClient.opt.update({
+                    where: {
+                        id: getDetail[0].id
+                    },
+                    data: {
+                        isUsed: true
+                    }
+                })
+
+                res.status(200).json({
+                    success: true,
+                    data: 'Otp Matched!!!',
+                    message: 'Otp Matched!!!'
+                })
+                return
+            }
+            else {
+                res.status(200).json({
+                    success: true,
+                    data: 'Otp is Expired!!!',
+                    message: 'Otp is Expired!!!'
+                })
+                return
+            }
+        }
+        else {
+            res.status(200).json({
+                success: true,
+                data: 'Otp is incorrect!!!',
+                message: 'Otp is incorrect!!!'
+            })
+            return
+        }
 
     } catch (error: any) {
         res.status(500).json({

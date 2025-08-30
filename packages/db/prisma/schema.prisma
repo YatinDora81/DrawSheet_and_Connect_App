@@ -63,7 +63,7 @@ model Opt{
   id Int @id @default(autoincrement())
   otp String
   email String
-  expirayTime DateTime @db.Timestamp()
-  isUser Boolean @default(false)
+  expirayTime BigInt
+  isUsed Boolean @default(false)
   isDraw Boolean @default(false)
 }

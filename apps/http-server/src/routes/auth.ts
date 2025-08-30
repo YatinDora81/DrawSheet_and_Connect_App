@@ -1,7 +1,7 @@
 import express, { Router } from "express"
 import { get_all_avatars, get_single_avatar, isAuthenticatedUser } from "../middleware/isAuth.js"
-import { forgotPassword, signinController, signoutController, signupController, updateAvatar, userDetailController } from "../controllers/authControllers.js"
-import { otpLimiter } from "../config/rateLimiter.js"
+import { forgotPassword, signinController, signoutController, signupController, updateAvatar, userDetailController, verifyOtp } from "../controllers/authControllers.js"
+import { otpLimiter, verifyOtpLimiter } from "../config/rateLimiter.js"
 
 
 const router: Router = express.Router()
@@ -26,5 +26,6 @@ router.get("/avatars/:id", get_single_avatar)
 router.post("/avatars/update"  , isAuthenticatedUser ,updateAvatar)
 
 router.post("/forgot-password" , otpLimiter , forgotPassword)
+router.post("/verify-otp" , verifyOtpLimiter , verifyOtp)
 
 export default router;

@@ -36,3 +36,9 @@ export const forgotPasswordShouldBe = z.object({
     email: z.string().email({ message: "Please give a email" }),
     isDraw: z.boolean().optional().default(false)
 })
+
+export const verifyOtpShouldBe = z.object({
+    otp: z.string(),
+    email: z.string(),
+    isDraw: z.boolean().optional().default(false),
+})

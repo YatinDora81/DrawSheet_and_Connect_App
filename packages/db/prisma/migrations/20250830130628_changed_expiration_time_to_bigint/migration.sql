@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Opt" ALTER COLUMN "expirayTime" SET DATA TYPE BIGINT;
