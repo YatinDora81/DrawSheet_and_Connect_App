@@ -58,3 +58,12 @@ model Chat{
   user User @relation(fields: [userId] , references: [id])
   room Room @relation(fields: [roomId] , references: [id])
 }
+
+model Opt{
+  id Int @id @default(autoincrement())
+  otp String
+  email String
+  expirayTime DateTime @db.Timestamp()
+  isUser Boolean @default(false)
+  isDraw Boolean @default(false)
+}

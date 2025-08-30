@@ -1,11 +1,11 @@
 import { forgotPasswordShouldBe, signInShouldBe, signUpShouldBe } from "@repo/backend-common/backend-common";
-import { Request, Response } from "express";
 import bcrypt from "bcrypt"
+import otpGenerator from "otp-generator"
 import { prismaClient } from "@repo/db/db";
+import { date, z } from 'zod';
+import { Request, Response } from "express";
 import { sendTokenAndCookie } from "../utils/sendTokenAndCookie.js";
-import { z } from 'zod';
 import { sendEmail } from "../config/nodemailer.js";
-
 
 export const signupController = async (req: Request, res: Response) => {
     try {
@@ -278,7 +278,15 @@ export const forgotPassword = async (req: Request, res: Response) => {
             return
         }
 
-        await sendEmail(isUser.name, parsedData.data.email, '123456', parsedData.data.isDraw)
+        // save otp in postgres
+        const otpLength = 6;
+        const otp = otpGenerator.generate(otpLength, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: true, specialChars: false })
+
+        // await prismaClient
+
+        await sendEmail(isUser.name, parsedData.data.email, otp, parsedData.data.isDraw)
+
+        
 
         res.status(200).json({
             success: true,
