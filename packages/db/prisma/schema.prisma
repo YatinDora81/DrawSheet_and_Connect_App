@@ -65,5 +65,6 @@ model Opt{
   email String
   expirayTime BigInt
   isUsed Boolean @default(false)
+  isPasswordChanged Boolean @default(false)
   isDraw Boolean @default(false)
 }

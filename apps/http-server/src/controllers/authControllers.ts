@@ -1,4 +1,4 @@
-import { forgotPasswordShouldBe, signInShouldBe, signUpShouldBe, verifyOtpShouldBe } from "@repo/backend-common/backend-common";
+import { changePasswordShouldBe, forgotPasswordShouldBe, signInShouldBe, signUpShouldBe, verifyOtpShouldBe } from "@repo/backend-common/backend-common";
 import bcrypt from "bcrypt"
 import otpGenerator from "otp-generator"
 import { prismaClient } from "@repo/db/db";
@@ -363,7 +363,9 @@ export const verifyOtp = async (req: Request, res: Response) => {
 
                 res.status(200).json({
                     success: true,
-                    data: 'Otp Matched!!!',
+                    data: {
+                        otp_id: getDetail[0]?.id,
+                    },
                     message: 'Otp Matched!!!'
                 })
                 return
@@ -385,6 +387,90 @@ export const verifyOtp = async (req: Request, res: Response) => {
             })
             return
         }
+
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            data: error.message || "",
+            message: "Internal Server Error",
+        });
+    }
+}
+
+export const change_password = async (req: Request, res: Response) => {
+    try {
+        const parsedData = changePasswordShouldBe.safeParse(req.body)
+        if (!parsedData.success) {
+            res.status(400).json({
+                success: false,
+                data: parsedData?.error?.issues[0]?.message || "",
+                message: "Invalid Format!!!"
+            })
+            return
+        }
+
+        const isVerifiedOtp = await prismaClient.opt.findFirst({
+            where: {
+                id: parsedData.data.otp_id,
+                email: parsedData.data.email,
+                isDraw: parsedData.data.isDraw,
+                isUsed: true,
+                isPasswordChanged: false
+            }
+        })
+
+        if (!isVerifiedOtp) {
+            res.status(400).json({
+                success: false,
+                data: 'OTP is invalid, expired, or password has already been changed with this email',
+                message: "OTP is invalid, expired, or password has already been changed with this email"
+            })
+            return
+        }
+
+        let hassedPassword
+
+        try {
+            hassedPassword = await bcrypt.hash(parsedData.data.password, 10)
+        } catch (error) {
+            res.status(400).json({
+                success: false,
+                data: "Error At Hashing Password",
+                message: "Error At Hashing Password"
+            })
+            return
+        }
+
+        await prismaClient.user.update({
+            where: {
+                email_isDraw: {
+                    email: parsedData.data.email,
+                    isDraw: parsedData.data.isDraw
+                }
+            },
+            data: {
+                password: hassedPassword
+            }
+        })
+
+        await prismaClient.opt.update({
+            where: {
+                id: parsedData.data.otp_id,
+                email: parsedData.data.email,
+                isDraw: parsedData.data.isDraw,
+                isUsed: true,
+                isPasswordChanged: false
+            },
+            data: {
+                isPasswordChanged: true
+            }
+        })
+
+        res.status(200).json({
+            success: true,
+            data: 'Password Changed Successfully!!!',
+            message: 'Password Changed Successfully!!!',
+        })
 
     } catch (error: any) {
         res.status(500).json({

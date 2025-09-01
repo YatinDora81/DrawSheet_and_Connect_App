@@ -42,3 +42,10 @@ export const verifyOtpShouldBe = z.object({
     email: z.string(),
     isDraw: z.boolean().optional().default(false),
 })
+
+export const changePasswordShouldBe = z.object({
+    otp_id: z.number(),
+    password: z.string().min(6, { message: 'Password Should Be atleast 6 Characters' }),
+    email: z.string().email(),
+    isDraw: z.boolean().optional().default(false),
+})
