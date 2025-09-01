@@ -28,4 +28,10 @@ export const GET_AVATARS_URL = BASE_HTTP_URL + "/api/auth/avatars"
 
 export const UPDATE_AVATAR_URL = BASE_HTTP_URL + '/api/auth/avatars/update'
 
+export const FORGOT_PASS_URL = BASE_HTTP_URL + '/api/auth/forgot-password'
+
+export const VERIFY_OTP_URL = BASE_HTTP_URL + '/api/auth/verify-otp'
+
+export const CHANGE_PASS_URL = BASE_HTTP_URL + '/api/auth/change-password'
+
 export const BASE_WS_URL = `ws://localhost:${WS_PORT}`

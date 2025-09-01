@@ -161,7 +161,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                         {error && error !== "" && <div className=' text-sm  text-red-500 -my-2 w-[60%]' style={{ paddingLeft: "5px" }}> * {error}</div>}
 
                         <div className=' flex justify-end items-center  -my-1 text-green-500 font-mono italic  '>
-                            <div onClick={()=>toast.success("Comming Soon😎")} className='hover:text-green-400 transition-all duration-200 hover:underline cursor-pointer'>Forgot Password?</div>
+                            <div onClick={()=>{router.push('/forgot-password')}} className='hover:text-green-400 transition-all duration-200 hover:underline cursor-pointer'>Forgot Password?</div>
                         </div>
 
                         <button disabled={loading} style={{ paddingInline: "20px", paddingBlock: "10px", marginTop: "2px" }} className=' flex justify-center items-center text-xl  w-full bg-green-600 rounded-sm  cursor-pointer   text-white transition-all duration-200 hover:opacity-90 text-center '>

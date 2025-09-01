@@ -108,7 +108,7 @@ function AuthPage({ isSignIn }: { isSignIn: boolean }) {
                             <div className=' flex flex-col justify-center items-start gap-2'>
                                 <div className=' w-full flex justify-between items-center'>
                                     <label htmlFor='draw-pass' className=' text-[0.95rem] font-semibold'>Password</label>
-                                    {isSignIn && <div className=' text-[0.85rem]  text-blue-500 hover:underline transition-all duration-200 cursor-pointer'>Forgot password?</div>}
+                                    {isSignIn && <div onClick={()=>{router.push('/forgot-password')}} className=' text-[0.85rem]  text-blue-500 hover:underline transition-all duration-200 cursor-pointer'>Forgot password?</div>}
                                 </div>
                                 <div className=' w-full relative'>
                                     <input value={formData.password} onChange={(e) => setFormDate((prev) => { return { ...prev, password: e.target.value } })} id='draw-pass' type={showPassword ? "text" : "password"} className=' border border-zinc-800/70 w-full text-[0.91rem] font-normal  rounded-lg' style={{ paddingInline: "0.9rem", paddingRight: "2.2rem", paddingBlock: "0.5rem" }} placeholder="**************" />

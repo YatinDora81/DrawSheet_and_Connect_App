@@ -344,8 +344,8 @@ export const verifyOtp = async (req: Request, res: Response) => {
             if (Date.now() <= getDetail[0]?.expirayTime!) {
 
                 if (getDetail[0].isUsed) {
-                    res.status(200).json({
-                        success: true,
+                    res.status(400).json({
+                        success: false,
                         data: 'Otp Already Used!!!',
                         message: 'Otp Already Used!!!'
                     })
@@ -371,8 +371,8 @@ export const verifyOtp = async (req: Request, res: Response) => {
                 return
             }
             else {
-                res.status(200).json({
-                    success: true,
+                res.status(400).json({
+                    success: false,
                     data: 'Otp is Expired!!!',
                     message: 'Otp is Expired!!!'
                 })
@@ -380,8 +380,8 @@ export const verifyOtp = async (req: Request, res: Response) => {
             }
         }
         else {
-            res.status(200).json({
-                success: true,
+            res.status(400).json({
+                success: false,
                 data: 'Otp is incorrect!!!',
                 message: 'Otp is incorrect!!!'
             })

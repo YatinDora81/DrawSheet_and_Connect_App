@@ -80,7 +80,7 @@ function NavbarClient() {
                         <div className=" font-semibold ">Drawsheet</div>
                     </Link>
                     <div className=" h-full flex gap-3 justify-center items-center">
-                        <button onClick={() => setShowModal(0)} className=" border flex justify-center items-center h-[50%] w-[9rem] border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingInline: "" }}> <PiPlus></PiPlus> New Drawing</button>
+                        {pathName!=='/' && <button onClick={() => setShowModal(0)} className=" border flex justify-center items-center h-[50%] w-[9rem] border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingInline: "" }}> <PiPlus></PiPlus> New Drawing</button>}
                         <div className=" text-white relative" onClick={() => { setOpenMenuItems((prev) => !prev) }}>
 
 
@@ -106,7 +106,7 @@ function NavbarClient() {
                                 <div className=" w-full flex-col justify-center items-center gap-2 flex">
                                     <button onClick={() => setShowModal(2)} className=" border flex justify-center items-center h-[50%] w-full  font-semibold border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingBlock: "0.5rem" }}> <CiCamera className=" text-xl"></CiCamera> Choose Avatar</button>
                                     {/* <button onClick={() => { }} className=" border flex justify-center items-center h-[50%] w-full  font-semibold border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingBlock: "0.5rem" }}> <MdOutlineFileUpload className=" text-xl"></MdOutlineFileUpload > Upload Photo</button> */}
-                                    {pathName !== '/sheets' && <button onClick={() => { }} className=" border flex justify-center items-center h-[50%] w-full  font-semibold border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingBlock: "0.5rem" }}> <LuLayoutDashboard className=" text-xl"></LuLayoutDashboard > Dashborad</button>}
+                                    {pathName !== '/sheets' && <button onClick={() => {router.push('/sheets')}} className=" border flex justify-center items-center h-[50%] w-full  font-semibold border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingBlock: "0.5rem" }}> <LuLayoutDashboard className=" text-xl"></LuLayoutDashboard > Dashborad</button>}
                                     <button onClick={signoutHandler} className=" border text-red-500 flex justify-center items-center h-[50%] w-full  font-semibold border-zinc-800 rounded-lg cursor-pointer hover:opacity-70 gap-2 transition-colors duration-200 text-sm" style={{ paddingBlock: "0.5rem" }}> <PiSignOutLight className=" text-xl" />Sign Out</button>
                                 </div>
 

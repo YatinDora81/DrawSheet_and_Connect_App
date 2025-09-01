@@ -1,10 +1,13 @@
 "use client"
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react'
+import toast from 'react-hot-toast';
 import { GoArrowLeft } from 'react-icons/go';
 import { HiOutlineRefresh } from 'react-icons/hi'
+import { toast_darktheme } from '../utils/toast-darktheme';
+import { BarLoader } from 'react-spinners';
 
-function VerifyOtp({ email, setPage, error, resendOtp, verifyOtp, loading }: { email: string, setPage: (n: number) => void, error: string, resendOtp: () => void, verifyOtp: (s: string) => void, loading: boolean }) {
+function VerifyOtp({ email, setPage, error, resendOtp, verifyOtp, loading, setError, verifyOtpLoading, setVerifyOtpLoading }: { email: string, setPage: (n: number) => void, error: string, resendOtp: () => void, verifyOtp: (s: string) => void, loading: boolean, setError: (s: string) => void, verifyOtpLoading: boolean, setVerifyOtpLoading: (s: boolean) => void }) {
     const [otp, setOtp] = useState<string[]>(new Array(6).fill(''))
     const otpRef = useRef<(HTMLInputElement | null)[]>([])
     const [otpIndex, setOptIndex] = useState(0);
@@ -51,9 +54,24 @@ function VerifyOtp({ email, setPage, error, resendOtp, verifyOtp, loading }: { e
                                                 }
                                             }
                                         }
+                                        else if (e.key === 'Enter') {
+                                            if (!verifyOtpLoading) {
+                                                if (isAbleToSubmit) {
+                                                    console.log("opt done")
+                                                    const s = otp?.map((o: string) => o.trim()).join('')
+                                                    verifyOtp(s)
+                                                }
+                                                else {
+                                                    setError('Otp Should Be Atleast 6 Characters')
+                                                    toast.error('Otp Should Be Atleast 6 Characters', toast_darktheme)
+                                                }
+                                            }
+
+                                        }
                                     }}
                                     className={` text-center font-semibold border-t border-b ${i !== otp.length - 1 && 'border-l'} ${i !== 0 && 'border-r'} border-zinc-800/90 w-[2.5rem] aspect-square flex justify-center items-center ${i === 0 && ' rounded-l-xl'} ${i === otp.length - 1 && ' rounded-r-xl'} `} type='text'
                                     value={otp[i]}
+
                                     onChange={(e) => {
                                         setOtp((prev) => {
                                             const newArr = [...prev]
@@ -81,18 +99,29 @@ function VerifyOtp({ email, setPage, error, resendOtp, verifyOtp, loading }: { e
                 <div className=' text-center'>Didn't receive the code?</div>
 
                 <button
-                    // disabled={loading}
-                    // onClick={submitHandler}
-                    className=' h-[2.45rem] cursor-pointer border border-zinc-800/70 flex justify-center items-center w-full text-[0.91rem] rounded-lg text-zinc-200 gap-1 font-semibold' style={{ paddingInline: "0.9rem", paddingBlock: "0.5rem" }} ><HiOutlineRefresh /> Resend code</button>
+                    disabled={loading}
+                    onClick={resendOtp}
+                    className=' h-[2.45rem] cursor-pointer border border-zinc-800/70 flex justify-center items-center w-full text-[0.91rem] rounded-lg text-zinc-200 gap-1 font-semibold' style={{ paddingInline: "0.9rem", paddingBlock: "0.5rem" }} > { loading ? <BarLoader color='white' /> : <div className=' flex justify-center items-center gap-1'><HiOutlineRefresh /> Resend code</div>} </button>
 
             </div>
 
             <button
-                // disabled={loading}
+                disabled={verifyOtpLoading}
                 onClick={() => {
-                    // if(isAbleToSubmit) console.log("opt done")
-                }}
-                className=' h-[2.45rem] cursor-pointer border border-zinc-800/70 flex justify-center items-center w-full text-[0.91rem] rounded-lg bg-blue-500 font-semibold' style={{ paddingInline: "0.9rem", paddingBlock: "0.5rem" }}>Verify code</button>
+                    if (!verifyOtpLoading) {
+                        if (isAbleToSubmit) {
+                            console.log("opt done")
+                            const s = otp?.map((o: string) => o.trim()).join('')
+                            verifyOtp(s)
+                        }
+                        else {
+                            setError('Otp Should Be Atleast 6 Characters')
+                            toast.error('Otp Should Be Atleast 6 Characters', toast_darktheme)
+                        }
+                    }
+                }
+                }
+                className=' h-[2.45rem] cursor-pointer border border-zinc-800/70 flex justify-center items-center w-full text-[0.91rem] rounded-lg bg-blue-500 font-semibold' style={{ paddingInline: "0.9rem", paddingBlock: "0.5rem" }}>{verifyOtpLoading ? <BarLoader color='white' /> : 'Verify code'}</button>
 
 
 
