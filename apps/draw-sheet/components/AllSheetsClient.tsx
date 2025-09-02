@@ -25,8 +25,8 @@ import Footer from "./Footer";
 function AllSheetsClient() {
 
     const [showSubMenu, setShowSubMenu] = useState(-1)
-    const isGri = getLocalStorage('ui-grid')
-    const [isGridUi, setIsGridUi] = useState((isGri && isGri !== 'null' || isGri !== null) ? isGri : 'true')
+    // const isGri = getLocalStorage('ui-grid')
+    const [isGridUi, setIsGridUi] = useState('true')
 
     const { showModal, setShowModal, Modals } = useModal()
     const { room, roomLoading, setSearchedRoomText, searchedRoomText, originalRooms, DrawingTabs, selectedTab, setSetlectedTab } = useRoom()
@@ -44,9 +44,13 @@ function AllSheetsClient() {
         };
     }, [showRoomModal]);
 
-    useEffect(()=>{
-        if(isGridUi!==isGri) setLocalStorage('ui-grid' , isGridUi)
-    } , [isGridUi])
+    useEffect(() => {
+        setIsGridUi(getLocalStorage('ui-grid') || 'true')
+    }, [])
+
+    useEffect(() => {
+       setLocalStorage('ui-grid', isGridUi)
+    }, [isGridUi])
     return (
         <div onClick={(e) => { e.stopPropagation(); setShowSubMenu(-1) }} className=" bg-zinc-950 min-h-[100vh] text-white ">
 
@@ -138,7 +142,7 @@ function AllSheetsClient() {
                             <div className=" text-2xl font-mono">Loading....</div>
                         </>
                             :
-                            isGridUi.toLocaleLowerCase()==='true' ?
+                            isGridUi.toLocaleLowerCase() === 'true' ?
                                 <div className=" w-full flex justify-start items-start gap-5 flex-wrap gap-y-7">
 
                                     {/* Single Card Grid */}

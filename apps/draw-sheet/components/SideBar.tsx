@@ -1,3 +1,4 @@
+"use client"
 import React, { SetStateAction } from 'react'
 import { Frontend_SideBar_Tools, Tool } from '../utils/Types'
 import { IconType } from 'react-icons'

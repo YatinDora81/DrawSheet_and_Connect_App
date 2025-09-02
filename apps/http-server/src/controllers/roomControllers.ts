@@ -319,7 +319,7 @@ export const add_chatController = async (req: Request, res: Response) => {
         }
 
         // Ensure the user is a member of the room
-        if (!room.members.some((member : any) => member.userId === req.user!.user_id)) {
+        if (!room.members.some((member: any) => member.userId === req.user!.user_id)) {
             res.status(403).json({
                 success: false,
                 data: "User is not a member of this room.",
@@ -695,7 +695,7 @@ export const update_details_controller = async (req: Request, res: Response) => 
                 message: "Invalid Format!!!"
             })
             console.log(parsedData.error);
-            
+
             return
         }
         if (!req.user) {
@@ -727,17 +727,17 @@ export const update_details_controller = async (req: Request, res: Response) => 
         let obj = {};
         if (parsedData.data?.roomName !== "") obj = { ...obj, "roomName": parsedData.data.roomName }
         if (parsedData.data.join_code) obj = { ...obj, "join_code": createId() }
-        if (parsedData.data.roomPic && parsedData.data.roomPic!=="") obj = { ...obj, "roomPic": parsedData.data.roomPic };
-        if (parsedData.data?.isFavourite===true || parsedData.data?.isFavourite===false) obj = {...obj , 'isFavourite' : parsedData.data.isFavourite}
-        
-        
+        if (parsedData.data.roomPic && parsedData.data.roomPic !== "") obj = { ...obj, "roomPic": parsedData.data.roomPic };
+        if (parsedData.data?.isFavourite === true || parsedData.data?.isFavourite === false) obj = { ...obj, 'isFavourite': parsedData.data.isFavourite }
+
+
         const updatedRoom = await prismaClient.room.update({
             where: {
                 id: parsedData.data.roomId
             },
             data: {
                 ...obj,
-                updatedAt : new Date()
+                updatedAt: new Date()
             },
             select: {
                 id: true,
@@ -759,7 +759,7 @@ export const update_details_controller = async (req: Request, res: Response) => 
         res.status(200).json({
             success: true,
             data: updatedRoom,
-            message : "Details Updated Successfully"
+            message: "Details Updated Successfully"
         })
 
     } catch (error: any) {

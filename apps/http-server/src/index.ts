@@ -7,11 +7,13 @@ import { isAuthenticatedUser } from "./middleware/isAuth.js";
 import { config } from "dotenv";
 import cors from "cors"
 import { authLimiter, roomLimiter } from "./config/rateLimiter.js";
+import { connectMongoDb } from "@repo/db/db";
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 config()
+connectMongoDb()
 // app.use(cors({ origin: "http://localhost:3003", credentials: true }))
 
 const allowedOrigins: string[] | string = process.env.ORIGINS || [];
@@ -32,7 +34,7 @@ const PORT = HTTP_PORT
 
 app.use("/api/auth", authLimiter, authRouter)
 app.use("/api/rooms", roomLimiter, isAuthenticatedUser, roomRouter);
-
+import './cron.js'
 
 app.listen(PORT, () => {
   console.log(`App Running at ${PORT}`);

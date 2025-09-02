@@ -4,12 +4,16 @@ import { isUserVerified } from "./utils/verifyAuthToken.js";
 import { User, UserManager } from "./utils/UserManager.js";
 import { RoomManager } from "./utils/RoomManager.js";
 import { WS_PORT } from "@repo/config/PORTS";
-import { prismaClient } from "@repo/db/db";
+import { connectMongoDb, prismaClient } from "@repo/db/db";
+import insertChat from "@repo/db/insertChatModel";
 
 const wss = new WebSocketServer({ port: WS_PORT }, () => {
     console.log(`WS Connected Successfully`);
+    connectMongoDb()
 })
 
+const workerServer = ['1', '2'];
+let currWorkerServer = 0;
 
 const wsMap = new Map<WebSocket, User>();
 const roomManager = new RoomManager();
@@ -83,7 +87,7 @@ wss.on("connection", (ws: WebSocket, request) => {
                 name: user.name,
                 email: user.email,
                 profilePic: user.profilePic,
-                roomId : obj.payload.roomId
+                roomId: obj.payload.roomId
             }
             roomManager.notifyUsers(false, ws, obj.payload.roomId, { type: "newly-joined", success: true, data })
         }
@@ -126,22 +130,26 @@ wss.on("connection", (ws: WebSocket, request) => {
 
             try {
                 const isRoom = await prismaClient.userRoom.findFirst({
-                    where : {
-                        roomId : obj.payload.roomId,
-                        userId : user.user_id
+                    where: {
+                        roomId: obj.payload.roomId,
+                        userId: user.user_id
                     }
                 })
-                if(!isRoom){
+                if (!isRoom ) {
                     sendErrorResponse(ws, "You Are not a member of this room", "Invalid Request!!!")
-                    return 
+                    return
                 }
-                await prismaClient.chat.create({
-                    data: {
-                        message: obj.payload.message,
-                        userId: user.user_id,
-                        roomId: obj.payload.roomId
-                    }
-                })
+                // await prismaClient.chat.create({
+                //     data: {
+                //         message: obj.payload.message,
+                //         userId: user.user_id,
+                //         roomId: obj.payload.roomId
+                //     }
+                // })
+                await insertChat.create({ isCompleted: false, message: obj.payload.message, roomId: obj.payload.roomId, userId: user.user_id, processingId: workerServer[currWorkerServer] })
+
+                currWorkerServer = (currWorkerServer + 1) % workerServer.length
+
                 roomManager.addChat(user, obj.payload.message, obj.payload.roomId)
 
 
