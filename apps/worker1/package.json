@@ -1,0 +1,21 @@
+{
+  "name": "worker1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build" : "tsc -b",
+    "start" : "node ./dist/index.js",
+    "dev" : "npm run build && npm run start"
+  },
+  "dependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@repo/db": "workspace:*",
+    "mongoose": "^8.18.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

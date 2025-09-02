@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "exports": {
-    "./db": "./src/index.ts"
+    "./db": "./src/index.ts",
+    "./insertChatModel" : "./src/models/insertChat.ts"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
@@ -18,6 +19,8 @@
   "type": "module",
   "description": "",
   "dependencies": {
-    "@prisma/client": "6.2.1"
+    "@prisma/client": "6.2.1",
+    "dotenv": "^16.6.1",
+    "mongoose": "^8.18.0"
   }
 }
