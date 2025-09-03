@@ -6,8 +6,11 @@ import { RoomManager } from "./utils/RoomManager.js";
 import { WS_PORT } from "@repo/config/PORTS";
 import { connectMongoDb, prismaClient } from "@repo/db/db";
 import insertChat from "@repo/db/insertChatModel";
+import { config } from "dotenv";
 
-const wss = new WebSocketServer({ port: WS_PORT }, () => {
+config();
+
+const wss = new WebSocketServer({ port: parseInt(WS_PORT!) }, () => {
     console.log(`WS Connected Successfully`);
     connectMongoDb()
 })

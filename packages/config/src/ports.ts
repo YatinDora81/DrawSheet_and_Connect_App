@@ -1,3 +1,6 @@
-export const HTTP_PORT = 3001
+import { config } from "dotenv"
+config()
 
-export const WS_PORT = 3002 
+export const HTTP_PORT = process.env.HTTP_PORT
+
+export const WS_PORT = process.env.WS_PORT

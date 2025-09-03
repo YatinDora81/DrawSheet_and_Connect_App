@@ -8,3 +8,5 @@ export default async function SingleSheet({params} : {params : Promise<{slug  : 
         <SheetClient sheetId={sheetId} />
     </div>
 }
+
+export const dynamic = "force-dynamic";

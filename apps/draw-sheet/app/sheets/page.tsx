@@ -6,3 +6,4 @@ export default function AllSheets() {
         <AllSheetsClient />
     )
 }
+export const dynamic = 'force-dynamic'

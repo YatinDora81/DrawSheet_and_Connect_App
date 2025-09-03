@@ -7,15 +7,17 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./dist/index.js",
     "build": "tsc -b",
-    "dev": " npm run build && npm run start"
+    "dev": " npm run build && npm run start",
+    "start:prisma" : "npx prisma generate && npm run dev"
   },
   "dependencies": {
     "@repo/backend-common": "workspace:*",
+    "@repo/config": "workspace:*",
     "@repo/db": "workspace:*",
-    "@repo/config" : "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/ws": "^8.5.13",
+    "dotenv": "^17.2.2",
     "jsonwebtoken": "^9.0.2",
     "ws": "^8.18.0"
   },

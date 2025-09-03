@@ -1,6 +1,9 @@
-import { HTTP_PORT, WS_PORT } from "./ports";
+import { config } from "dotenv";
 
-const BASE_HTTP_URL = `http://localhost:${HTTP_PORT}`
+config()
+
+const BASE_HTTP_URL = process.env.NEXT_PUBLIC_HTTP_BASE_URL
+export const BASE_WS_URL = process.env.NEXT_PUBLIC_WS_BASE_URL
 
 export const Get_User_Details_URL = BASE_HTTP_URL + `/api/auth/user-details`;
 
@@ -33,5 +36,3 @@ export const FORGOT_PASS_URL = BASE_HTTP_URL + '/api/auth/forgot-password'
 export const VERIFY_OTP_URL = BASE_HTTP_URL + '/api/auth/verify-otp'
 
 export const CHANGE_PASS_URL = BASE_HTTP_URL + '/api/auth/change-password'
-
-export const BASE_WS_URL = `ws://localhost:${WS_PORT}`
