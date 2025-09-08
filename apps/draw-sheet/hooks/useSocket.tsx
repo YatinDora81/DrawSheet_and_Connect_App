@@ -32,7 +32,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
             const token = getCookie("authToken");
 
             await toast.promise(
-                new Promise((resolve, reject) => {
+                new Promise<string>((resolve, reject) => {
                     const ws = new WebSocket(BASE_WS_URL + `?token=${token}`);
 
                     ws.onopen = () => {
