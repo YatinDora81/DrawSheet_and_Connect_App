@@ -3,6 +3,7 @@
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from "react"
 import { BASE_WS_URL } from "@repo/config/URL"
 import toast from "react-hot-toast"
+import { getAuthToken } from '../utils/tokenManager'
 
 
 interface SocketInterface {
@@ -28,7 +29,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     const connectWs = async () => {
         try {
             setSocketLoading(true)
-            const token = getCookie("authToken")
+            const token = getAuthToken()
             const ws = new WebSocket(BASE_WS_URL + `?token=${token}`)
             ws.onopen = () => {
                 setSocketLoading(false);

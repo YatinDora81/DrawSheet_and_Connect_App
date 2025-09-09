@@ -13,6 +13,7 @@ import jwt from "jsonwebtoken"
 import { GET_ALL_CHATS, GET_CHATS_PAGINATION } from '@repo/config/URL'
 import { PulseLoader } from 'react-spinners'
 import RoomInfo from './RoomInfo'
+import { authenticatedFetch, getAuthToken } from '../utils/tokenManager'
 
 const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
 
@@ -68,7 +69,10 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
         try {
             setLoadingChats(true)
             // const res = await fetch(GET_CHATS_PAGINATION + `/${currRoom}/${chatsPagination}`, { method: "GET", credentials: "include" })
-            const res = await fetch(GET_ALL_CHATS + `/${currRoom.id}`, { method: "GET", credentials: "include" })
+            const res = await authenticatedFetch(GET_ALL_CHATS + `/${currRoom.id}`, { 
+                method: "GET", 
+                credentials: "include" 
+            })
             const d = await res.json()
             if (d.success) {
                 const prevChat = [d.data][0].reverse().map((c: any) => {
@@ -159,12 +163,11 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
     }
 
     const decodeToken = () => {
-        const d = jwt.decode(getCookie("authToken"))
-        setUserInfo(d)
-
-    }
-    const getCookie = (cookieName: string) => {
-        return document.cookie.split("; ").find((s) => s.startsWith(cookieName))?.split("=")[1] || ""
+        const token = getAuthToken()
+        if (token) {
+            const d = jwt.decode(token)
+            setUserInfo(d)
+        }
     }
 
 

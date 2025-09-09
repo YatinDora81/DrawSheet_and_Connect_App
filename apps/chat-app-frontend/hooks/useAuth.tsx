@@ -4,6 +4,7 @@ import { Get_User_Details_URL, SignOut_User_URL } from "@repo/config/URL"
 import { useRouter } from "next/navigation"
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
 import toast from "react-hot-toast"
+import { authenticatedFetch } from "../utils/tokenManager"
 
 type AuthConextType = {
     user : any,
@@ -26,7 +27,10 @@ export const AuthProvider = ({children} : {children : ReactNode})=>{
     const fetchUser = async ()=>{
         try {
             setUserLoading(true)
-            const res = await fetch(Get_User_Details_URL , { method: "GET", credentials: "include" })
+            const res = await authenticatedFetch(Get_User_Details_URL, { 
+                method: "GET", 
+                credentials: "include" 
+            })
             const d = await res.json()
             if (d.success) {
                 setUser(d.data);
@@ -47,7 +51,10 @@ export const AuthProvider = ({children} : {children : ReactNode})=>{
     const logoutUser =async  ()=>{
         try {
             setUserLoading(true)
-            const res = await fetch(SignOut_User_URL , { method: "GET", credentials: "include" })
+            const res = await authenticatedFetch(SignOut_User_URL, { 
+                method: "GET", 
+                credentials: "include" 
+            })
             const d = await res.json()
             if (d.success) {
                 setUser(d.data);

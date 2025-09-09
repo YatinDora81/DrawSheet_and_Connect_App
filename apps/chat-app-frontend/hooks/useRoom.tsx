@@ -4,6 +4,7 @@ import { GET_ALL_ROOMS_URL } from '@repo/config/URL';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useSocket } from './useSocket';
+import { authenticatedFetch } from '../utils/tokenManager';
 
 export interface RoomContextType {
     rooms: any[],
@@ -33,7 +34,10 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
     const fetchRooms = async () => {
         try {
             setLoadingRooms(true);
-            const res = await fetch(GET_ALL_ROOMS_URL, { method: "GET", credentials: "include" })
+            const res = await authenticatedFetch(GET_ALL_ROOMS_URL, { 
+                method: "GET", 
+                credentials: "include" 
+            })
             const d = await res.json();
             // console.log(d);
             if (d.success) {

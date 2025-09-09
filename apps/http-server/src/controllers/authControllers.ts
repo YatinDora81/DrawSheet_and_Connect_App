@@ -1,4 +1,4 @@
-import { changePasswordShouldBe, forgotPasswordShouldBe, signInShouldBe, signUpShouldBe, verifyOtpShouldBe } from "@repo/backend-common/backend-common";
+import { changePasswordShouldBe, forgotPasswordShouldBe, signInShouldBe, signUpShouldBe, verifyOtpShouldBe, JWT_SECRET } from "@repo/backend-common/backend-common";
 import bcrypt from "bcrypt"
 import otpGenerator from "otp-generator"
 import { prismaClient } from "@repo/db/db";
@@ -7,6 +7,7 @@ import { Request, Response } from "express";
 import { sendTokenAndCookie } from "../utils/sendTokenAndCookie.js";
 import { sendEmail } from "../config/nodemailer.js";
 import { success } from "zod/v4";
+import jwt from "jsonwebtoken";
 
 export const signupController = async (req: Request, res: Response) => {
     try {
@@ -51,7 +52,8 @@ export const signupController = async (req: Request, res: Response) => {
                     profilePic: true
                 }
             })
-            sendTokenAndCookie(res, { user_id: newUser.id, email: newUser.email, name: newUser.name, profilePic: newUser.profilePic || "" });
+            const tokenData = { user_id: newUser.id, email: newUser.email, name: newUser.name, profilePic: newUser.profilePic || "" }
+            sendTokenAndCookie(res, tokenData);
 
         } catch (error: any) {
             if (error.code && error.code === "P2002" && error.meta?.target?.includes("email")) {
@@ -128,7 +130,9 @@ export const signinController = async (req: Request, res: Response) => {
         }
 
 
-        sendTokenAndCookie(res, { user_id: isUser.id, name: isUser.name, email: isUser.email, profilePic: isUser.profilePic || "" })
+        const tokenData = { user_id: isUser.id, name: isUser.name, email: isUser.email, profilePic: isUser.profilePic || "" }
+        sendTokenAndCookie(res, tokenData)
+        
         res.status(200).json({
             success: true,
             data: {

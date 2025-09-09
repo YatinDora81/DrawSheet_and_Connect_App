@@ -6,6 +6,7 @@ import { useRoom } from '../hooks/useRoom';
 import { JOIN_NEW_ROOM_URL } from '@repo/config/URL';
 import { PulseLoader } from 'react-spinners';
 import { useSocket } from '../hooks/useSocket';
+import { authenticatedFetch } from '../utils/tokenManager';
 
 const JoinNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setShowModal: (value: number) => void }) => {
     const inputRef = useRef<HTMLInputElement | null>(null)
@@ -27,7 +28,11 @@ const JoinNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setS
             setError("");
             setLoading(true);
 
-            const res = await fetch(JOIN_NEW_ROOM_URL, { method: "POST", body: JSON.stringify({ "roomJoinCode": inputRef.current.value }), credentials: "include", headers: { "Content-Type": "application/json" } });
+            const res = await authenticatedFetch(JOIN_NEW_ROOM_URL, { 
+                method: "POST", 
+                body: JSON.stringify({ "roomJoinCode": inputRef.current.value }), 
+                credentials: "include"
+            });
             const d = await res.json();
 
             // console.log(d);

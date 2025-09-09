@@ -11,6 +11,7 @@ import toast from 'react-hot-toast'
 import { BeatLoader, ClipLoader } from 'react-spinners'
 import { CLOUD_NAME, UPLOAD_PRESET } from '../utils/cloudinary'
 import { UPDATE_ROOM_DETAILS } from '@repo/config/URL'
+import { authenticatedFetch } from '../utils/tokenManager'
 
 const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails, setShowRoomInfoPage }: { setShowRoomInfoPage: any, updatedRoomDetails: { roomPic: null | string, roomName: null | string, join_code: null | string }, setUpdatedRoomDetails: any }) => {
 
@@ -102,7 +103,11 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails, setShowRoomInfoPa
 
             const obj = { "roomName": "", "join_code": false, "roomId": currRoom.id, "roomPic": data.secure_url };
 
-            const res = await fetch(UPDATE_ROOM_DETAILS, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...obj }) })
+            const res = await authenticatedFetch(UPDATE_ROOM_DETAILS, { 
+                method: "POST", 
+                credentials: "include", 
+                body: JSON.stringify({ ...obj }) 
+            })
 
             const d = await res.json();
 
@@ -147,7 +152,11 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails, setShowRoomInfoPa
                 "roomId": currRoom.id,
                 "roomPic": ""
             }
-            const res = await fetch(UPDATE_ROOM_DETAILS, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(obj) })
+            const res = await authenticatedFetch(UPDATE_ROOM_DETAILS, { 
+                method: "POST", 
+                credentials: "include", 
+                body: JSON.stringify(obj) 
+            })
             const data = await res.json()
             if (data.success) {
                 // update all 3 place

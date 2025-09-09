@@ -15,11 +15,19 @@ let Avatars_Cache: string[] | null = null
 
 export const isAuthenticatedUser = (req: Request, res: Response, next: NextFunction) => {
     try {
-        const token = req.cookies["authToken"]
+        // Prioritize Bearer token from Authorization header
+        const headerToken = req.headers["authorization"]
+        const bearerToken = headerToken?.split(" ")[1]
+        
+        // Fallback to cookie for backward compatibility
+        const cookieToken = req.cookies["authToken"]
+        
+        const token = bearerToken || cookieToken
+        
         if (!token) {
-            res.status(400).json({
+            res.status(401).json({
                 success: false,
-                data: "No Token Present",
+                data: "No Token Present - Please provide Authorization header with Bearer token",
                 message: "No Token Present"
             })
             return
