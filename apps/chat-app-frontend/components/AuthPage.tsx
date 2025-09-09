@@ -45,8 +45,10 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
             setLoading(true)
             const signupData = { name: formData.name, email: formData.email, password: formData.password };
             const signinData = { email: formData.email, password: formData.password }
-            const res = await fetch(isSignup ? SignUp_User_URL : SignIn_User_URL, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(isSignup ? signupData : signinData) })
+            const res = await fetch(isSignup ? SignUp_User_URL : "/api/signin", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(isSignup ? signupData : signinData) })
             const data = await res.json();
+            console.log("outer" , data);
+            
             if (data.success) {
                 // console.log(data);
                 toast.success(data.message)
