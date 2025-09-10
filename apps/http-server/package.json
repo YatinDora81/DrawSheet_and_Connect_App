@@ -8,7 +8,7 @@
     "start": "node ./dist/index.js",
     "build": "tsc -b",
     "prisma:build": "cd .. && cd .. && cd ./packages/db && npx prisma generate && cd .. && cd .. && cd ./apps/http-server ",
-    "start:prisma": "npx prisma generate && npm run dev",
+    "start:prisma": " npm run dev",
     "dev": " npm run build && npm run start"
   },
   "dependencies": {
