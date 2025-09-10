@@ -22,6 +22,11 @@ export const isAuthenticatedUser = (req: Request, res: Response, next: NextFunct
         // Fallback to cookie for backward compatibility
         const cookieToken = req.cookies["authToken"]
         
+        console.log('Auth Debug:');
+        console.log('- Authorization header:', headerToken ? 'Present' : 'Missing');
+        console.log('- Bearer token:', bearerToken ? `Present (length: ${bearerToken.length})` : 'Missing');
+        console.log('- Cookie token:', cookieToken ? `Present (length: ${cookieToken.length})` : 'Missing');
+        
         const token = bearerToken || cookieToken
         
         if (!token) {

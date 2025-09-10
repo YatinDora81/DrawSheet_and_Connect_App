@@ -12,11 +12,11 @@ export const sendTokenAndCookie = (res: Response, data: { user_id: string, email
     // );
 
     res.cookie("authToken", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        httpOnly: false, // Allow JavaScript access for Bearer token usage
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: "lax", // Less restrictive for local development
         maxAge: 15 * 24 * 60 * 60 * 1000,
-        domain: ".yatindora.xyz", // required if frontend/backend are on subdomains
+        // domain: ".yatindora.xyz", // Remove domain for local development
       });
       
 

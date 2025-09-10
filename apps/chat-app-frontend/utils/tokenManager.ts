@@ -2,7 +2,10 @@
 export const getAuthToken = (): string | null => {
   if (typeof window === 'undefined') return null;
   // Read token from cookie (where backend stores it)
-  return getCookie('authToken');
+  const token = getCookie('authToken');
+  console.log('Getting auth token:', token ? `Token found (length: ${token.length})` : 'No token found');
+  console.log('All cookies:', document.cookie);
+  return token;
 };
 
 export const getCookie = (cookieName: string): string | null => {
@@ -16,6 +19,7 @@ export const getCookie = (cookieName: string): string | null => {
 
 export const getAuthHeaders = (): HeadersInit => {
   const token = getAuthToken();
+  console.log('Token found:', token ? 'Yes' : 'No'); // Debug log
   return {
     'Content-Type': 'application/json',
     ...(token && { 'Authorization': `Bearer ${token}` })
