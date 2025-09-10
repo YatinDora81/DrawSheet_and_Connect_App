@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./dist/index.js",
-    "build": "npm run prisma:build && tsc -b",
-    "prisma:build" : "cd .. && cd .. && cd ./packages/db && npx prisma generate && cd .. && cd .. && cd ./apps/http-server ",
-    "start:prisma" : "npx prisma generate && npm run dev",
+    "build": "tsc -b",
+    "prisma:build": "cd .. && cd .. && cd ./packages/db && npx prisma generate && cd .. && cd .. && cd ./apps/http-server ",
+    "start:prisma": "npx prisma generate && npm run dev",
     "dev": " npm run build && npm run start"
   },
   "dependencies": {
@@ -41,5 +41,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "prisma": "^6.15.0"
+  }
 }
