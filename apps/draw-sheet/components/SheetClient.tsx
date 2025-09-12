@@ -13,6 +13,7 @@ import { GET_ALL_CHATS } from "@repo/config/URL"
 import { toast_darktheme } from "../utils/toast-darktheme"
 import { AuthProvider } from "../hooks/useAuth"
 import { AvatarProvider } from "../hooks/useAvatars"
+import { authenticatedFetch } from "@repo/ui/tokenManager"
 
 
 function SheetClient({ sheetId }: { sheetId: string }) {
@@ -79,7 +80,7 @@ function SheetClient({ sheetId }: { sheetId: string }) {
 
   const loadPreviousChat = async () => {
 
-    const res = fetch(GET_ALL_CHATS + `/${sheetId}`, { method: "GET", credentials: "include" }).then(async (res) => {
+    const res = authenticatedFetch(GET_ALL_CHATS + `/${sheetId}`, { method: "GET", credentials: "include" }).then(async (res) => {
       const d = await res.json()
       if (d.success) {
         // console.log('ferq', d.data.map((m: any) => JSON.parse(m?.message)));

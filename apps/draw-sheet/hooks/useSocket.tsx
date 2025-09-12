@@ -4,6 +4,7 @@ import { createContext, ReactNode, useContext, useEffect, useRef, useState } fro
 import { BASE_WS_URL } from "@repo/config/URL"
 import toast from "react-hot-toast"
 import { toast_darktheme } from "../utils/toast-darktheme"
+import { getAuthToken } from "@repo/ui/tokenManager"
 
 
 interface SocketInterface {
@@ -21,15 +22,11 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     const socket = useRef<WebSocket | null>(null)
     const [socketLoading, setSocketLoading] = useState<boolean>(false)
 
-    const getCookie = (cookieName: string) => {
-        return document.cookie.split("; ").find((s) => s.startsWith(cookieName))?.split("=")[1] || ""
-    }
-
 
     const connectWs = async () => {
         try {
             setSocketLoading(true)
-            const token = getCookie("authToken");
+            const token = getAuthToken();
 
             await toast.promise(
                 new Promise<string>((resolve, reject) => {

@@ -1,6 +1,7 @@
 "use client"
 
 import { CREATE_NEW_ROOM_URL, GET_ALL_ROOMS_URL, JOIN_NEW_ROOM_URL, UPDATE_ROOM_DETAILS } from "@repo/config/URL"
+import { authenticatedFetch } from "@repo/ui/tokenManager"
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { toast_darktheme } from "../utils/toast-darktheme"
@@ -161,7 +162,7 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
     const fetchRooms = async () => {
         try {
             setRoomLoading(true);
-            const res = await fetch(GET_ALL_ROOMS_URL, { method: "GET", credentials: "include" })
+            const res = await authenticatedFetch(GET_ALL_ROOMS_URL, { method: "GET", credentials: "include" })
             const d = await res.json();
             // console.log(d);
             if (d.success) {
@@ -188,7 +189,7 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
             return false
         }
         setRoomOperationLoading(true);
-        const api = fetch(createRoom ? CREATE_NEW_ROOM_URL : JOIN_NEW_ROOM_URL, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(createRoom ? { roomName } : { "roomJoinCode": roomName }) }).then(async (res) => {
+        const api = authenticatedFetch(createRoom ? CREATE_NEW_ROOM_URL : JOIN_NEW_ROOM_URL, { method: "POST", credentials: "include", body: JSON.stringify(createRoom ? { roomName } : { "roomJoinCode": roomName }) }).then(async (res) => {
             const data = await res.json();
             if (data?.success) {
                 setOriginalRooms((prev: any) => [{ "room": data?.data }, ...prev])
@@ -214,7 +215,7 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
 
     const updateRoomDetails = async (roomId: string, data: { [key: string]: any }) => {
         setUpdateRoomDetailsLoading(true);
-        const api = fetch(UPDATE_ROOM_DETAILS, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, roomId }) }).then(async (res) => {
+        const api = authenticatedFetch(UPDATE_ROOM_DETAILS, { method: "POST", credentials: "include", body: JSON.stringify({ ...data, roomId }) }).then(async (res) => {
             const dataa = await res.json();
             if (dataa?.success) {
                 setOriginalRooms((prev: any) => {

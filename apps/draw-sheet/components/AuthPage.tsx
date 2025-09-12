@@ -45,7 +45,7 @@ function AuthPage({ isSignIn }: { isSignIn: boolean }) {
             if (!isSignIn) {
                 data.name = formData.username
             }
-            const res = await fetch(isSignIn ? SignIn_User_URL : SignUp_User_URL, {
+            const res = await fetch(isSignIn ? "/api/signin" : "/api/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

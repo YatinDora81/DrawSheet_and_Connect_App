@@ -5,14 +5,13 @@ import NavbarClient from './NavbarClient'
 import { AuthProvider } from '../hooks/useAuth'
 import { AvatarProvider } from '../hooks/useAvatars'
 import { ModalContextProvider } from '../hooks/useModal'
+import { getAuthToken } from '@repo/ui/tokenManager'
 
 function SelectNavbar() {
   const [isToken, setIsToken] = useState(false)
-  const getCookie = (cookieName: string) => {
-    return document.cookie.split("; ").find((s) => s.startsWith(cookieName))?.split("=")[1] || ""
-  }
+  
   useEffect(() => {
-    const token = getCookie("authToken")
+    const token = getAuthToken()
     if (token && typeof token === "string" && token !== "") setIsToken(true)
     else setIsToken(false);
   }, [])
