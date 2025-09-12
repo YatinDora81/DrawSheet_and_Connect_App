@@ -10,7 +10,7 @@ export async function middleware(req: NextRequest) {
 
     // If user is NOT authenticated, redirect to /signin
     if (!token) {
-        if (pathname !== "/signin" && pathname !== "/signup") {
+        if (pathname !== "/signin" && pathname !== "/signup" && pathname !== "/forgot-password") {
             return NextResponse.redirect(new URL("/signin", req.url));
         }
         return NextResponse.next();
@@ -21,7 +21,7 @@ export async function middleware(req: NextRequest) {
         await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
 
         // If authenticated user visits /signin or /signup, redirect to dashboard
-        if (pathname === "/signin" || pathname === "/signup") {
+        if (pathname === "/signin" || pathname === "/signup" || pathname === "/forgot-password") {
             return NextResponse.redirect(new URL("/dashboard", req.url));
         }
 
@@ -33,5 +33,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/dashboard", "/signin", "/signup"],
+    matcher: ["/dashboard", "/signin", "/signup", "/forgot-password"],
 };
