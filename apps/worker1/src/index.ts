@@ -6,9 +6,6 @@ import express from 'express'
 // Just For Deployment
 const app = express()
 const PORT = 3004
-app.listen(PORT,()=>{
-    console.log(`Server Running at ${PORT} port`);
-})
 
 
 config()
@@ -19,7 +16,11 @@ async function main() {
     await connectMongoDb()
 
     addMessageWorker(serverName);
-
+    
 }
 
 main();
+
+app.listen(PORT,()=>{
+    console.log(`Server Running at ${PORT} port`);
+})
