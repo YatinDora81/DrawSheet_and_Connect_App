@@ -303,9 +303,15 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      '@types/express':
+        specifier: ^5.0.3
+        version: 5.0.3
       dotenv:
         specifier: ^17.2.1
         version: 17.2.1
+      express:
+        specifier: ^4.21.2
+        version: 4.21.2
       mongoose:
         specifier: ^8.18.0
         version: 8.18.0(socks@2.8.7)

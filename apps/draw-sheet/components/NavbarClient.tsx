@@ -40,12 +40,12 @@ function NavbarClient() {
 
         try {
 
-            const logoutPromise = fetch(SignOut_User_URL, {
+            const logoutPromise = fetch('/api/signout', {
                 method: "GET",
                 credentials: "include",
             }).then(async (res) => {
                 const d = await res.json();
-                if (!d.success) throw new Error(d.message || "Logout failed");
+                // if (!d.success) throw new Error("Logout failed");
                 return d;
             });
 
