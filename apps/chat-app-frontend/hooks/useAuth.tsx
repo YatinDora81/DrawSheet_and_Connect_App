@@ -48,7 +48,9 @@ export const AuthProvider = ({children} : {children : ReactNode})=>{
     const logoutUser =async  ()=>{
         try {
             setUserLoading(true)
-            const res = await authenticatedFetch('/api/signout' , { method: "GET", credentials: "include" })
+            const res2 = await fetch('/api/signout' , { method: "GET", credentials: "include" })
+            const res = await authenticatedFetch(SignOut_User_URL , { method: "GET", credentials: "include" })
+
             const d = await res.json()
             if (d.success) {
                 setUser(d.data);
