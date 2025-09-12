@@ -6,3 +6,5 @@ export default function Home() {
     <LandingPage />
   );
 }
+
+export const dynamic = 'force-dynamic'
