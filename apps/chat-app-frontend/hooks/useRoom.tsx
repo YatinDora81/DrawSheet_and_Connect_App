@@ -81,7 +81,7 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
                 type: "get-online-users"
             }))
         }
-    }, [rooms])
+    }, [rooms, socket])
 
     useEffect(() => {
 
