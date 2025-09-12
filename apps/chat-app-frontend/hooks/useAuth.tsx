@@ -48,18 +48,18 @@ export const AuthProvider = ({children} : {children : ReactNode})=>{
     const logoutUser =async  ()=>{
         try {
             setUserLoading(true)
-            const res2 = await fetch('/api/signout' , { method: "GET", credentials: "include" })
-            const res = await authenticatedFetch(SignOut_User_URL , { method: "GET", credentials: "include" })
+            const res = await fetch('/api/signout' , { method: "GET", credentials: "include" })
+            // const res = await authenticatedFetch(SignOut_User_URL , { method: "GET", credentials: "include" })
 
             const d = await res.json()
-            if (d.success) {
-                setUser(d.data);
-                toast.success(d.message || "User LogOut Succeccfully")
-                router.push("/signin")
-            }
-            else {
-                toast.error(d.message);
-            }
+            setUser(d.data);
+            toast.success(d.message || "User LogOut Succeccfully")
+            router.push("/signin")
+            // if (d.success) {
+            // }
+            // else {
+            //     toast.error(d.message);
+            // }
         } catch (error) {
             console.log("Error", error);
             toast.error("Something Went Wrong!!!")
