@@ -6,6 +6,7 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import { PulseLoader } from 'react-spinners';
 import { useRoom } from '../hooks/useRoom';
 import { useSocket } from '../hooks/useSocket';
+import { authenticatedFetch } from '@repo/ui/tokenManager';
 
 const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: number, setShowModal: (value: number) => void }) => {
     // console.log(showModal); 
@@ -29,7 +30,7 @@ const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: number, se
             setError("");
             setLoading(true);
 
-            const res = await fetch(CREATE_NEW_ROOM_URL, { method: "POST", body: JSON.stringify({ "roomName": inputRef.current.value }), credentials: "include", headers: { "Content-Type": "application/json" } });
+            const res = await authenticatedFetch(CREATE_NEW_ROOM_URL, { method: "POST", body: JSON.stringify({ "roomName": inputRef.current.value }), credentials: "include" });
             const d = await res.json();
 
             // console.log(d);

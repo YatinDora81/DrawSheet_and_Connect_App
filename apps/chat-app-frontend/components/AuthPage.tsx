@@ -45,7 +45,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
             setLoading(true)
             const signupData = { name: formData.name, email: formData.email, password: formData.password };
             const signinData = { email: formData.email, password: formData.password }
-            const res = await fetch(isSignup ? SignUp_User_URL : SignIn_User_URL, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(isSignup ? signupData : signinData) })
+            const res = await fetch(isSignup ? '/api/signup' : '/api/signin', { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(isSignup ? signupData : signinData) })
             const data = await res.json();
             if (data.success) {
                 // console.log(data);
@@ -88,13 +88,13 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
     return (
         <div className=' w-full  min-h-[90vh] bg-zinc-950 text-white flex flex-col gap-7   justify-center items-center'>
 
-            { !isSignup ? <div>
+            {!isSignup ? <div>
                 <div className=' text-[25px] font-[700] leading-[28px] flex flex-col justify-center items-center  ff' ><span className=' text-green-600 text-4xl bg-zinc-900 p-2 rounded-full'><IoChatbubbleOutline /></span><span className=' text-3xl'>connect</span></div>
                 <div className=' text-md text-zinc-300'>Sign in to your account to continue</div>
             </div> : <div>
                 <div className=' text-[15px] font-[700] leading-[px] flex justify-center items-center  ff' ><span className=' text-green-600 text-2xl bg-zinc-900 p-2 rounded-full'><IoChatbubbleOutline /></span><span className=' text-2xl'>connect</span></div>
                 <div className=' text-sm text-zinc-300'>Create your account to get started</div>
-            </div> }
+            </div>}
 
             <div className=' w-[35%] flex flex-col justify-center bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 shadow-xl rounded-xl  gap-10 py-10'>
 
@@ -111,7 +111,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                             <div className=' w-full flex flex-col gap-1'>
                                 <label htmlFor='usernamee'>Username</label>
                                 <div className=' flex justify-center items-center w-full border border-zinc-950 shadow-2xl'>
-                                    <FaRegUser  className=' text-gray-300 bg-zinc-800 rounded-l-lg  h-11 w-[12%] px-3 p-[11px]' />
+                                    <FaRegUser className=' text-gray-300 bg-zinc-800 rounded-l-lg  h-11 w-[12%] px-3 p-[11px]' />
                                     <input id='usernamee' value={formData?.name}
                                         onChange={(e) => {
                                             setFormData((prev) => {
@@ -136,7 +136,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                             <div className=' flex justify-center items-center w-full border border-zinc-950 shadow-2xl'>
                                 <IoLockClosedOutline className=' text-gray-300 bg-zinc-800 rounded-l-lg h-11 w-[12%] px-3 p-[8px]' />
                                 <div className=' w-full relative'>
-                                    <input id='passs' value={formData.password} onChange={(e) => setFormData((prev) => { return { ...prev, password: e.target.value } })} style={{ paddingBlock: "22px", paddingInline: "1px" , paddingRight : "40px" }} className='inpbg rounded-r-lg w-full  bg-zinc-800 outline-none h-10 px-10' type={showPassword ? "text" : "password"} placeholder='********'></input>
+                                    <input id='passs' value={formData.password} onChange={(e) => setFormData((prev) => { return { ...prev, password: e.target.value } })} style={{ paddingBlock: "22px", paddingInline: "1px", paddingRight: "40px" }} className='inpbg rounded-r-lg w-full  bg-zinc-800 outline-none h-10 px-10' type={showPassword ? "text" : "password"} placeholder='********'></input>
                                     {!showPassword ? <FaRegEye onClick={() => setShowPassword((prev) => !prev)} className=' absolute text-xl right-3 cursor-pointer hover:opacity-60 transition-all duration-200 top-[30%]' /> :
                                         <FaRegEyeSlash onClick={() => setShowPassword((prev) => !prev)} className=' absolute text-xl right-3 cursor-pointer hover:opacity-60 transition-all duration-200 top-[30%]' />}
                                 </div>
@@ -144,24 +144,24 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                         </div>
 
 
-                        {isSignup && 
-                        <div className=' w-full flex flex-col gap-1'>
-                        <label htmlFor='cpasss'>Confirm Password</label>
-                        <div className=' flex justify-center items-center w-full border border-zinc-950 shadow-2xl'>
-                            <IoLockClosedOutline className=' text-gray-300 bg-zinc-800 rounded-l-lg h-11 w-[12%] px-3 p-[8px]' />
-                            <div className=' w-full relative'>
-                            <input id='cpasss' value={formData.confirmPassword} onChange={(e) => setFormData((prev) => { return { ...prev, confirmPassword: e.target.value } })} style={{ paddingBlock: "22px", paddingInline: "15px" }} className='inpbg rounded-r-lg outline-none w-full bg-zinc-800 h-10 px-10' type={showPassword2 ? "text" : "password"} placeholder='Confirm Password'></input>
-                                {!showPassword2 ? <FaRegEye onClick={() => setShowPassword2((prev) => !prev)} className=' absolute text-xl right-3 cursor-pointer hover:opacity-60 transition-all duration-200 top-[30%]' /> :
-                                    <FaRegEyeSlash onClick={() => setShowPassword2((prev) => !prev)} className=' absolute text-xl right-3 cursor-pointer hover:opacity-60 transition-all duration-200 top-[30%]' />}
+                        {isSignup &&
+                            <div className=' w-full flex flex-col gap-1'>
+                                <label htmlFor='cpasss'>Confirm Password</label>
+                                <div className=' flex justify-center items-center w-full border border-zinc-950 shadow-2xl'>
+                                    <IoLockClosedOutline className=' text-gray-300 bg-zinc-800 rounded-l-lg h-11 w-[12%] px-3 p-[8px]' />
+                                    <div className=' w-full relative'>
+                                        <input id='cpasss' value={formData.confirmPassword} onChange={(e) => setFormData((prev) => { return { ...prev, confirmPassword: e.target.value } })} style={{ paddingBlock: "22px", paddingInline: "15px" }} className='inpbg rounded-r-lg outline-none w-full bg-zinc-800 h-10 px-10' type={showPassword2 ? "text" : "password"} placeholder='Confirm Password'></input>
+                                        {!showPassword2 ? <FaRegEye onClick={() => setShowPassword2((prev) => !prev)} className=' absolute text-xl right-3 cursor-pointer hover:opacity-60 transition-all duration-200 top-[30%]' /> :
+                                            <FaRegEyeSlash onClick={() => setShowPassword2((prev) => !prev)} className=' absolute text-xl right-3 cursor-pointer hover:opacity-60 transition-all duration-200 top-[30%]' />}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
                         }
 
                         {error && error !== "" && <div className=' text-sm  text-red-500 -my-2 w-[60%]' style={{ paddingLeft: "5px" }}> * {error}</div>}
 
                         <div className=' flex justify-end items-center  -my-1 text-green-500 font-mono italic  '>
-                            <div onClick={()=>{router.push('/forgot-password')}} className='hover:text-green-400 transition-all duration-200 hover:underline cursor-pointer'>Forgot Password?</div>
+                            <div onClick={() => { router.push('/forgot-password') }} className='hover:text-green-400 transition-all duration-200 hover:underline cursor-pointer'>Forgot Password?</div>
                         </div>
 
                         <button disabled={loading} style={{ paddingInline: "20px", paddingBlock: "10px", marginTop: "2px" }} className=' flex justify-center items-center text-xl  w-full bg-green-600 rounded-sm  cursor-pointer   text-white transition-all duration-200 hover:opacity-90 text-center '>
