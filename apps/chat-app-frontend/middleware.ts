@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
-import { JWT_SECRET } from "@repo/backend-common/backend-common";
+
+const JWT_SECRET = process.env.JWT_SECRET!;
 
 export async function middleware(req: NextRequest) {
     const token = req.cookies.get("authToken")?.value;

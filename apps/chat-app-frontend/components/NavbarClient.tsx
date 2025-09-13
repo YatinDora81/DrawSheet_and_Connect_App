@@ -1,20 +1,25 @@
 "use client"
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import Avatar from './Avatar'
-import { Toaster } from "react-hot-toast"
+import toast, { Toaster } from "react-hot-toast"
 import { useAuth } from '../hooks/useAuth'
 import { IoChatbubbleOutline, IoChatbubbleSharp } from 'react-icons/io5'
 import { usePathname, useRouter } from 'next/navigation'
 import { useSocket } from '../hooks/useSocket'
 import { FaArrowRotateLeft } from "react-icons/fa6";
+import { toast_darktheme } from '../utils/toast-darktheme'
 
 const NavbarClient = () => {
 
     const { user, userLoading, setUser, logoutUser, fetchUser } = useAuth()
-    const { socket, socketLoading, connectWs } = useSocket();
+    const { socket, socketLoading, isConnected, connectWs } = useSocket();
     const router = useRouter()
     const pathName = usePathname();
+
+
+    console.log(`Socket connected: ${isConnected}`);
+    
 
     return (
         <div className={` text-white w-full border-b-[1px] border-b-zinc-800 bg-[#09090B] flex items-center justify-between h-[10vh] ${pathName === "/" && " bg-zinc-950/80 backdrop-blur-sm z-[1000] fixed top-0"} `}>
@@ -37,19 +42,24 @@ const NavbarClient = () => {
 
                 {user && <div className=' flex justify-center items-center gap-2'>
 
-                    {socket && socket.OPEN === 1 && <div className=' flex  items-center gap-2 rounded-2xl border-2 border-zinc-800 px-2'>
-                        <div className=' bg-green-500 h-2 aspect-square rounded-full '></div>
-                        <div>Connected</div>
-                    </div>}
-                    {socketLoading && <div className=' flex  items-center gap-2 rounded-2xl border-2 border-zinc-800 px-2'>
+
+                    {pathName !== '/' && (socketLoading ? <div className=' flex  items-center gap-2 rounded-2xl border-2 border-zinc-800 px-2'>
                         <div className=' bg-yellow-500 h-2 aspect-square rounded-full '></div>
                         <div>Connecting...</div>
-                    </div>}
-                    {(socket && socket.OPEN !== 1) && <div onClick={() => { connectWs() }} className=' flex  items-center gap-2 rounded-2xl border-2 border-zinc-800 px-2'>
-                        <div className=' bg-red-500 h-2 aspect-square rounded-full '></div>
-                        <div>Retry... </div>
-                        <FaArrowRotateLeft />
-                    </div>}
+                    </div>
+                        :
+                        isConnected ? <div className=' flex  items-center gap-2 rounded-2xl border-2 border-zinc-800 px-2'>
+                            <div className=' bg-green-500 h-2 aspect-square rounded-full '></div>
+                            <div>Connected</div>
+                        </div>
+                            :
+                            <div onClick={() => { connectWs(); toast('Retry Ws Connection!!!', { ...toast_darktheme, position: "bottom-right", duration: 500 }) }} className=' flex  items-center gap-2 rounded-2xl border-2 border-zinc-800 px-2'>
+                                <div className=' bg-red-500 h-2 aspect-square rounded-full '></div>
+                                <div>Retry... </div>
+                                <FaArrowRotateLeft />
+                            </div>
+                    )
+                    }
                     {/* <Link className='  border text-lg' style={{
                         paddingInline: "15px",
                         paddingBlock: "5px",
