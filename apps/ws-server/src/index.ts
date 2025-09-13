@@ -7,6 +7,7 @@ import { WS_PORT } from "@repo/config/PORTS";
 import { connectMongoDb, prismaClient } from "@repo/db/db";
 import insertChat from "@repo/db/insertChatModel";
 import { config } from "dotenv";
+import { JWT_SECRET } from "@repo/backend-common/backend-common";
 
 config();
 
@@ -14,6 +15,11 @@ const wss = new WebSocketServer({ port: parseInt(WS_PORT!) }, () => {
     console.log(`WS Connected Successfully`);
     connectMongoDb()
 })
+
+console.log('pro', process.env.JWT_SECRET);
+console.log('pro2', JWT_SECRET);
+
+
 
 const workerServer = ['1', '2'];
 let currWorkerServer = 0;
@@ -138,7 +144,7 @@ wss.on("connection", (ws: WebSocket, request) => {
                         userId: user.user_id
                     }
                 })
-                if (!isRoom ) {
+                if (!isRoom) {
                     sendErrorResponse(ws, "You Are not a member of this room", "Invalid Request!!!")
                     return
                 }

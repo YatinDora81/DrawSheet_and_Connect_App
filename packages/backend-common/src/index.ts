@@ -1,4 +1,7 @@
 import { z } from "zod"
+import {config} from 'dotenv'
+
+config()
 
 export const signUpShouldBe = z.object({
     name: z.string().min(3).max(12),
@@ -30,7 +33,7 @@ export const updateRoomDetailsShouldBe = z.object({
 })
 export type authTokenType = { user_id: string, email: string, name: string }
 
-export const JWT_SECRET = process.env.JWT_SECRET || "_+"
+export const JWT_SECRET = process.env.JWT_SECRET
 
 export const forgotPasswordShouldBe = z.object({
     email: z.string().email({ message: "Please give a email" }),
