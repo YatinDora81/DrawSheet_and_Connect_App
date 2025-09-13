@@ -16,11 +16,6 @@ const wss = new WebSocketServer({ port: parseInt(WS_PORT!) }, () => {
     connectMongoDb()
 })
 
-console.log('pro', process.env.JWT_SECRET);
-console.log('pro2', JWT_SECRET);
-
-
-
 const workerServer = ['1', '2'];
 let currWorkerServer = 0;
 

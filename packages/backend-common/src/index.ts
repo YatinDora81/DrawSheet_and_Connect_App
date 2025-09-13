@@ -33,7 +33,7 @@ export const updateRoomDetailsShouldBe = z.object({
 })
 export type authTokenType = { user_id: string, email: string, name: string }
 
-export const JWT_SECRET = process.env.JWT_SECRET
+export const JWT_SECRET = process.env.JWT_SECRET!
 
 export const forgotPasswordShouldBe = z.object({
     email: z.string().email({ message: "Please give a email" }),
