@@ -10,6 +10,12 @@ import ResetPassword from "../../../components/ResetPassword"
 import toast from "react-hot-toast"
 import { toast_darktheme } from "../../../utils/toast-darktheme"
 import { FORGOT_PASS_URL, VERIFY_OTP_URL } from "@repo/config/URL"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+    title: "Reset Password - Connect",
+    description: "Reset your Connect account password. Enter your email to receive a secure password reset link and regain access to your account."
+}
 
 export default function forgotPassword() {
     const router = useRouter()
@@ -185,7 +191,7 @@ export default function forgotPassword() {
 
                         {page === 1 && (
                             <div className='w-full flex flex-col justify-center items-center gap-5' style={{ paddingTop: "1.5rem" }}>
-                                <div className="bg-green-600/10 rounded-full" style={{ padding: "0.5rem" , backgroundColor : 'oklch(62.7% 0.194 149.214)' }}>
+                                <div className="bg-green-600/10 rounded-full" style={{ padding: "0.5rem", backgroundColor: 'oklch(62.7% 0.194 149.214)' }}>
                                     <MdDone className="text-green-00 text-3xl" />
                                 </div>
 

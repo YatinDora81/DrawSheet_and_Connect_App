@@ -14,6 +14,7 @@ import { CiTwitter } from "react-icons/ci";
 import { FiFacebook } from "react-icons/fi";
 import { LuGithub } from "react-icons/lu";
 import { useRouter } from 'next/navigation';
+import { SocketProvider } from '../hooks/useSocket';
 
 
 const HomePage = () => {
@@ -137,7 +138,7 @@ const HomePage = () => {
     return (
         <div style={{ overflowX: "hidden" }} className=' bg-zinc-950 text-white h-fit w-full flex flex-col justify-start items-start'>
 
-            {isToken ? <AuthProvider ><NavbarClient /></AuthProvider> : <NavbarGuest extenedClass='bg-zinc-950/80 backdrop-blur-sm z-[1000] fixed top-0' />}
+            {isToken ? <AuthProvider > <SocketProvider> <NavbarClient /> </SocketProvider> </AuthProvider> : <NavbarGuest extenedClass='bg-zinc-950/80 backdrop-blur-sm z-[1000] fixed top-0' />}
 
             <div className=' flex  w-[85%] pt-[10vh]  flex-col justify-start items-center mx-auto gap-16 sm:gap-24 '>
 

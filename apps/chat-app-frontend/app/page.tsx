@@ -1,21 +1,10 @@
-import Image, { type ImageProps } from "next/image";
+import { Metadata } from "next";
 import HomePage from "../components/HomePage";
 
-type Props = Omit<ImageProps, "src"> & {
-  srcLight: string;
-  srcDark: string;
-};
-
-const ThemeImage = (props: Props) => {
-  const { srcLight, srcDark, ...rest } = props;
-
-  return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
+export const metadata : Metadata = {
+  title : "Connect - Home",
+  description : "Welcome to Connect - A modern real-time chat application. Join conversations, create rooms, and stay connected with friends and colleagues."
+}
 
 export default function Home() {
   return (
