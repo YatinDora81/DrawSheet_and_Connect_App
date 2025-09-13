@@ -111,7 +111,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                             <div className=' w-full flex flex-col gap-1'>
                                 <label htmlFor='usernamee'>Username</label>
                                 <div className=' flex justify-center items-center w-full border border-zinc-950 shadow-2xl'>
-                                    <FaRegUser className=' text-gray-300 bg-zinc-800 rounded-l-lg  h-11 w-[12%] px-3 p-[11px]' />
+                                    <FaRegUser className=' text-gray-300 bg-zinc-800 rounded-l-lg  h-11 w-[12%] px-2 sm:px-3 p-[4px] sm:p-[12px]' />
                                     <input id='usernamee' value={formData?.name}
                                         onChange={(e) => {
                                             setFormData((prev) => {
@@ -126,7 +126,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                         <div className=' w-full flex flex-col gap-1'>
                             <label htmlFor='emaill'>Email</label>
                             <div className=' flex justify-center items-center w-full border border-zinc-950 shadow-2xl'>
-                                <MdOutlineEmail className=' text-gray-300 focus:bg-zinc-800 bg-zinc-800 rounded-l-lg h-11 w-[12%] px-3 p-[10px]' />
+                                <MdOutlineEmail className=' text-gray-300 focus:bg-zinc-800 bg-zinc-800 rounded-l-lg h-11 w-[12%] px-2 sm:px-3 p-[4px] sm:p-[12px]' />
                                 <input id='emaill' value={formData.email} onChange={(e) => setFormData((prev) => { return { ...prev, email: e.target.value } })} style={{ paddingBlock: "22px", paddingInline: "1px" }} className=' inpbg  rounded-r-lg w-full outline-none bg-zinc-800 h-10 px-10' type='email' placeholder='your@email.com'></input>
                             </div>
                         </div>
@@ -134,7 +134,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                         <div className=' w-full flex flex-col gap-1'>
                             <label htmlFor='passs'>Password</label>
                             <div className=' flex justify-center items-center w-full border border-zinc-950 shadow-2xl'>
-                                <IoLockClosedOutline className=' text-gray-300 bg-zinc-800 rounded-l-lg h-11 w-[12%] px-3 p-[8px]' />
+                                <IoLockClosedOutline className=' text-gray-300 bg-zinc-800 rounded-l-lg h-11 w-[12%] px-2 sm:px-3 p-[4px] sm:p-[11px]' />
                                 <div className=' w-full relative'>
                                     <input id='passs' value={formData.password} onChange={(e) => setFormData((prev) => { return { ...prev, password: e.target.value } })} style={{ paddingBlock: "22px", paddingInline: "1px", paddingRight: "40px" }} className='inpbg rounded-r-lg w-full  bg-zinc-800 outline-none h-10 px-10' type={showPassword ? "text" : "password"} placeholder='********'></input>
                                     {!showPassword ? <FaRegEye onClick={() => setShowPassword((prev) => !prev)} className=' absolute text-xl right-3 cursor-pointer hover:opacity-60 transition-all duration-200 top-[30%]' /> :
@@ -148,7 +148,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                             <div className=' w-full flex flex-col gap-1'>
                                 <label htmlFor='cpasss'>Confirm Password</label>
                                 <div className=' flex justify-center items-center w-full border border-zinc-950 shadow-2xl'>
-                                    <IoLockClosedOutline className=' text-gray-300 bg-zinc-800 rounded-l-lg h-11 w-[12%] px-3 p-[8px]' />
+                                    <IoLockClosedOutline className=' text-gray-300 bg-zinc-800 rounded-l-lg h-11 w-[12%] px-2 sm:px-3 p-[4px] sm:p-[11px]' />
                                     <div className=' w-full relative'>
                                         <input id='cpasss' value={formData.confirmPassword} onChange={(e) => setFormData((prev) => { return { ...prev, confirmPassword: e.target.value } })} style={{ paddingBlock: "22px", paddingInline: "15px" }} className='inpbg rounded-r-lg outline-none w-full bg-zinc-800 h-10 px-10' type={showPassword2 ? "text" : "password"} placeholder='Confirm Password'></input>
                                         {!showPassword2 ? <FaRegEye onClick={() => setShowPassword2((prev) => !prev)} className=' absolute text-xl right-3 cursor-pointer hover:opacity-60 transition-all duration-200 top-[30%]' /> :

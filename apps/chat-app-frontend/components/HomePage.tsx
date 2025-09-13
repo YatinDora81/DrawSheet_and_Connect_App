@@ -156,7 +156,7 @@ const HomePage = () => {
                 </div>
 
                 {/* display chat  */}
-                <div className=' z-10 border border-zinc-800 bg-zinc-900/70 rounded-xl min-h-[40vh] w-full sm:w-[80%] flex flex-col justify-start items-start'>
+                <div className='mt-[5vh] sm:mt-0 z-10 border border-zinc-800 bg-zinc-900/70 rounded-xl min-h-[40vh] w-full sm:w-[80%] flex flex-col justify-start items-start'>
 
                     <div className=' flex justify-start items-center gap-[6px] p-3 '>
                         <div className='w-3 rounded-full h-3 bg-zinc-700'></div>
