@@ -83,7 +83,7 @@ const CreateNewRoomModal = ({ showModal, setShowModal }: { showModal: number, se
     }
 
     return (
-        <div onClick={(e) => { e.stopPropagation() }} className=' relative text-white w-[45%] min-h-[35%] border border-zinc-500 bg-zinc-900 rounded-2xl py-4 px-6 flex flex-col items-start justify-evenly'>
+        <div onClick={(e) => { e.stopPropagation() }} className=' relative text-white w-[90%] sm:w-[45%] min-h-[35%] border border-zinc-500 bg-zinc-900 rounded-2xl py-4 px-6 flex flex-col items-start justify-evenly'>
             <IoIosCloseCircleOutline className=' text-red-600 text-3xl absolute right-2 top-2 cursor-pointer' onClick={() => setShowModal(-1)} />
             <h1 className=' text-3xl w-full text-center'> Create New Room</h1>
             <div className=' w-full flex flex-col gap-2'>

@@ -20,6 +20,7 @@ type ModalMap = {
 const DashboardClient = () => {
 
   const [showModal, setShowModal] = useState(-1)
+  const [responsivePage , setResponsivePage] = useState(0)
   const modalMap: ModalMap[] = [
     {
       name: "Create Room",
@@ -39,8 +40,8 @@ const DashboardClient = () => {
             <NavbarClient></NavbarClient>
             <div className=" flex w-full">
               {showModal !== -1 && showModal < modalMap.length && <Modal showModal={showModal} setShowModal={setShowModal} Component={modalMap[showModal]?.component} ></Modal>}
-              <RoomSection setModal={setShowModal} />
-              <ChatSection setModal={setShowModal} />
+              <RoomSection setModal={setShowModal} responsivePage={responsivePage} setResponsivePage={setResponsivePage} />
+              <ChatSection setModal={setShowModal} responsivePage={responsivePage} setResponsivePage={setResponsivePage} />
             </div>
           </RoomProvider>
         </SocketProvider>

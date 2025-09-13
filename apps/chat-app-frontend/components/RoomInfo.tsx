@@ -13,7 +13,7 @@ import { CLOUD_NAME, UPLOAD_PRESET } from '../utils/cloudinary'
 import { UPDATE_ROOM_DETAILS } from '@repo/config/URL'
 import { authenticatedFetch } from '@repo/ui/tokenManager'
 
-const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails, setShowRoomInfoPage }: { setShowRoomInfoPage: any, updatedRoomDetails: { roomPic: null | string, roomName: null | string, join_code: null | string }, setUpdatedRoomDetails: any }) => {
+const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails, setShowRoomInfoPage, setResponsivePage, responsivePage }: { setShowRoomInfoPage: any, updatedRoomDetails: { roomPic: null | string, roomName: null | string, join_code: null | string }, setUpdatedRoomDetails: any, setResponsivePage: (val: number) => void, responsivePage: number }) => {
 
     const { currRoom, setCurrRoom, setRooms } = useRoom()
     const { user, userLoading } = useAuth()
@@ -57,7 +57,7 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails, setShowRoomInfoPa
         }
         setShowRoomNameInput(false)
 
-        }, [currRoom , currRoom.members , currRoom.members.length])
+    }, [currRoom, currRoom.members, currRoom.members.length])
 
     useEffect(() => {
         const set = new Set<string>();
@@ -182,10 +182,10 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails, setShowRoomInfoPa
         }, 1000)
     }
 
-    const getUniqueMembersCount = ()=>{
+    const getUniqueMembersCount = () => {
         const set = new Set<string>();
         currRoom?.members.map((m: any) => set.add(JSON.stringify(m)))
-        return set.size   
+        return set.size
     }
 
     useEffect(() => {
@@ -197,7 +197,7 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails, setShowRoomInfoPa
     if (!currRoom) return <></>
 
     return (
-        <div className=' w-[55%] h-full bg-zinc-900 rounded-xl'>
+        <div className={`${responsivePage !== 1 && 'hidden' }  absolute top-0 left-0 sm:block  w-full sm:w-[55%] h-full bg-zinc-900 rounded-xl`}>
 
             <div className=' flex items-center justify-start py-3 text-2xl gap-3 px-4 h-20 border-b border-b-gray-700'>
                 <MdClose onClick={() => setShowRoomInfoPage(false)} className=' cursor-pointer text-red-400 text-2xl hover:text-red-300 transition-all duration-100' />
@@ -341,7 +341,7 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails, setShowRoomInfoPa
 
                             : <div className=' w-[100%] text-center flex items-center justify-center  py-1 border-b border-b-zinc-700'> No Member Found!!! </div>
                     }
-
+                    
 
                 </div>
 

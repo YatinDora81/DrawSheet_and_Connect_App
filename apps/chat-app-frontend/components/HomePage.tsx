@@ -260,7 +260,7 @@ const HomePage = () => {
 
 
                 {/* Lower Hero Section */}
-                <div className="flex w-full sm:w-[80%] bg-white/1 0 backdrop-blur-l g bg-gradient-to-r from-zinc-900 to-zinc-900/80 h-[35vh] sm:h-[45vh] rounded-lg shadow-lg justify-between items-center px-10 relative">
+                <div className="flex w-full sm:w-[80%] bg-white/1 0 backdrop-blur-l g bg-gradient-to-r from-zinc-900 to-zinc-900/80 h-[38vh] sm:h-[45vh] rounded-lg shadow-lg justify-between items-center px-10 relative">
 
                     <div className=' flex flex-col justify-start items-start gap-3 sm:gap-4 w-[60%] sm:w-[70%]'>
                         <div className=' text-[26px]  leading-6.5 sm:leading-none  sm:text-[36px] font-bold'>Start connecting today</div>

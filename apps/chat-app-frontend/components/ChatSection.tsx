@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { GoDotFill } from 'react-icons/go'
 import { HiDotsVertical } from 'react-icons/hi'
-import { IoCloseCircleOutline, IoSend } from 'react-icons/io5'
+import { IoArrowBackCircleOutline, IoCloseCircleOutline, IoSend } from 'react-icons/io5'
 import SingleChat from "./SingleChat"
 import ChatMenuItem from './ChatMenuItem'
 import { useSocket } from '../hooks/useSocket'
@@ -15,7 +15,7 @@ import { PulseLoader } from 'react-spinners'
 import RoomInfo from './RoomInfo'
 import { getAuthToken, authenticatedFetch } from '@repo/ui/tokenManager'
 
-const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
+const ChatSection = ({ setModal, setResponsivePage, responsivePage }: { setModal: (val: number) => void, setResponsivePage: (val: number) => void, responsivePage: number }) => {
 
     const { currRoom, onlineUsers } = useRoom()
     const { socket } = useSocket()
@@ -209,7 +209,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
 
     return (
 
-        <div style={{ paddingInline: "15px", paddingBlock: "10px" }} className=" min-h-[90vh] max-h-[90vh]  w-full  bg-zinc-950 flex  items-start justify-start gap-4 overflow-y-auto custom-scrollbar">
+        <div style={{ paddingInline: "15px", paddingBlock: "10px" }} className={`${responsivePage !== 1 && 'hidden' } min-h-[90vh] max-h-[90vh]  w-full  bg-zinc-950 sm:flex relative  items-start justify-start gap-4 overflow-y-auto custom-scrollbar`}>
 
             <div className=' w-full h-full bg-zinc-900 rounded-xl'>
 
@@ -240,8 +240,17 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
                 {currRoom !== null && <div className='  border-b-2 border-zinc-600 flex items-center justify-between h-20 w-full ' style={{ paddingInline: "18px" }}>
 
                     <div className=' flex items-center h-full gap-1 '>
+
+                        <IoArrowBackCircleOutline onClick={()=>{
+                            setResponsivePage(0);
+                        }} className=' text-4xl -ml-[0.8rem] block sm:hidden hover:opacity-70 transition-all duration-200' />
+
                         {/* Group Icon */}
-                        <div onClick={() => setShowRoomInfoPage(true)} className=' cursor-pointer h-[40px] w-[40px] rounded-full bg-gray-400'>
+                        <div onClick={() => {
+                            setShowRoomInfoPage(true)
+                            // setResponsivePage(2)
+                        }} 
+                        className=' cursor-pointer h-[40px] w-[40px] rounded-full bg-gray-400'>
                             {!currRoom.roomPic && !updatedRoomDetails.roomPic ? <svg
                                 viewBox="0 0 212 212"
                                 height="40"
@@ -267,14 +276,17 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
                                 <img className=' w-full h-full rounded-full object-cover object-center' src={updatedRoomDetails.roomPic && updatedRoomDetails.roomPic.trim() !== "" ? updatedRoomDetails.roomPic : currRoom.roomPic} alt='Room Pic' loading='lazy' />}
                         </div>
 
-                        <div onClick={() => setShowRoomInfoPage(true)} className=' cursor-pointer text-xl font-semibold'>{updatedRoomDetails.roomName ? updatedRoomDetails.roomName : currRoom.roomName}</div>
+                        <div onClick={() => {
+                            setShowRoomInfoPage(true)
+                            // setResponsivePage(2)
+                            }} className=' cursor-pointer text-xl font-semibold'>{updatedRoomDetails.roomName ? updatedRoomDetails.roomName : currRoom.roomName}</div>
 
                     </div>
 
 
                     <div className=' h-full flex items-center justify-center gap-2'>
                         <div className=' flex justify-center items-center'><GoDotFill className=' text-green-500' />{currOnlineUsers} Online</div>
-                        <ChatMenuItem setShowRoomInfoPage={setShowRoomInfoPage} />
+                        <ChatMenuItem setShowRoomInfoPage={setShowRoomInfoPage} responsivePage={responsivePage} setResponsivePage={setResponsivePage}  />
 
                         {/* <IoCloseCircleOutline className=' text-4xl text-red-500 transition-all duration-200 hover:text-red-700' /> */}
                     </div>
@@ -310,7 +322,7 @@ const ChatSection = ({ setModal }: { setModal: (val: number) => void }) => {
 
             </div>
 
-            {showRoomInfoPage && <RoomInfo setShowRoomInfoPage={setShowRoomInfoPage} updatedRoomDetails={updatedRoomDetails} setUpdatedRoomDetails={setUpdatedRoomDetails} />}
+            {showRoomInfoPage && <RoomInfo setShowRoomInfoPage={setShowRoomInfoPage} updatedRoomDetails={updatedRoomDetails} setUpdatedRoomDetails={setUpdatedRoomDetails} responsivePage={responsivePage} setResponsivePage={setResponsivePage} />}
         </div>
     )
 }

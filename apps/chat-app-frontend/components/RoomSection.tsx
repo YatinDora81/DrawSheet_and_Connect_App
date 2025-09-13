@@ -6,7 +6,7 @@ import { IoClose } from "react-icons/io5";
 import { useRoom } from "../hooks/useRoom";
 import { ClipLoader } from "react-spinners";
 import { useSocket } from "../hooks/useSocket";
-export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
+export function RoomSection({ setModal, setResponsivePage, responsivePage }: { setModal: (val: number) => void, setResponsivePage: (val: number) => void, responsivePage: number }) {
 
 
     const [searchText, setSearchText] = useState("")
@@ -37,12 +37,12 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
 
     useEffect(() => {
         if (socket) socket.addEventListener("message", localSocket);
-        return ()=>{
-            if(socket) socket.removeEventListener("message" , localSocket)
+        return () => {
+            if (socket) socket.removeEventListener("message", localSocket)
         }
     }, [socket, socket?.OPEN])
 
-    return <div style={{ paddingInline: "15px", paddingBlock: "" }} className=" min-h-[90vh] max-h-[90vh] min-w-[28%]  max-w-[35%]  bg-[#09090B] flex flex-col items-start justify-start gap-4 overflow-y-auto custom-scrollbar relative">
+    return <div style={{ paddingInline: "15px", paddingBlock: "" }} className={`${responsivePage!==0 && 'hidden'} min-h-[90vh] max-h-[90vh]  w-full sm:min-w-[28%]  sm:max-w-[35%]  bg-[#09090B] sm:flex flex-col items-start justify-start gap-4 overflow-y-auto custom-scrollbar relative`}>
 
 
 
@@ -104,7 +104,10 @@ export function RoomSection({ setModal }: { setModal: (val: number) => void }) {
         {
             // d.roomName.replace(" ","___")
             searchRooms?.length > 0 && searchRooms.map((d: any, i) => <div onClick={() => {
-                if (!currRoom || d["room"].id !== currRoom.id) setCurrRoom(() => d["room"])
+                if (!currRoom || d["room"].id !== currRoom.id) {
+                    setCurrRoom(() => d["room"])
+                }
+                setResponsivePage(1);
             }} key={i} className={` cursor-pointer relative bg-[#1a1a2199] flex  justify-between w-full items-center border min-h-16 rounded-xl ${currRoom === d["room"] ? ' border-green-500 ' : ''} `} style={{ paddingInline: "10px" }}>
                 <div className=" flex justify-center items-center gap-2">
                     <div className=' h-[40px] w-[40px] rounded-full bg-gray-400'>
