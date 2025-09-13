@@ -5,19 +5,24 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "pnpm run build:prisma && tsc -b",
-    "build:prisma" : "cd .. && cd .. && cd ./packages/db && npx prisma generate && cd .. && cd .. && cd ./apps/worker1",
+    "build": "chmod +x ./render-build.sh && ./render-build.sh",
+    "build:simple": "tsc -b",
+    "build:prisma": "cd ../../packages/db && npx prisma generate",
     "start": "node ./dist/index.js",
-    "start:prisma": "npx prisma generate && npm run dev",
-    "dev": "npm run build && npm run start"
+    "start:prisma": "npm run build:prisma && npm run dev",
+    "dev": "npm run build:simple && npm run start"
   },
   "dependencies": {
     "@repo/db": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
-    "@types/express": "^5.0.3",
     "dotenv": "^17.2.1",
     "express": "^4.21.2",
     "mongoose": "^8.18.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/express": "^5.0.3",
+    "@types/node": "^22",
+    "typescript": "^5.5.4"
   },
   "keywords": [],
   "author": "",
