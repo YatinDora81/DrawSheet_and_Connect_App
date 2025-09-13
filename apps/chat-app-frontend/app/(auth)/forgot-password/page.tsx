@@ -101,7 +101,7 @@ export default function forgotPassword() {
     }, [page])
 
     return (
-        <div className='min-h-[90vh] overflow-hidden w-full text-white bg-zinc-950 flex justify-center items-center'>
+        <div className='min-h-[90vh] overflow-hidden sm:w-full text-white bg-zinc-950 flex justify-center items-center'>
             <div className='min-h-[20rem]  min-w-[30rem] w-[30rem] flex flex-col'>
                 <div className="h-[4rem] flex text-2xl font-semibold gap-2 justify-center items-center">
                     <IoChatbubbleOutline
@@ -116,7 +116,7 @@ export default function forgotPassword() {
                     </div>
                 </div>
 
-                <div className='w-full flex  justify-center items-center'>
+                <div className=' w-[85%] mx-auto sm:w-full flex  justify-center items-center'>
                     <div
                         className='min-h-[16rem] bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 shadow-xl rounded-xl  w-[95%]  text-white flex flex-col gap-5 items-start'
                         style={{ paddingBlock: "1.1rem", paddingInline: "1.4rem" }}

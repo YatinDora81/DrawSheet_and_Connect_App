@@ -4,6 +4,8 @@ import { IoChatbubbleOutline } from 'react-icons/io5'
 
 const NavbarGuest = ({extenedClass = ""} : {extenedClass ?: string}) => {
 
+
+
     return (
         <div className={` text-white w-full border-b-[1px] border-b-zinc-800 bg-[#09090B] flex items-center justify-between h-[10vh] ${extenedClass} `}>
             <div><Toaster position="bottom-right"
@@ -16,9 +18,9 @@ const NavbarGuest = ({extenedClass = ""} : {extenedClass ?: string}) => {
 
                 <div className=' flex justify-center items-center gap-2'>
 
-                    <Link className='text-lg bg-white ff font-medium text-zinc-700 px-4 py-[6px] hover:bg- zinc-900/50 transition-all duration-200 hover:text -gray-300 rounded-md  hover:opacity-80' 
+                    <Link className='   text-lg bg-green-600 sm:bg-white ff font-medium text-white sm:text-zinc-700 px-4 py-[6px] hover:bg- zinc-900/50 transition-all duration-200 hover:text -gray-300 rounded-md  hover:opacity-80' 
                         href="/signin">Login</Link>
-                    <Link className='text-lg bg-green-600 ff font-medium text-white px-4 py-[6px]  hover:bg-green-700 transition-all duration-200 hover:text-gray-300 rounded-md' href="/signup">Get Started</Link>
+                    <Link className=' hidden sm:block  text-lg bg-green-600 ff font-medium text-white px-4 py-[6px]  hover:bg-green-700 transition-all duration-200 hover:text-gray-300 rounded-md' href="/signup">Get Started</Link>
 
                 </div>
 

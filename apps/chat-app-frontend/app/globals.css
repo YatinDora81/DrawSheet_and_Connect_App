@@ -156,6 +156,30 @@
   color: rgb(255, 255, 255);
 }
 
+/* Tablet (≤1024px) */
+@media (max-width: 1024px) {
+  .hero {
+    font-size: 48px;
+    line-height: 52px;
+  }
+}
+
+/* Mobile (≤768px) */
+@media (max-width: 768px) {
+  .hero {
+    font-size: 36px;
+    line-height: 40px;
+  }
+}
+
+/* Small mobile (≤480px) */
+@media (max-width: 480px) {
+  .hero {
+    font-size: 35px;
+    line-height: 45px;
+  }
+}
+
 html, body {
   overflow-x: hidden;
   width: 100%;

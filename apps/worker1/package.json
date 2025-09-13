@@ -5,10 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "pnpm run build:prisma && tsc -b",
-    "build:prisma": "cd ../../packages/db && npx prisma generate && cd ../../apps/worker1",
+    "build": "chmod +x ./render-build.sh && ./render-build.sh",
+    "build:simple": "tsc -b",
+    "build:prisma": "cd ../../packages/db && npx prisma generate",
     "start": "node ./dist/index.js",
-    "dev": "tsc -b && npm run start"
+    "start:prisma": "npm run build:prisma && npm run dev",
+    "dev": "npm run build:simple && npm run start"
   },
   "dependencies": {
     "@repo/db": "workspace:*",

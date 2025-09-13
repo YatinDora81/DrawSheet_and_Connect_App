@@ -13,11 +13,13 @@ import { MessageCircle } from "lucide-react";
 import { CiTwitter } from "react-icons/ci";
 import { FiFacebook } from "react-icons/fi";
 import { LuGithub } from "react-icons/lu";
+import { useRouter } from 'next/navigation';
 
 
 const HomePage = () => {
 
     const [isToken, setIsToken] = useState(false)
+    const router = useRouter()
     const getCookie = (cookieName: string) => {
         return document.cookie.split("; ").find((s) => s.startsWith(cookieName))?.split("=")[1] || ""
     }
@@ -137,15 +139,15 @@ const HomePage = () => {
 
             {isToken ? <AuthProvider ><NavbarClient /></AuthProvider> : <NavbarGuest extenedClass='bg-zinc-950/80 backdrop-blur-sm z-[1000] fixed top-0' />}
 
-            <div className=' flex  w-[85%] pt-[10vh]  flex-col justify-start items-center mx-auto gap-24 '>
+            <div className=' flex  w-[85%] pt-[10vh]  flex-col justify-start items-center mx-auto gap-16 sm:gap-24 '>
 
                 {/* hero section */}
-                <div className='w-[65%] text-center h-[50vh] flex py-10 pt-14 items-center flex-col gap-5  relative'>
+                <div className=' w-[80%] sm:w-[65%] text-center h-[50vh] flex py-10 pt-14 items-center flex-col gap-5  relative'>
                     <div className=' z-10 text-green-400 font-[500]  px-3 py-1 rounded-2xl bg-green-400/20 '>New: Real Time Notification Released</div>
-                    <div className='hero z-10'>Connect with <span className=' text-green-500'>everyone</span>, all in one place</div>
-                    <div className='z-10 w-[75%] text-zinc-400 text-lg'>The messaging platform that brings your conversations together. Simple, secure, and designed for modern teams and friends.</div>
+                    <div className='hero  z-10'>Connect with <span className=' text-green-500'>everyone</span>, all in one place</div>
+                    <div className='z-10 w-full sm:w-[75%] text-zinc-400 text-lg'>The messaging platform that brings your conversations together. Simple, secure, and designed for modern teams and friends.</div>
                     <div>
-                        <button className='z-10 cursor-pointer hover:opacity-80 transition-all duration-200 bg-green-600 text-white py-3 px-7 text-xl rounded-lg'>Get Started Free</button>
+                        <button onClick={()=>{router.push('/signup')}} className='z-10 cursor-pointer hover:opacity-80 transition-all duration-200 bg-green-600 text-white py-3 px-7 text-xl rounded-lg'>Get Started Free</button>
 
                     </div>
                     {/* green bg */}
@@ -154,7 +156,7 @@ const HomePage = () => {
                 </div>
 
                 {/* display chat  */}
-                <div className=' z-10 border border-zinc-800 bg-zinc-900/70 rounded-xl min-h-[40vh] w-[80%] flex flex-col justify-start items-start'>
+                <div className=' z-10 border border-zinc-800 bg-zinc-900/70 rounded-xl min-h-[40vh] w-full sm:w-[80%] flex flex-col justify-start items-start'>
 
                     <div className=' flex justify-start items-center gap-[6px] p-3 '>
                         <div className='w-3 rounded-full h-3 bg-zinc-700'></div>
@@ -174,21 +176,21 @@ const HomePage = () => {
 
 
                 {/* Sub Hero Section */}
-                <div className=' flex flex-col justify-center items-center w-full gap-[13vh] '>
+                <div className=' flex flex-col justify-center items-center w-full gap-[5vh] sm:gap-[13vh] '>
 
                     <div className=' flex flex-col justify-center items-center gap-5'>
-                        <div className=' text-4xl font-bold'>Everything you need to stay connected</div>
-                        <div className=' text-lg text-zinc-400'>Powerful features designed for seamless communication and collaboration.</div>
+                        <div className=' text-3xl sm:text-4xl font-bold'>Everything you need to stay connected</div>
+                        <div className=' text-sm sm:text-lg text-zinc-400'>Powerful features designed for seamless communication and collaboration.</div>
                     </div>
 
                     {/* Feature Cards */}
-                    <div className=' w-full flex flex-wrap justify-start items-center gap-5 px-2 relative'>
+                    <div className=' w-full flex flex-col sm:flex-row flex-wrap justify-start items-center gap-5 px-2 relative'>
 
-                        <div className=' bg-green-500 blur-[250px] h-[10vh] z-[1] w-[30vw]  -top-[10%] right-[30%] absolute'></div>
+                        <div className=' bg-green-500 blur-[250px] h-[10vh] z-[1] w-[70vw] sm:w-[30vw]  -top-[10%] right-[30%] absolute'></div>
 
                         {
                             featureCards.map((c, i) =>
-                                <div key={i} className='  text-white z-10 bg-zinc-900/40 hover:bg-zinc-900/70 transition-all duration-200 w-[32%] max-w-[32%] py-6 pb-8 rounded-xl border border-zinc-800 px-4 flex flex-col justify-start gap-3 items-start'>
+                                <div key={i} className='  text-white z-10 bg-zinc-900/40 hover:bg-zinc-900/70 transition-all duration-200 w-[90%]  max-w-[90%] sm:w-[32%] sm:max-w-[32%] py-6 pb-8 rounded-xl border border-zinc-800 px-4 flex flex-col justify-start gap-3 items-start'>
 
                                     <div className=' text-green-500 text-2xl bg-green-800/20 h-11 w-11 flex justify-center items-center p-2 rounded-full'>{c.icon}</div>
                                     <div className=' flex flex-col w-full justify-start items-start gap-1'>
@@ -209,7 +211,7 @@ const HomePage = () => {
                 </div>
 
                 {/* Reviews */}
-                <div className=' flex flex-col justify-center items-center w-[117.5%] gap-[13vh] py-16 bg-zinc-900/50'>
+                <div className=' flex flex-col justify-center items-center w-[117.5%] gap-[5vh] sm:gap-[13vh] px-8 py-10 sm:py-16 bg-zinc-900/50'>
 
                     <div className=' flex flex-col justify-center items-center gap-5'>
                         <div className=' text-4xl font-bold'>Loved by teams and friends</div>
@@ -217,16 +219,16 @@ const HomePage = () => {
                     </div>
 
                     {/* Review Cards */}
-                    <div className=' w-full flex flex-wrap justify-start items-center gap-5 px-2 relative'>
+                    <div className=' w-full flex flex-wrap flex-col sm:flex-row justify-start items-center gap-5 px-2 relative'>
 
 
-                        <div className=' w-[70%] flex flex-wrap justify-center mx-auto  items-center gap-5 px-2 relative'>
+                        <div className='  sm:w-[70%] flex flex-wrap justify-center flex-col sm:flex-row mx-auto  items-center gap-5 px-2 relative'>
 
 
 
                             {
                                 reviews.map((review, i) =>
-                                    <div key={i} className='  text-white z-10 bg-zinc-950/40 hover:bg-zinc-950/50 transition-all duration-200 w-[32%] max-w-[32%] py-6 pb-8 rounded-xl border border-zinc-800 px-4 flex flex-col justify-start gap-4 items-start'>
+                                    <div key={i} className='w-[90%]  max-w-[90%]  text-white z-10 bg-zinc-950/40 hover:bg-zinc-950/50 transition-all duration-200 sm:w-[32%] sm:max-w-[32%] py-6 pb-8 rounded-xl border border-zinc-800 px-4 flex flex-col justify-start gap-4 items-start'>
 
 
                                         <div className=' flex items-center justify-start gap-1'>
@@ -258,17 +260,17 @@ const HomePage = () => {
 
 
                 {/* Lower Hero Section */}
-                <div className="flex w-[80%] bg-white/1 0 backdrop-blur-l g bg-gradient-to-r from-zinc-900 to-zinc-900/80 h-[45vh] rounded-lg shadow-lg justify-between items-center px-10 relative">
+                <div className="flex w-full sm:w-[80%] bg-white/1 0 backdrop-blur-l g bg-gradient-to-r from-zinc-900 to-zinc-900/80 h-[35vh] sm:h-[45vh] rounded-lg shadow-lg justify-between items-center px-10 relative">
 
-                    <div className=' flex flex-col justify-start items-start gap-4 w-[70%]'>
-                        <div className=' text-[36px] font-bold'>Start connecting today</div>
-                        <div className=' text-xl text-zinc-400 font-light'>Join thousands of users and teams who are already experiencing better communication with Connect.</div>
+                    <div className=' flex flex-col justify-start items-start gap-3 sm:gap-4 w-[60%] sm:w-[70%]'>
+                        <div className=' text-[26px]  leading-6.5 sm:leading-none  sm:text-[36px] font-bold'>Start connecting today</div>
+                        <div className='  text-sm sm:text-xl text-zinc-400 font-light'>Join thousands of users and teams who are already experiencing better communication with Connect.</div>
                         <div>
-                            <button className='z-10 cursor-pointer hover:opacity-80 transition-all duration-200 bg-green-600 text-white py-2 px-7 text-xl rounded-lg'>Get Started Free</button>
+                            <button onClick={()=>{router.push('/signup')}} className=' w-[80%] sm:w-full z-10 cursor-pointer hover:opacity-80 transition-all duration-200 bg-green-600 text-white py-2 sm:py-2 px-4 sm:px-7 text-sm  sm:text-xl rounded-lg'>Get Started Free</button>
                         </div>
                     </div>
 
-                    <div className=' h-[65%] rounded-xl w-[23%]  bg-zinc-800 relative flex justify-center items-center'>
+                    <div className=' h-[50%] sm:h-[65%] rounded-xl w-[50%] sm:w-[23%]  bg-zinc-800 relative flex justify-center items-center'>
                         <IoChatbubbleOutline className=' text-7xl text-green-500/30' />
                         <div className=' absolute -right-[2vh] -bottom-[2vh] bg-zinc-900 border border-zinc-950/50 p-3 rounded-full text-green-600 text-3xl'><IoChatbubbleOutline /></div>
                     </div>

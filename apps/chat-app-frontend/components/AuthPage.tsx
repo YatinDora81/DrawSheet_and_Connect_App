@@ -96,7 +96,7 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
                 <div className=' text-sm text-zinc-300'>Create your account to get started</div>
             </div>}
 
-            <div className=' w-[35%] flex flex-col justify-center bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 shadow-xl rounded-xl  gap-10 py-10'>
+            <div className=' w-[80%] sm:w-[35%] flex flex-col justify-center bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 shadow-xl rounded-xl  gap-10 py-10'>
 
                 {/* <div className='upperheader text-4xl w-full '>
                     <div className=' w-full text-center'>{isSignup ? "Signup" : "Signin"} to Your Account</div>
@@ -160,14 +160,40 @@ const AuthPage = ({ isSignup }: { isSignup: boolean }) => {
 
                         {error && error !== "" && <div className=' text-sm  text-red-500 -my-2 w-[60%]' style={{ paddingLeft: "5px" }}> * {error}</div>}
 
-                        <div className=' flex justify-end items-center  -my-1 text-green-500 font-mono italic  '>
+                        { !isSignup && <div className=' flex justify-end items-center  -my-1 text-green-500 font-mono italic  '>
                             <div onClick={() => { router.push('/forgot-password') }} className='hover:text-green-400 transition-all duration-200 hover:underline cursor-pointer'>Forgot Password?</div>
                         </div>
-
+                        }
                         <button disabled={loading} style={{ paddingInline: "20px", paddingBlock: "10px", marginTop: "2px" }} className=' flex justify-center items-center text-xl  w-full bg-green-600 rounded-sm  cursor-pointer   text-white transition-all duration-200 hover:opacity-90 text-center '>
                             {loading ? <BeatLoader className=' mx-auto  ' /> : <><div>{isSignup ? "Sign up" : "Sign in"} </div>
                             </>}
                         </button>
+
+                        {
+                            <div className="block sm:hidden text-center text-sm mt-4">
+                                {isSignup ? (
+                                    <div>
+                                        Already a user?{" "}
+                                        <span
+                                            onClick={() => router.push("/signin")}
+                                            className="text-green-500 cursor-pointer hover:underline"
+                                        >
+                                            Sign in
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        New here?{" "}
+                                        <span
+                                            onClick={() => router.push("/signup")}
+                                            className="text-green-500 cursor-pointer hover:underline"
+                                        >
+                                            Create an account
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        }
 
 
                     </form>
