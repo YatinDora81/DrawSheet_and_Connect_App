@@ -71,3 +71,45 @@ body{
   -webkit-text-fill-color: white !important;
   appearance: none !important;
 }
+
+/* Default for Laptop/Desktop (≥1024px) */
+.globalPadding {
+  padding-inline: 0;
+}
+
+/* Mobile + Tablet (<1024px) */
+@media (max-width: 1023px) {
+  .globalPadding {
+    padding-inline: 1.8rem; /* example: smaller spacing */
+  }
+}
+
+.herodesc {
+  margin-top: -2rem;
+}
+
+@media (max-width: 1023px) {
+  .herodesc{
+    margin-top: 0;
+  }
+}
+
+.bottomsec {
+  margin-block: 7rem;
+}
+
+@media (max-width: 1023px) {
+  .bottomsec{
+    margin-block:  2rem;
+  }
+}
+
+.footer-padding {
+  padding-block: 0;
+}
+
+@media (max-width: 1023px) {
+  .footer-padding{
+    padding-block: 1.5rem;
+  }
+}

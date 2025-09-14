@@ -72,7 +72,7 @@ function NavbarClient() {
     return (
         <div className=" w-full border-b h-[4.5rem] top-0 sticky backdrop-blur-lg bg-zinc-950 z-[100] border-b-zinc-800">
             <ModalContainer setShowModal={setShowModal} showModal={showModal}>{Modals[showModal]?.component}</ModalContainer>
-            <div className=" h-full    text-white font-sans flex w-[89%]   " style={{ marginInline: "auto" }}>
+            <div className=" h-full  globalPadding  text-white font-sans flex w-full md:w-[89%]   " style={{ marginInline: "auto" }}>
 
                 <div className=" flex justify-between w-full items-center">
                     <Link href={'/'} className=" flex text-2xl gap-2 justify-start items-center">
