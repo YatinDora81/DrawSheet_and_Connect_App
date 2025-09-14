@@ -15,7 +15,20 @@ let Avatars_Cache: string[] | null = null
 
 export const isAuthenticatedUser = (req: Request, res: Response, next: NextFunction) => {
     try {
-        const token = req.cookies["authToken"]
+        // Check for token in cookies first (primary method)
+        let token = req.cookies["authToken"]
+        
+        // If no cookie token, check Authorization header as fallback
+        if (!token) {
+            const authHeader = req.headers.authorization
+            if (authHeader && authHeader.startsWith('Bearer ')) {
+                token = authHeader.substring(7) // Remove 'Bearer ' prefix
+                console.log("Using token from Authorization header")
+            }
+        } else {
+            console.log("Using token from cookie")
+        }
+        
         if (!token) {
             res.status(400).json({
                 success: false,
@@ -30,6 +43,7 @@ export const isAuthenticatedUser = (req: Request, res: Response, next: NextFunct
         next()
 
     } catch (error) {
+        console.error("Authentication error:", error)
         res.status(400).json({
             success: false,
             data: "UnAuthorized",

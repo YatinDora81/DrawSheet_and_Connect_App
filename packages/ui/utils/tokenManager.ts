@@ -14,9 +14,10 @@ export const getCookie = (cookieName: string): string | null => {
 
 export const getAuthHeaders = (): HeadersInit => {
   const token = getAuthToken();
-  // console.log('Token found:', token ? 'Yes' : 'No'); // Debug log
+  console.log('Token found:', token ? 'Yes' : 'No'); // Debug log
   return {
     'Content-Type': 'application/json',
+    // Send both Authorization header AND cookies for maximum compatibility
     ...(token && { 'Authorization': `Bearer ${token}` })
   };
 };
@@ -27,8 +28,10 @@ export const authenticatedFetch = async (url: string, options: RequestInit = {})
     ...options.headers,
   };
 
+  // Always include credentials to send cookies
   return fetch(url, {
     ...options,
     headers,
+    credentials: 'include', // This ensures cookies are sent
   });
 };
