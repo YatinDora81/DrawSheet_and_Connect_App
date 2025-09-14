@@ -19,7 +19,7 @@ function SingleCard({ showSubMenu, setShowSubMenu, index, data }: { showSubMenu:
     const router = useRouter();
     const { socket, socketLoading, connectWs } = useSocket();
     const {setShowModal , setRoomData} = useModal()
-    return <div className="w-[20rem] border border-zinc-800  h-[25rem] rounded-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer relative group hover:border-blue-500/60">
+    return <div className=" w-[30vh] md:w-[20rem] border border-zinc-800  h-[40vh] md:h-[25rem] rounded-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer relative group hover:border-blue-500/60">
         {/* Background */}
         <div className=" w-full h-full absolute top-0 left-0 blur-lg">
             <div className="h-10 aspect-square rounded-full group-hover:scale-[1.2] transition-all duration-300  bg-blue-500/60 absolute top-[1rem] left-[1.3rem]"></div>

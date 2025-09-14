@@ -38,7 +38,7 @@ function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index, data }: { sh
 
                 <div className=" text-center flex justify-center items-start  flex-col">
                     <div className=" font-semibold group-hover:text-blue-500 capitalize transition-colors duration-200">{data?.room?.roomName}</div>
-                    <div className=" text-sm text-gray-400 font-sans flex gap-x-2 gap-y-0 justify-center items-center">
+                    <div className=" text-[10px] sm:text-sm text-gray-400 font-sans flex gap-x-2 gap-y-0 justify-center items-center">
                         <div className={` w-[0.5rem] aspect-square rounded-full ${socketLoading ? 'bg-yellow-400' : (socket && socket.OPEN === 1 ? 'bg-green-500' : 'bg-red-500')}  cursor-default`}></div>
                         <div className=' font-semibold'>{(new Date(data?.room?.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }))}</div>
                     </div>
@@ -79,7 +79,7 @@ function SingleCardHorizontal({ showSubMenu, setShowSubMenu, index, data }: { sh
 
 
             {/* Menu Section */}
-            {showSubMenu === index && <div onClick={(e) => { e.stopPropagation() }} className=' absolute bg-zinc-950 backdrop-blur-2xl border border-zinc-800 rounded-lg z-[90] min-h-[8.9rem] w-[15%] h-fit -bottom-[160%] right-[1%] '>
+            {showSubMenu === index && <div onClick={(e) => { e.stopPropagation() }} className=' absolute bg-zinc-950 backdrop-blur-2xl border border-zinc-800 rounded-lg z-[90] min-h-[8.9rem] w-[40%] sm:w-[15%] h-fit -bottom-[160%] right-[1%] '>
                 <div className=' cursor-default border-b border-zinc-800 font-semibold' style={{ paddingInline: "0.7rem", paddingBlock: "0.4rem" }}>Actions</div>
 
                 <div className=' flex flex-col justify-start items-start'>

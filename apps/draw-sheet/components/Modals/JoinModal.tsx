@@ -27,7 +27,7 @@ function JoinModal() {
     
 
     return (
-        <div onClick={(e) => e.stopPropagation()} className=' relative flex flex-col justify-between items-start bg-zinc-950 border border-zinc-700 rounded-xl text-white h-[14rem] w-[32%]' style={{ paddingInline: "1.3rem", paddingBlock: "1.5rem" }}>
+        <div onClick={(e) => e.stopPropagation()} className=' relative flex flex-col justify-between items-start bg-zinc-950 border border-zinc-700 rounded-xl text-white h-[14rem] w-[90%] md:w-[32%]' style={{ paddingInline: "1.3rem", paddingBlock: "1.5rem" }}>
             <div onClick={() => setShowModal(-1)} className=' cursor-pointer absolute top-[6%] text-gray-400 hover:text-white transition-colors duration-100 right-[3%]'><IoClose /></div>
             <div className=' flex  flex-col items-start justify-start'>
                 <div className=' text-lg font-semibold'>

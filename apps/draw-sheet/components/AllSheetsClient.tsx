@@ -51,6 +51,7 @@ function AllSheetsClient() {
     useEffect(() => {
        setLocalStorage('ui-grid', isGridUi)
     }, [isGridUi])
+
     return (
         <div onClick={(e) => { e.stopPropagation(); setShowSubMenu(-1) }} className=" bg-zinc-950 min-h-[100vh] text-white ">
 
@@ -70,9 +71,9 @@ function AllSheetsClient() {
                         <div className=" text-zinc-400 ">Create or join drawing rooms to collaborate with others in real-time.</div>
                     </div>
 
-                    <div className=" w-full flex justify-between items-center">
+                    <div className=" w-full flex flex-col md:flex-row justify-between items-center">
 
-                        <div className=" w-[49.5%] border border-zinc-800 gap-6 rounded-xl flex flex-col items-start justify-center" style={{ paddingInline: "1.7rem", paddingBlock: "1.6rem" }}>
+                        <div className=" w-full md:w-[49.5%] border border-zinc-800 gap-6 rounded-xl flex flex-col items-start justify-center" style={{ paddingInline: "1.7rem", paddingBlock: "1.6rem" }}>
                             <div className=" flex flex-col items-start justify-center">
                                 <div className=" flex justify-center font-semibold items-center gap-2 text-2xl"><PiPlus className=" text-xl font-bold" /> Create Room</div>
                                 <div className=" text-zinc-400 text-sm ">Start a new collaboration room and invite others to join</div>
@@ -80,7 +81,7 @@ function AllSheetsClient() {
                             <button onClick={() => setShowModal(0)} className=" flex cursor-pointer gap-2 h-[2.5rem] font-semibold font-sans rounded-xl items-center justify-center w-full bg-blue-500 hover:bg-blue-500/80 transition-colors duration-200"><PiPlus />Create New Room</button>
                         </div>
 
-                        <div className=" w-[49.5%] border border-zinc-800 gap-6 rounded-xl flex flex-col items-start justify-center" style={{ paddingInline: "1.7rem", paddingBlock: "1.6rem" }}>
+                        <div className=" w-full md:w-[49.5%] border border-zinc-800 gap-6 rounded-xl flex flex-col items-start justify-center" style={{ paddingInline: "1.7rem", paddingBlock: "1.6rem" }}>
                             <div className=" flex flex-col items-start justify-center">
                                 <div className=" flex justify-center font-semibold items-center gap-2 text-2xl">
                                     <IoEnterOutline /> Join Room
@@ -100,10 +101,10 @@ function AllSheetsClient() {
 
 
                 {/* Your Drawings Section */}
-                <div className="h-full flex  items-center justify-between w-[89%] " style={{ marginInline: "auto", paddingBlock: "2rem" }}>
+                <div className="h-full  flex flex-col md:flex-row  items-center justify-between w-[70%] md:w-[89%] gap-6 md:gap-0" style={{ marginInline: "auto", paddingBlock: "2rem" }}>
                     <div className=" font-bold text-3xl font-sans">Your  Drawings</div>
                     <div className=" flex items-center justify-center gap-3">
-                        <div className=" flex gap-2 justify-center focus-within:outline-1 transition-all duration-200 items-center rounded-lg w-[18rem] border border-zinc-800 bg-zinc-950" style={{ padding: "0.5rem" }}>
+                        <div className=" flex gap-2 justify-center focus-within:outline-1 transition-all duration-200 items-center rounded-lg  w-[15rem] md:w-[18rem] border border-zinc-800 bg-zinc-950" style={{ padding: "0.5rem" }}>
                             <label htmlFor="search"><HiOutlineMagnifyingGlass /></label>
                             <input value={searchedRoomText} onChange={(e) => setSearchedRoomText(e.target.value)} type="text" id="search" className=" w-[90%] font-mono outline-none" placeholder="Search Drawings..."></input>
                         </div>

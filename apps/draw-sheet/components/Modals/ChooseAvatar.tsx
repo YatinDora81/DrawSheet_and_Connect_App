@@ -12,7 +12,7 @@ function ChooseAvatar() {
 
 
     return (
-        <div onClick={(e) => e.stopPropagation()} className=' relative flex flex-col justify-start items-start bg-zinc-950 border border-zinc-700 rounded-xl text-white h-[20rem] w-[32rem]' style={{ paddingInline: "1.3rem", paddingTop: "1.5rem", paddingBottom: "0.5rem" }}>
+        <div onClick={(e) => e.stopPropagation()} className=' relative flex flex-col justify-start items-start bg-zinc-950 border border-zinc-700 rounded-xl text-white h-[28rem] md:h-[20rem] w-[22rem] md:w-[32rem]' style={{ paddingInline: "1.3rem", paddingTop: "1.5rem", paddingBottom: "0.5rem" }}>
 
             <div onClick={() => setShowModal(-1)} className=' h-[15%] cursor-pointer absolute top-[6%] text-gray-400 hover:text-white transition-colors duration-100 right-[3%]'><IoClose /></div>
             <div className=' flex  flex-col items-start justify-start'>

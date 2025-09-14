@@ -80,12 +80,12 @@ function NavbarClient() {
                         <div className=" font-semibold ">Drawsheet</div>
                     </Link>
                     <div className=" h-full flex gap-3 justify-center items-center">
-                        {pathName!=='/' && <button onClick={() => setShowModal(0)} className=" border flex justify-center items-center h-[50%] w-[9rem] border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-2 transition-colors duration-200 text-sm" style={{ paddingInline: "" }}> <PiPlus></PiPlus> New Drawing</button>}
+                        {pathName!=='/' && <button onClick={() => setShowModal(0)} className=" border flex justify-center items-center h-[50%]  w-[7rem] md:w-[9rem] border-zinc-800 rounded-lg cursor-pointer hover:bg-blue-500 gap-0 md:gap-2 transition-colors duration-200 text-sm" style={{ paddingInline: "" }}> <PiPlus></PiPlus> New Drawing</button>}
                         <div className=" text-white relative" onClick={() => { setOpenMenuItems((prev) => !prev) }}>
 
 
                             {/* Menu Items */}
-                            {openMenuItems && <div ref={menuItemRef} onClick={(e) => { e.stopPropagation() }} className=' absolute bg-zinc-950 backdrop-blur-2xl flex flex-col gap-1 border border-zinc-800 rounded-lg z-[90] min-h-[10rem] w-[18rem] h-fit top-[110%] -right-[150%]  ' style={{ paddingBlock: "0.5rem", paddingInline: "0.8rem" }}>
+                            {openMenuItems && <div ref={menuItemRef} onClick={(e) => { e.stopPropagation() }} className=' absolute bg-zinc-950 backdrop-blur-2xl flex flex-col gap-1 border border-zinc-800 rounded-lg z-[90] min-h-[10rem] w-[15rem] md:w-[18rem] h-fit top-[110%] right-0 md:-right-[150%]  ' style={{ paddingBlock: "0.5rem", paddingInline: "0.8rem" }}>
                                 <div className=' flex flex-col justify-center gap-1 items-center h-[5.8rem]' style={{ paddingInline: "0.7rem", paddingBlock: "0.4rem" }}>
 
                                     {user && <div

@@ -14,6 +14,8 @@ import { toast_darktheme } from "../utils/toast-darktheme"
 import { AuthProvider } from "../hooks/useAuth"
 import { AvatarProvider } from "../hooks/useAvatars"
 import { authenticatedFetch } from "@repo/ui/tokenManager"
+import { useDevice } from "../hooks/useDevice"
+import SheetMobileView from "./SheetMobileView"
 
 
 function SheetClient({ sheetId }: { sheetId: string }) {
@@ -230,59 +232,62 @@ function SheetClient({ sheetId }: { sheetId: string }) {
   }
 
   return (
-    <div className=" h-full relative">
+    <>
+      <div className=" w-full h-full block lg:hidden"><SheetMobileView /></div>
+      <div className=" h-full relative hidden lg:block">
 
-      {/* Add resize here when screen size changes */}
+        {/* Add resize here when screen size changes */}
 
-      <Toaster
-        position="bottom-right"
-        reverseOrder={false} />
-      <SideBar selectedTool={selectedTool} setSelectedTool={setSelectedTool} downloadCanvasAsImageHandler={downloadCanvasAsImageHandler} />
-      <BottomBar selectedColor={color} setSelectedColor={setColor} lineWidth={lineWidth} setLineWidth={setLineWidth} />
+        <Toaster
+          position="bottom-right"
+          reverseOrder={false} />
+        <SideBar selectedTool={selectedTool} setSelectedTool={setSelectedTool} downloadCanvasAsImageHandler={downloadCanvasAsImageHandler} />
+        <BottomBar selectedColor={color} setSelectedColor={setColor} lineWidth={lineWidth} setLineWidth={setLineWidth} />
 
-      <AuthProvider>
-        <AvatarProvider>
-          <RightBar isBarOpen={isBarOpen} setIsBarOper={setIsBarOper} currOnlineUsers={currOnlineUsers} sheetId={sheetId} />
-        </AvatarProvider>
-      </AuthProvider>
+        <AuthProvider>
+          <AvatarProvider>
+            <RightBar isBarOpen={isBarOpen} setIsBarOper={setIsBarOper} currOnlineUsers={currOnlineUsers} sheetId={sheetId} />
+          </AvatarProvider>
+        </AuthProvider>
 
-      <canvas onClick={(e) => {
-        if (selectedTool === "textbox" && !currCords) setCurrCords({ x: e.clientX, y: e.clientY })
-        else if (selectedTool === "textbox") addingTextHandler()
-      }} ref={canvasRef} className={` h-full w-full ${selectedTool === "hand" ? 'cursor-move' : 'cursor-crosshair'}`}></canvas>
-      {currCords !== null && selectedTool === 'textbox' &&
-        <div
-          ref={textAreaDivRef}
-          className={`absolute overflow-hidden  `}
-          style={{
-            top: currCords.y,
-            left: currCords.x,
-            width: `calc(100% - ${currCords.x}px)`,
-            height: `calc(100% - ${currCords.y}px)`,
-            zIndex: 1
-          }}
-        >
+        <canvas onClick={(e) => {
+          if (selectedTool === "textbox" && !currCords) setCurrCords({ x: e.clientX, y: e.clientY })
+          else if (selectedTool === "textbox") addingTextHandler()
+        }} ref={canvasRef} className={` h-full w-full ${selectedTool === "hand" ? 'cursor-move' : 'cursor-crosshair'}`}></canvas>
+        {currCords !== null && selectedTool === 'textbox' &&
           <div
-            className=" bg-transparent w-full h-full absolute z-10"
-            onClick={() => addingTextHandler}
-          ></div>
-          <textarea
-            autoFocus={true}
-            className={`w-full  h-full outline-none resize-none overflow-hidden bg-transparent border-none no-underline caret-white `}
-            value={textTool}
-            spellCheck={false}
-            ref={textAreaRef}
-            onChange={(e) => setTextTool(e.target.value)}
-            onBlur={addingTextHandler}
+            ref={textAreaDivRef}
+            className={`absolute overflow-hidden  `}
             style={{
-              fontSize: `calc(${lineWidth * 5 * (game?.scale || 1)}px)`,
-              fontFamily: 'sans-serif',
-              lineHeight: '1',
-              color: color,
+              top: currCords.y,
+              left: currCords.x,
+              width: `calc(100% - ${currCords.x}px)`,
+              height: `calc(100% - ${currCords.y}px)`,
+              zIndex: 1
             }}
-          /></div>}
+          >
+            <div
+              className=" bg-transparent w-full h-full absolute z-10"
+              onClick={() => addingTextHandler}
+            ></div>
+            <textarea
+              autoFocus={true}
+              className={`w-full  h-full outline-none resize-none overflow-hidden bg-transparent border-none no-underline caret-white `}
+              value={textTool}
+              spellCheck={false}
+              ref={textAreaRef}
+              onChange={(e) => setTextTool(e.target.value)}
+              onBlur={addingTextHandler}
+              style={{
+                fontSize: `calc(${lineWidth * 5 * (game?.scale || 1)}px)`,
+                fontFamily: 'sans-serif',
+                lineHeight: '1',
+                color: color,
+              }}
+            /></div>}
 
-    </div>
+      </div>
+    </>
   )
 }
 
