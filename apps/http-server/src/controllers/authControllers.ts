@@ -292,7 +292,29 @@ export const forgotPassword = async (req: Request, res: Response) => {
             }
         })
 
-        await sendEmail(isUser.name, parsedData.data.email, otp, parsedData.data.isDraw)
+        // await sendEmail(isUser.name, parsedData.data.email, otp, parsedData.data.isDraw)
+
+        const emailBody = sendEmail(isUser.name, parsedData.data.email, otp, parsedData.data.isDraw)
+
+        const nextRes = await fetch(process.env.EMAIL_SENDER_FRONTEND_BASE_URL! + `/api/send-email`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": process.env.SECRET_BD_API_KEY!,
+            },
+            body: JSON.stringify(emailBody)
+        })
+
+        const nextResData = await nextRes.json()
+
+        if (!nextResData?.success) {
+            res.status(400).json({
+                success: false,
+                data: nextResData?.data || "Something Went Wrong While Sending Email!!!",
+                message: nextResData?.message || "Something Went Wrong While Sending Email!!!"
+            })
+            return
+        }
 
         res.status(200).json({
             success: true,
