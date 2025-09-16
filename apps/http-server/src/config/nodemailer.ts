@@ -20,21 +20,28 @@ const getTransporter = async () => {
 
 export const sendEmail = async (name: string, reciverEmail: string, otp: string, isDraw: boolean) => {
 
-    if (!transporter) {
-        transporter = await getTransporter()
-    }
+    // if (!transporter) {
+    //     transporter = await getTransporter()
+    // }
 
-    try {
-        const email = await transporter.sendMail({
-            from: `"${isDraw ? 'Drawsheet App' : 'Connect App'}" <yatin.dorapvt@gmail.com>`,
-            to: reciverEmail,
-            subject: `${isDraw ? 'Drawsheet' : 'Connect'} Security: Use This Code to Reset Password`,
-            html: isDraw ? drawsheetTemplate(name, reciverEmail, otp) : connectTemplate(name, reciverEmail, otp), // HTML body
-        });
+    // try {
+    //     const email = await transporter.sendMail({
+    //         from: `"${isDraw ? 'Drawsheet App' : 'Connect App'}" <yatin.dorapvt@gmail.com>`,
+    //         to: reciverEmail,
+    //         subject: `${isDraw ? 'Drawsheet' : 'Connect'} Security: Use This Code to Reset Password`,
+    //         html: isDraw ? drawsheetTemplate(name, reciverEmail, otp) : connectTemplate(name, reciverEmail, otp), // HTML body
+    //     });
 
-        // console.log("Message sent:", email.messageId);
-    } catch (error: any) {
-        throw new Error(error.message || 'Error at send email, try again later!!!')
+    //     // console.log("Message sent:", email.messageId);
+    // } catch (error: any) {
+    //     throw new Error(error.message || 'Error at send email, try again later!!!')
+    // }
+
+    return {
+        from: `"${isDraw ? 'Drawsheet App' : 'Connect App'}" <yatin.dorapvt@gmail.com>`,
+        to: reciverEmail,
+        subject: `${isDraw ? 'Drawsheet' : 'Connect'} Security: Use This Code to Reset Password`,
+        html: isDraw ? drawsheetTemplate(name, reciverEmail, otp) : connectTemplate(name, reciverEmail, otp), 
     }
 
 }

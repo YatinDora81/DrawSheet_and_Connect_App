@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./dist/index.js",
-    "build": "tsc -b",
-    "start:prisma" : "npx prisma generate && npm run dev",
-    "dev": " npm run build && npm run start"
+    "build": "pnpm install --no-frozen-lockfile && pnpm run start:prisma && tsc -b",
+    "start:prisma" : "cd ../../packages/db && npx prisma generate && cd ../../apps/worker2",
+    "dev": "tsc -b && npm run start"
   },
   "dependencies": {
     "@multiavatar/multiavatar": "^1.0.7",
