@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         {
           success: false,
           data: parsedData.error.issues[0]?.message || "",
-          message: "Invalid Format!!!",
+          message: "Invalid Format!!!" + parsedData.error,
         },
         { status: 400, headers: getCorsHeaders(origin) }
       );
