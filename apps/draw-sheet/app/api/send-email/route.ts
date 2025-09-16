@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { NextRequest, NextResponse } from "next/server";
-import EmailService from "../../../utils/EmailService";
+import { sendEmail } from "../../../utils/EmailService";
 
 const API_KEY = process.env.SECRET_BD_API_KEY as string;
 
@@ -51,8 +51,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ✅ Send email
-    const email = await EmailService.sendEmail(
+    const email = await sendEmail(
       parsedData.data.from,
       parsedData.data.to,
       parsedData.data.subject,

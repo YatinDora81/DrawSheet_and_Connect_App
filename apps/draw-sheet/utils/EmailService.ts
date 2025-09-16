@@ -36,4 +36,10 @@ class EmailService {
     }
 }
 
-export default new EmailService();
+// export default new EmailService();
+
+const emailService = new EmailService();
+
+export async function sendEmail(from: string, to: string, subject: string, html: string) {
+    return await emailService.sendEmail(from, to, subject, html);
+}
