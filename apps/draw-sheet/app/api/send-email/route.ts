@@ -32,6 +32,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const body = await req.json();
+
+    // console.log("body123" , body);
+    
+
     const zodSchema = z.object({
       from: z.string(),
       to: z.string(),
@@ -39,7 +44,7 @@ export async function POST(req: NextRequest) {
       html: z.string(),
     });
 
-    const parsedData = zodSchema.safeParse(await req.json());
+    const parsedData = zodSchema.safeParse(body);
     if (!parsedData.success) {
       return NextResponse.json(
         {

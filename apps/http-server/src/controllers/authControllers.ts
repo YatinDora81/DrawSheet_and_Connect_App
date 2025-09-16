@@ -294,7 +294,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
         // await sendEmail(isUser.name, parsedData.data.email, otp, parsedData.data.isDraw)
 
-        const emailBody = sendEmail(isUser.name, parsedData.data.email, otp, parsedData.data.isDraw)
+        const emailBody = await sendEmail(isUser.name, parsedData.data.email, otp, parsedData.data.isDraw)
 
         const nextRes = await fetch(process.env.EMAIL_SENDER_FRONTEND_BASE_URL! + `/api/send-email`, {
             method: "POST",
