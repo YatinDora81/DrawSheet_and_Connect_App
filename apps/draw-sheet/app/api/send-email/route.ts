@@ -33,8 +33,8 @@ export async function POST(req: NextRequest) {
     }
 
     const zodSchema = z.object({
-      from: z.string().email(),
-      to: z.string().email(),
+      from: z.string(),
+      to: z.string(),
       subject: z.string(),
       html: z.string(),
     });
