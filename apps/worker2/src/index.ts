@@ -9,6 +9,14 @@ const PORT = 3005
 
 config()
 
+app.get('/', (_, res) => {
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      service: 'worker2-server'
+    });
+  });
+
 const serverName = process.env.SERVER_NAME!
 
 async function main() {

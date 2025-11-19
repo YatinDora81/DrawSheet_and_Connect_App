@@ -7,6 +7,13 @@ import express from 'express'
 const app = express()
 const PORT = 3004
 
+app.get('/', (_, res) => {
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      service: 'worker1-server'
+    });
+  });
 
 config()
 
