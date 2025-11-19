@@ -8,10 +8,22 @@ import { connectMongoDb, prismaClient } from "@repo/db/db";
 import insertChat from "@repo/db/insertChatModel";
 import { config } from "dotenv";
 import { JWT_SECRET } from "@repo/backend-common/backend-common";
+import express from 'express';
+import { createServer } from 'http';
+
+const app = express();
 
 config();
 
-const wss = new WebSocketServer({ port: parseInt(WS_PORT!) }, () => {
+app.get('/', (_, res) => {
+    res.send('hello world');
+});
+
+
+
+const server = createServer(app);
+
+const wss = new WebSocketServer({ server }, () => {
     console.log(`WS Connected Successfully`);
     connectMongoDb()
 })
@@ -224,3 +236,9 @@ wss.on("connection", (ws: WebSocket, request) => {
 const online_offline_notification = (ws: WebSocket) => {
     userManager.getUserMap(ws)?.rooms.forEach((roomId) => roomManager.update_online_user_count(roomId))
 }
+
+
+
+server.listen(WS_PORT, () => {
+    console.log(`WS Server Running at ${WS_PORT}`);
+});

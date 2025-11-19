@@ -32,6 +32,10 @@ app.use(cors({
 
 const PORT = HTTP_PORT
 
+app.get('/', (_, res) => {
+  res.send('hello world');
+});
+
 app.use("/api/auth", authLimiter, authRouter)
 app.use("/api/rooms", roomLimiter, isAuthenticatedUser, roomRouter);
 import './cron.js'
