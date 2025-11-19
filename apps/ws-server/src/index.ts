@@ -9,12 +9,13 @@ import insertChat from "@repo/db/insertChatModel";
 import { config } from "dotenv";
 import express from 'express';
 import { createServer } from 'http';
+import cors from 'cors';
 
 config();
 
 const app = express();
 app.use(express.json());
-
+app.use(cors());
 
 app.get('/', (_, res) => {
     res.json({ 
