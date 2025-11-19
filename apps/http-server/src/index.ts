@@ -33,7 +33,11 @@ app.use(cors({
 const PORT = HTTP_PORT
 
 app.get('/', (_, res) => {
-  res.send('hello world');
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    service: 'http-server'
+  });
 });
 
 app.use("/api/auth", authLimiter, authRouter)
