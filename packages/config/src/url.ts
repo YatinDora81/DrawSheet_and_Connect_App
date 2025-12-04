@@ -2,8 +2,9 @@ import { config } from "dotenv";
 
 config()
 
-const BASE_HTTP_URL = process.env.NEXT_PUBLIC_HTTP_BASE_URL
+export const BASE_HTTP_URL = process.env.NEXT_PUBLIC_HTTP_BASE_URL
 export const BASE_WS_URL = process.env.NEXT_PUBLIC_WS_BASE_URL
+export const BASE_WS_HTTP_URL = process.env.NEXT_PUBLIC_WS_HTTP_BASE_URL
 
 export const Get_User_Details_URL = BASE_HTTP_URL + `/api/auth/user-details`;
 

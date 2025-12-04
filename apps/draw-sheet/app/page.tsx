@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import LandingPage from "../components/LandingPage";
+import { BASE_HTTP_URL, BASE_WS_HTTP_URL } from "@repo/config/URL";
 
 export const metadata: Metadata = {
   title: "Drawsheet - The Simplest Way to Create Diagrams and Sketches",
@@ -12,6 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
+  fetch(BASE_HTTP_URL!)
+  fetch(BASE_WS_HTTP_URL!)
+
+  console.log(BASE_HTTP_URL, BASE_WS_HTTP_URL)
 
   return (
     <LandingPage />

@@ -157,7 +157,7 @@ function LandingPage() {
             <div className="flex w-[100%] md:w-[85rem] flex-col globalPadding" style={{ marginInline: "auto" }}>
 
             {/* Hero Section */}
-            <div className="md:h-[32rem] w-full flex flex-col md:flex-row justify-between md:items-center gap-8 md:gap-0 globalPadding" style={{ marginTop: "8.2%" }}>
+            <div className="md:h-[32rem] w-full flex flex-col md:flex-row justify-between md:items-center gap-8 md:gap-0" style={{ marginTop: "8.2%" }}>
 
                 <div className="w-full md:w-[48%] gap-4 h-full flex flex-col justify-start items-start">
 
@@ -207,7 +207,7 @@ function LandingPage() {
                     </div>
 
                     {/* Feature Cards */}
-                    <div className="w-[90%] flex flex-wrap flex-col sm:flex-row justify-center sm:justify-start items-center gap-5 relative" style={{ marginInline: "auto", marginTop: "-2rem" }}>
+                    <div className="w-full md:w-[90%] flex flex-wrap flex-col sm:flex-row justify-center sm:justify-start items-center gap-5 relative" style={{ marginInline: "auto", marginTop: "-2rem" }}>
 
                         <div className="bg-blue-500 blur-[290px] h-[10vh] z-[1] w-[30vw] top-[40%] right-[30%] absolute"></div>
 
@@ -241,7 +241,7 @@ function LandingPage() {
                     </div>
 
                     {/* Steps Cards */}
-                    <div className="w-[90%] grid grid-cols-1 md:grid-cols-2 gap-6 relative" style={{ marginInline: "auto" }}>
+                    <div className="w-full md:w-[90%] grid grid-cols-1 md:grid-cols-2 gap-6 relative" style={{ marginInline: "auto" }}>
                         <div className="bg-blue-500 blur-[250px] h-[10vh] z-[1] w-[40vw] top-[30%] left-[30%] absolute"></div>
                         
                         {drawingSteps.map((step, i) => (
@@ -268,7 +268,7 @@ function LandingPage() {
                     {/* Testimonial Cards */}
                     <div className="w-full flex flex-wrap flex-col md:flex-row justify-center items-center gap-5 relative max-w-6xl">
                         {testimonials.map((testimonial, i) => (
-                            <div key={i} className="w-[90%] max-w-[90%] text-white z-10 bg-zinc-950/60 hover:bg-zinc-950/80 transition-all duration-200 md:w-[32%] md:max-w-[32%] rounded-xl border border-blue-500/30 flex flex-col justify-start gap-4 items-start" style={{ padding: "24px" }}>
+                            <div key={i} className="w-full max-w-full text-white z-10 bg-zinc-950/60 hover:bg-zinc-950/80 transition-all duration-200 md:w-[32%] md:max-w-[32%] rounded-xl border border-blue-500/30 flex flex-col justify-start gap-4 items-start" style={{ padding: "24px" }}>
                                 <div className="flex items-center justify-start gap-1">
                                     {new Array(5).fill("").map((_, currInd) => (
                                         <div key={currInd} className={`text-xl ${currInd < testimonial.rating ? 'text-blue-500' : 'text-zinc-500'}`}>
