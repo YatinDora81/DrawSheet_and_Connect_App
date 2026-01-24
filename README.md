@@ -4,8 +4,8 @@ A full-stack monorepo containing collaborative drawing and real-time messaging a
 
 ## 🌐 Live Applications
 
-- **Drawsheet**: [https://drawsheet.yatindora.xyz/](https://drawsheet.yatindora.xyz/) - Collaborative virtual whiteboard for sketching and diagrams
-- **Connect**: [https://connect.yatindora.xyz/](https://connect.yatindora.xyz/) - Real-time messaging platform for teams and friends
+- **Drawsheet**: [https://drawsheet.yatindora.xyz/](https://drawsheet.vercel.app/) - Collaborative virtual whiteboard for sketching and diagrams
+- **Connect**: [https://connect.yatindora.xyz/](https://connect-yatin.vercel.app/) - Real-time messaging platform for teams and friends
 
 ## 📦 What's Inside?
 
