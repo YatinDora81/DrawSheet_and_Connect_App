@@ -209,9 +209,9 @@ const ChatSection = ({ setModal, setResponsivePage, responsivePage }: { setModal
 
     return (
 
-        <div style={{ paddingInline: "15px", paddingBlock: "10px" }} className={`${responsivePage !== 1 && 'hidden' } min-h-[90vh] max-h-[90vh]  w-full  bg-zinc-950 sm:flex relative  items-start justify-start gap-4 overflow-y-auto custom-scrollbar`}>
+        <div style={{ paddingInline: "15px", paddingBlock: "10px" }} className={`${responsivePage !== 1 && 'hidden' } min-h-[90vh] max-h-[90vh] w-full bg-zinc-950 sm:flex relative items-start justify-start gap-4 overflow-hidden`}>
 
-            <div className=' w-full h-full bg-zinc-900 rounded-xl'>
+            <div className='w-full h-full bg-zinc-900 rounded-xl sm:flex-1 sm:min-w-0'>
 
                 {/** When No Chat Selected */}
                 {currRoom === null && <div

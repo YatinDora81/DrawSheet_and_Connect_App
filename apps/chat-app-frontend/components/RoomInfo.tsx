@@ -197,7 +197,7 @@ const RoomInfo = ({ updatedRoomDetails, setUpdatedRoomDetails, setShowRoomInfoPa
     if (!currRoom) return <></>
 
     return (
-        <div className={`${responsivePage !== 1 && 'hidden' }  absolute top-0 left-0 sm:block  w-full sm:w-[55%] h-full bg-zinc-900 rounded-xl`}>
+        <div className={`${responsivePage !== 1 && 'hidden' } absolute top-0 left-0 z-10 w-full h-full bg-zinc-900 rounded-xl sm:static sm:z-auto sm:block sm:h-full sm:w-[380px] sm:min-w-[380px] sm:max-w-[420px] sm:rounded-xl sm:border sm:border-zinc-800`}>
 
             <div className=' flex items-center justify-start py-3 text-2xl gap-3 px-4 h-20 border-b border-b-gray-700'>
                 <MdClose onClick={() => setShowRoomInfoPage(false)} className=' cursor-pointer text-red-400 text-2xl hover:text-red-300 transition-all duration-100' />
