@@ -1,4 +1,5 @@
 import NavbarGuest from "../../components/NavbarGuest";
+import HealthCheck from "../../components/HealthCheck";
 
 export default function RootLayout({
     children,
@@ -7,6 +8,7 @@ export default function RootLayout({
   }>) {
     return (
       <>
+        <HealthCheck />
         <NavbarGuest />
         {children}
       </>

@@ -52,9 +52,11 @@ This Turborepo monorepo includes the following applications and packages:
 
 ## 🩺 Health Checks & Keep-Alive
 
-Every page of both Next.js apps (`draw-sheet` and `chat-app-frontend`) pings `GET /health` on **all four backend servers every 5 seconds** from the browser. This keeps the free-tier (Render) instances warm and surfaces liveness: each round logs a single compact `[health]` line mapping every service to `ok`, `reachable`, or `down`.
+The public pages of both Next.js apps (`draw-sheet` and `chat-app-frontend`) ping `GET /health` on **all four backend servers every 2 seconds** from the browser. This keeps the free-tier (Render) instances warm and surfaces liveness: each round logs a single compact `[health]` line mapping every service to `ok`, `reachable`, or `down`.
 
-The heartbeat lives in `components/HealthCheck.tsx` in each app and is mounted once inside the root `app/layout.tsx`, so it covers every route without any per-page setup.
+The heartbeat lives in `components/HealthCheck.tsx` in each app and is mounted only where a signed-out visitor lands — the landing page (`app/page.tsx`) and the `(auth)` group layout, which covers sign in, sign up and forgot password. Authenticated routes (sheets, dashboard) do not ping, since by then the servers are already awake and in use.
+
+A round never overlaps itself: if the servers are slow to answer, the next tick is skipped rather than queued.
 
 ### Health Route Contract
 

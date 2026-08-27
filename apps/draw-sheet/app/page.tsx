@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import LandingPage from "../components/LandingPage";
+import HealthCheck from "../components/HealthCheck";
 import { BASE_HTTP_URL, BASE_WS_HTTP_URL } from "@repo/config/URL";
 
 export const metadata: Metadata = {
@@ -19,7 +20,10 @@ export default function Home() {
   console.log(BASE_HTTP_URL, BASE_WS_HTTP_URL)
 
   return (
-    <LandingPage />
+    <>
+      <HealthCheck />
+      <LandingPage />
+    </>
   );
 }
 

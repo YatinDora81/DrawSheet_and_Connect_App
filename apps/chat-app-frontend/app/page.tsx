@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import HomePage from "../components/HomePage";
+import HealthCheck from "../components/HealthCheck";
 import { BASE_HTTP_URL, BASE_WS_HTTP_URL } from "@repo/config/URL";
 
 export const metadata : Metadata = {
@@ -13,6 +14,6 @@ export default function Home() {
 
   console.log(BASE_HTTP_URL, BASE_WS_HTTP_URL)
   return (
-    <div className=" w-full h-fit overflow-x-hidden" style={{overflowX : "hidden"}}><HomePage /></div>
+    <div className=" w-full h-fit overflow-x-hidden" style={{overflowX : "hidden"}}><HealthCheck /><HomePage /></div>
   );
 }

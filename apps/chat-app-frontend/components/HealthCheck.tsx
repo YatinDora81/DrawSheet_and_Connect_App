@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from "react"
 
-const HEALTH_CHECK_INTERVAL_MS = 5000
-const HEALTH_CHECK_TIMEOUT_MS = 4500
+const HEALTH_CHECK_INTERVAL_MS = 2000
+const HEALTH_CHECK_TIMEOUT_MS = 1800
 
 type HealthTargetName = "http-server" | "ws-server" | "worker1" | "worker2"
 
@@ -14,9 +14,6 @@ type HealthTarget = {
   url: string
 }
 
-// The socket URL is a wss:// (or ws://) origin pointing at the same ws-server that
-// serves /health over HTTP, so it can stand in when the dedicated HTTP base URL is
-// unset — otherwise ws-server drops out of the ping list without a trace.
 const toHttpOrigin = (wsUrl: string | undefined): string | undefined => {
   if (!wsUrl) return undefined
   if (wsUrl.startsWith("wss://")) return "https://" + wsUrl.slice("wss://".length)
@@ -24,8 +21,6 @@ const toHttpOrigin = (wsUrl: string | undefined): string | undefined => {
   return undefined
 }
 
-// NEXT_PUBLIC_* vars are inlined by Next.js only when written as full static member
-// expressions, so each one is read directly here (never destructured or indexed).
 const CONFIGURED_TARGETS: { name: HealthTargetName; url: string | undefined }[] = [
   { name: "http-server", url: process.env.NEXT_PUBLIC_HTTP_BASE_URL },
   {
@@ -59,9 +54,6 @@ const HealthCheck = () => {
         const response: Response = await fetch(url, { signal: controller.signal, cache: "no-store" })
         return response.ok ? "ok" : "down"
       } catch {
-        // Server asleep or CORS headers missing: retry once opaquely so the request still
-        // reaches the server and keeps it warm. The retry needs its own controller because
-        // the first one may already have been aborted by its timeout.
         if (cancelled) return "down"
         const retryController = new AbortController()
         controllers.add(retryController)
@@ -95,8 +87,6 @@ const HealthCheck = () => {
         })
         console.log("[health]", results)
       } finally {
-        // Only the live effect may release the guard: a stale round left over from a
-        // StrictMode remount must not unlock a round that is still in flight.
         if (!cancelled) isRunningRef.current = false
       }
     }

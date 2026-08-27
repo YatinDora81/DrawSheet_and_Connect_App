@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
-import HealthCheck from "../components/HealthCheck";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,7 +37,6 @@ export default function RootLayout({
           position="bottom-right"
           reverseOrder={false}
         />
-        <HealthCheck />
         {children}
         <div id="modal-root" />
       </body>
