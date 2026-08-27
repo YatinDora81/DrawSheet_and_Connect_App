@@ -15,6 +15,27 @@ config();
 
 const app = express();
 app.use(express.json());
+
+// Keep-alive / liveness probe. Registered BEFORE the cors() middleware below so it always
+// owns its own response, including the OPTIONS preflight that cors() would otherwise
+// terminate on its own.
+app.get('/health', (_, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'no-store');
+    res.status(200).json({
+        status: 'ok',
+        service: 'ws-server',
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString()
+    });
+});
+
+app.options('/health', (_, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'no-store');
+    res.status(204).end();
+});
+
 app.use(cors());
 
 app.get('/', (_, res) => {

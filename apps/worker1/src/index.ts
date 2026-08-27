@@ -15,6 +15,23 @@ app.get('/', (_, res) => {
     });
   });
 
+app.get('/health', (_, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'no-store');
+    res.status(200).json({
+      status: 'ok',
+      service: 'worker1-server',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString()
+    });
+  });
+
+app.options('/health', (_, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'no-store');
+    res.status(204).end();
+  });
+
 config()
 
 const serverName = process.env.SERVER_NAME!

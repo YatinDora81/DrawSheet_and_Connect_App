@@ -50,6 +50,43 @@ This Turborepo monorepo includes the following applications and packages:
 - **Authentication**: JWT (jose)
 - **Real-time**: WebSockets
 
+## 🩺 Health Checks & Keep-Alive
+
+Every page of both Next.js apps (`draw-sheet` and `chat-app-frontend`) pings `GET /health` on **all four backend servers every 5 seconds** from the browser. This keeps the free-tier (Render) instances warm and surfaces liveness: each round logs a single compact `[health]` line mapping every service to `ok`, `reachable`, or `down`.
+
+The heartbeat lives in `components/HealthCheck.tsx` in each app and is mounted once inside the root `app/layout.tsx`, so it covers every route without any per-page setup.
+
+### Health Route Contract
+
+`http-server`, `ws-server`, `worker1`, and `worker2` each expose an identical route. `GET /health` returns `200` with:
+
+```json
+{
+  "status": "ok",
+  "service": "http-server",
+  "uptime": 123.45,
+  "timestamp": "2025-01-01T00:00:00.000Z"
+}
+```
+
+- `service` is that server's own name (`http-server`, `ws-server`, `worker1-server`, `worker2-server`)
+- `uptime` is `process.uptime()`, `timestamp` is an ISO string
+- `OPTIONS /health` returns `204`
+- Responses always carry `Access-Control-Allow-Origin: *` and `Cache-Control: no-store`, and the route is registered **before** any restrictive CORS middleware so it can never be rejected
+- If a normal request fails, the browser retries once with `mode: 'no-cors'` so the server is still woken up — that counts as `reachable`
+
+### Frontend Environment Variables
+
+Both `draw-sheet` and `chat-app-frontend` need all four base URLs (no trailing slash). Any variable left unset is simply skipped, so that server is never pinged.
+
+- **`NEXT_PUBLIC_HTTP_BASE_URL`**: base URL of `http-server`
+- **`NEXT_PUBLIC_WS_HTTP_BASE_URL`**: base URL of `ws-server`
+- **`NEXT_PUBLIC_WORKER1_BASE_URL`**: base URL of `worker1` — **new**
+- **`NEXT_PUBLIC_WORKER2_BASE_URL`**: base URL of `worker2` — **new**
+
+> [!IMPORTANT]
+> `.env` files are gitignored, so these four variables must also be added to the **Vercel project settings for both apps** (Drawsheet and Connect). `NEXT_PUBLIC_*` values are inlined at build time — redeploy after changing them.
+
 ## 🚀 Getting Started
 
 ### Prerequisites

@@ -16,6 +16,25 @@ config()
 connectMongoDb()
 // app.use(cors({ origin: "http://localhost:3003", credentials: true }))
 
+// Keep-alive / liveness probe. Registered BEFORE the restrictive cors() middleware
+// below so it can never be rejected for an unknown origin.
+app.get('/health', (_, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Cache-Control', 'no-store');
+  res.status(200).json({
+    status: 'ok',
+    service: 'http-server',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.options('/health', (_, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Cache-Control', 'no-store');
+  res.status(204).end();
+});
+
 const allowedOrigins: string[] | string = process.env.ORIGINS || [];
 
 app.use(cors({
