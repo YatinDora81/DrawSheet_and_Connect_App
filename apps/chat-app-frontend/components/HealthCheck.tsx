@@ -14,11 +14,24 @@ type HealthTarget = {
   url: string
 }
 
+// The socket URL is a wss:// (or ws://) origin pointing at the same ws-server that
+// serves /health over HTTP, so it can stand in when the dedicated HTTP base URL is
+// unset — otherwise ws-server drops out of the ping list without a trace.
+const toHttpOrigin = (wsUrl: string | undefined): string | undefined => {
+  if (!wsUrl) return undefined
+  if (wsUrl.startsWith("wss://")) return "https://" + wsUrl.slice("wss://".length)
+  if (wsUrl.startsWith("ws://")) return "http://" + wsUrl.slice("ws://".length)
+  return undefined
+}
+
 // NEXT_PUBLIC_* vars are inlined by Next.js only when written as full static member
 // expressions, so each one is read directly here (never destructured or indexed).
 const CONFIGURED_TARGETS: { name: HealthTargetName; url: string | undefined }[] = [
   { name: "http-server", url: process.env.NEXT_PUBLIC_HTTP_BASE_URL },
-  { name: "ws-server", url: process.env.NEXT_PUBLIC_WS_HTTP_BASE_URL },
+  {
+    name: "ws-server",
+    url: process.env.NEXT_PUBLIC_WS_HTTP_BASE_URL || toHttpOrigin(process.env.NEXT_PUBLIC_WS_BASE_URL),
+  },
   { name: "worker1", url: process.env.NEXT_PUBLIC_WORKER1_BASE_URL },
   { name: "worker2", url: process.env.NEXT_PUBLIC_WORKER2_BASE_URL },
 ]
